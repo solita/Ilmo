@@ -1,0 +1,13 @@
+.classpath
+.project
+.scala_dependencies
+.history
+.target
+*.db
+project/boot
+project/plugins/project
+project/target
+project/project
+target
+lift-sbt-quickstart.sublime-project
+lift-sbt-quickstart.sublime-workspace
