@@ -42,6 +42,7 @@ class Boot {
     // Build SiteMap
     def sitemap() = SiteMap(
       Menu("Koulutukset") / "index",
+      Menu("Koulutukset 2") / "index2",
       Menu("Lisää koulutuskerta") / "add_training"
     )
     
