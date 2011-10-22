@@ -1,9 +1,6 @@
 name := "ilmo"
- 
-seq(webSettings: _*)
 
-// If using JRebel
-jettyScanDirs := Nil
+seq(webSettings: _*)
 
 resolvers += "Java.net Maven2 Repository" at "http://download.java.net/maven/2/"
 
@@ -28,3 +25,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.2.138", // In-process database, useful for development systems
   "ch.qos.logback" % "logback-classic" % "0.9.26" % "compile->default" // Logging
 )
+
+jettyPort := 9999
+
+
