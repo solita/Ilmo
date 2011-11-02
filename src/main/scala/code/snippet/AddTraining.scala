@@ -8,7 +8,7 @@ object AddTraining extends LiftScreen {
   
   object training extends ScreenVar(Training.create)
   
-  override def screenTop = <b>Add Training</b>
+  override def screenTop = <b>{S ? "Add training"}</b>
 
   addFields(() => training.is)
     

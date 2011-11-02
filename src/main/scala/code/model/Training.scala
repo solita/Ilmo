@@ -6,6 +6,8 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
   def getSingleton = Training
 
   object name extends MappedString(this, 100)
+  object description extends MappedTextarea(this, 2000)
+  object organizer extends MappedString(this, 100)
 
   object participants extends MappedOneToMany(Participant, Participant.training, 
       OrderBy(Participant.id, Ascending))
