@@ -15,6 +15,7 @@ object AddTrainingSession extends LiftScreen {
   override def screenTop = <b>{S ?? "training-session.add"}</b>
   
   val trainings: List[Box[Training]] = Empty :: Training.findAll().map(t => Full(t))
+  
   var training = select[Box[Training]](S ?? "training-session.training", Empty, trainings)((box: Box[Training]) => box match {
     case Full(t) => t.name.get
     case default => ""
