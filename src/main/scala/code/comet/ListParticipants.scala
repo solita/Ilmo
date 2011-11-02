@@ -33,6 +33,7 @@ class ListParticipants extends CometActor with CometListener {
       case Full(trainingId: Long) => {
     	  val training = Training.findByKey(trainingId) openOr Training.create
     	  
+    	  "#trainingdesc" #> training.description.is &
     	  ".participant *" #> training.participants.map(participant => 
               ".name" #> participant.name.is)
       }
