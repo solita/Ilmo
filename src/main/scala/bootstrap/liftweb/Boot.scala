@@ -41,9 +41,9 @@ class Boot {
 
     // Build SiteMap
     def sitemap() = SiteMap(
-      Menu("Koulutukset") / "index",
-      Menu("Koulutukset 2") / "index2",
-      Menu("Lisää koulutuskerta") / "add_training"
+      Menu(S ?? "trainings") / "index",
+      Menu(S ?? "trainings" + "2") / "index2",
+      Menu(S ?? "training.add") / "add_training"
     )
     
     LiftRules.setSiteMap(sitemap)
