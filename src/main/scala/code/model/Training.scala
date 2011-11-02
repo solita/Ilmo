@@ -38,6 +38,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     
   }
   
+  object linkToMaterial extends MappedString(this,100)
   object description extends MappedTextarea(this, 1500)
   object other extends MappedTextarea(this, 1500)
 
@@ -62,5 +63,5 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {
-  override def fieldOrder = List(name, organizer, description, other)
+  override def fieldOrder = List(name, organizer, description, linkToMaterial, other)
 }
