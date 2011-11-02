@@ -53,6 +53,19 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
                                             list(1),
                                             list(2).toLong));
 
+  def getWithParticipantCountForParticipantId(participantName: String) = 
+    DB.runQuery("""select depid, depname, has_participated, count(*) from ( 
+                     select d.id depid, d.name depname, (select 1 from Participant p2 where p2.name = ? and d.id = p2.Training) has_participated
+                     from Training d left outer join Participant p on d.id = p.Training
+                   )
+                     group by depid, depname, has_participated""", List(participantName))
+                        ._2 // first contains column names
+                        .map(list => new TrainingParticipantCountDto2(
+                                            list(0).toLong,
+                                            list(1),
+                                            (if (list(2) == Nil) false else true),
+                                            list(3).toLong));
+  
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {

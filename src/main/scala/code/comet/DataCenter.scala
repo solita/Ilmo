@@ -28,8 +28,11 @@ object DataCenter extends LiftActor with ListenerManager {
     }
     
     object firstname extends SessionVar[String]("")
-    def hasName() = !("" == firstname.is)
+    
+    def hasSignInName() = !("" == firstname.is)
+    
     def getName() = firstname.is
+    
     def setName(name: String) = {
         firstname.set(name)
         updateListeners

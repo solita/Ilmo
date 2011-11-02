@@ -19,7 +19,7 @@ class Register extends CometActor with CometListener {
     override def render = {
       println("name in session is " + DataCenter.getName)
 
-      if (DataCenter.hasName) {
+      if (DataCenter.hasSignInName) {
           <span></span>
       }
       else {

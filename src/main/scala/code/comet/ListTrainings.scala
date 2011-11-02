@@ -46,7 +46,7 @@ class ListTrainings extends CometActor with CometListener {
     if ( false ) { // training is full
       Text("täynnä")
     }    
-    else if ( DataCenter.hasName() ) {
+    else if ( DataCenter.hasSignInName() ) {
       SHtml.ajaxButton("ilmoittaudu", () => register(trainingId, participantCount))
     }
     else {
@@ -61,7 +61,7 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   def viewDetails(trainingId: Long, participantCount: Long) : JsCmd = {
-    DataCenter.setSelectedTraining(trainingId)
+    DataCenter.setSelectedTraining(trainingId)     
   }
 
 }
