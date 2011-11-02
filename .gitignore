@@ -3,6 +3,7 @@
 .scala_dependencies
 .history
 .target
+.cache
 *.db
 project/boot
 project/plugins/project

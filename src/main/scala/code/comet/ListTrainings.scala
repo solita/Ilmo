@@ -36,7 +36,7 @@ class ListTrainings extends CometActor with CometListener {
     ".training *" #> Training.getWithParticipantCount.map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
-      ".viewdetails" #> ( SHtml.ajaxButton("näytä tiedot", 
+      ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", 
                           () => viewDetails(training.id, training.participantCount) )) &
       ".register" #> ( getRegisterButton(training.id, training.participantCount) )
     )
@@ -44,10 +44,10 @@ class ListTrainings extends CometActor with CometListener {
   
   def getRegisterButton(trainingId: Long, participantCount: Long) = {
     if ( false ) { // training is full
-      Text("täynnä")
+      Text(S ?? "training.full")
     }    
     else if ( DataCenter.hasSignInName() ) {
-      SHtml.ajaxButton("ilmoittaudu", () => register(trainingId, participantCount))
+      SHtml.ajaxButton(S ?? "training.register", () => register(trainingId, participantCount))
     }
     else {
       Text("-")

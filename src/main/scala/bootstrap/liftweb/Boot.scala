@@ -3,14 +3,15 @@ package bootstrap.liftweb
 import net.liftweb._
 import util._
 import Helpers._
-
 import common._
 import http._
 import sitemap._
 import Loc._
 import mapper._
-
 import code.model._
+import net.liftweb.http.provider.HTTPRequest
+import java.util.Locale
+import java.util.ResourceBundle
 
 
 /**
@@ -20,8 +21,7 @@ import code.model._
 class Boot {
   def boot {
     if (!DB.jndiJdbcConnAvailable_?) {
-      val vendor = 
-	new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
+      val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver", 
 			     Props.get("db.url") openOr 
 			     "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
 			     Props.get("db.user"), Props.get("db.password"))
@@ -41,9 +41,9 @@ class Boot {
 
     // Build SiteMap
     def sitemap() = SiteMap(
-      Menu("Koulutukset") / "index",
-      Menu("Koulutukset 2") / "index2",
-      Menu("Lisää koulutuskerta") / "add_training"
+      Menu(S ?? "trainings") / "index",
+      Menu(S ?? "trainings" + "2") / "index2",
+      Menu(S ?? "training.add") / "add_training"
     )
     
     LiftRules.setSiteMap(sitemap)
@@ -64,7 +64,15 @@ class Boot {
 
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
-      new Html5Properties(r.userAgent))    
+      Html5Properties(r.userAgent))
+      
+    LiftRules.liftCoreResourceName = "content"
+    
+    // TODO: Proper localization handling
+    LiftRules.localeCalculator = _ => new Locale("fi", "FI")
+    
+    // TODO: Proper logging
+    LiftRules.localizationLookupFailureNotice = Full((key,locale) => println("No translation for %s exists for %s".format(key,locale)))
 
     // Make a transaction span the whole HTTP request
     S.addAround(DB.buildLoanWrapper)

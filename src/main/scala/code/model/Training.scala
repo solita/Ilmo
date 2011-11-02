@@ -3,6 +3,7 @@ package code.model
 import _root_.net.liftweb.mapper._
 import net.liftweb.util._
 import net.liftweb.http._
+import java.util.Locale
 
 class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, Training] {
   def getSingleton = Training
@@ -13,9 +14,9 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
 
     def validateGiven(name : String) = {
       if (organizer.length == 0) {
-        List(FieldError(this, S ? "Name must be given"))
+        List(FieldError(this, S ?? "training.error.name-missing"))
       } else if (name.length < 5) {
-        List(FieldError(this, S ? "Name is too short"))
+        List(FieldError(this, S ?? "training.error.name-too-short"))
       } else {
         List[FieldError]()
       }
@@ -29,7 +30,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     
 	def validateGiven(organizer : String) = {
 	  if (organizer.length == 0) {
-	    List(FieldError(this, S ? "Organizer must be given"))
+	    List(FieldError(this, S ?? "training.error.organizer-missing"))
 	  } else {
 	    List[FieldError]()
 	  }
@@ -37,11 +38,17 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     
   }
   
+  object linkToMaterial extends MappedString(this,100)
   object description extends MappedTextarea(this, 1500)
   object other extends MappedTextarea(this, 1500)
 
   object participants extends MappedOneToMany(Participant, Participant.training, 
       OrderBy(Participant.id, Ascending))
+  
+  MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? ("training." + s)}
+  
+) 
+
  
   def getWithParticipantCount = 
     DB.runQuery("""select d.id, d.name, count(p.Training)
@@ -69,5 +76,5 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {
-  override def fieldOrder = List(name, organizer, description, other)
+  override def fieldOrder = List(name, organizer, description, linkToMaterial, other)
 }
