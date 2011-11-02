@@ -14,9 +14,9 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
 
     def validateGiven(name : String) = {
       if (organizer.length == 0) {
-        List(FieldError(this, S ? "Name must be given"))
+        List(FieldError(this, S ?? "training.error.name-missing"))
       } else if (name.length < 5) {
-        List(FieldError(this, S ? "Name is too short"))
+        List(FieldError(this, S ?? "training.error.name-too-short"))
       } else {
         List[FieldError]()
       }
@@ -30,7 +30,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     
 	def validateGiven(organizer : String) = {
 	  if (organizer.length == 0) {
-	    List(FieldError(this, S ? "Organizer must be given"))
+	    List(FieldError(this, S ?? "training.error.organizer-missing"))
 	  } else {
 	    List[FieldError]()
 	  }

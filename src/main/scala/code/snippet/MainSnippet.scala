@@ -16,7 +16,7 @@ class MainSnippet {
     
   def viewParticipants(trainingId: Long, participantCount: Long) : JsCmd = {
     if (participantCount == 0)
-      SetHtml("participant_table", Text("Ei osallistujia"))
+      SetHtml("participant_table", Text(S ?? "training.no-participants"))
     else
       SetHtml("participant_table", buildParticipantTable(trainingId)) &
       SetHtml("signin", buildSignInForm(trainingId, participantCount))
@@ -33,13 +33,13 @@ class MainSnippet {
                            <td>{participant.name.is}</td>
                          </tr>)
 
-      case _ => Text("Koulutus on poistettu")
+      case _ => Text(S ?? "training.removed")
     }
   }
   
   def viewSigninForm(trainingId: Long, participantCount: Long) : JsCmd = {
     if (participantCount == -999) // todo if training is full
-      SetHtml("signin", Text("Koulutus on täynnä"))
+      SetHtml("signin", Text(S ?? "training.is-full"))
     else
       SetHtml("signin", buildSignInForm(trainingId, participantCount))
   }
@@ -64,7 +64,7 @@ class MainSnippet {
       {addParticipant(name, id, count)})
       */
     SHtml.text("", addParticipant2(_, id, count), "maxlength" -> "40") ++
-    SHtml.ajaxButton("ilmoittaudu", () => S.redirectTo("/"))
+    SHtml.ajaxButton(S ?? "training.register", () => S.redirectTo("/"))
   }
   
   def addParticipant(name: String, trainingId: Long, participantCount: Long) : JsCmd = {
@@ -73,7 +73,7 @@ class MainSnippet {
         Participant.create.name(name).training(training).save;
         S.redirectTo("/")
       }
-      case Empty => SetHtml("signin", Text("Koulutusta ei löytynyt"))
+      case Empty => SetHtml("signin", Text(S ?? "training.not-found"))
     }
   }
  
@@ -90,7 +90,7 @@ class MainSnippet {
     ".training *" #> Training.getWithParticipantCount.map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
-      ".viewdetails" #> ( SHtml.ajaxButton("ilmoittaudu", 
+      ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.register", 
                           () => { viewParticipants(training.id, training.participantCount)
                                   //viewSigninForm(training.id, training.participantCount)
                                 }
