@@ -34,7 +34,7 @@ class Boot {
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
-    Schemifier.schemify(true, Schemifier.infoF _, Training, Participant)
+    Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 
     // where to search snippet
     LiftRules.addToPackages("code")
@@ -43,7 +43,9 @@ class Boot {
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "trainings" + "2") / "index2",
-      Menu(S ?? "training.add") / "add_training"
+      Menu(S ?? "training.add") / "add_training",
+      Menu(S ?? "training-session.add") / "add_training_session"
+      
     )
     
     LiftRules.setSiteMap(sitemap)
