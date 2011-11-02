@@ -10,7 +10,18 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
   
   object training extends MappedLongForeignKey(this, Training)
   object place extends MappedString(this,100)
-  object maxParticipants extends MappedInt(this)
+  object maxParticipants extends MappedInt(this) {
+    
+    override def validations =  validateGiven _ :: Nil
+    
+	def validateGiven(mp : Int) = {
+	  if (mp <= 0) {
+	    List(FieldError(this, S ?? "training-session.error.max-participants-too-small"))
+	  } else {
+	    List[FieldError]()
+	  }
+	}
+  }
   object date extends MappedDate(this)
 
   MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? ("training-session." + s)}
