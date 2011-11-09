@@ -7,20 +7,20 @@ import code.comet.RegisterMsg
 
 class SignIn {
   
-    object name extends RequestVar[String](S.param("name") openOr "")
+    object name extends RequestVar[String](S.param("name") openOr "")  
+    object firstname extends RequestVar[String](S.param("firstname") openOr "")
+    object lastname extends RequestVar[String](S.param("lastname") openOr "")
   
     def render = {
-      println("name in request is " + name.is)
-      println("name in session is " + DataCenter.getName)
 
-      if ( "" != name.is) {
-          println("set name to session")
-          //DataCenter ! RegisterMsg(name.is) does not work, why??
-          DataCenter.setName(name.is)
-          println("new name in session is " + DataCenter.getName())
-      }
-      
-      <span></span>
+        if ( "" != firstname.is && "" != lastname.is ) {
+            DataCenter.setName(firstname.is + " " + lastname.is)
+        }
+        
+        else if ( "" != name.is ) {
+            DataCenter.setName(name.is)
+        }
+        
+        <span></span>
     }
-    
 }
