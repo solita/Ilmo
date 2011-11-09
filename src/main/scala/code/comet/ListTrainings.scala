@@ -15,6 +15,7 @@ import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.{Training, TrainingSession}
 import net.liftweb.http.js.JsCmd
+import code.util.DateUtil
 
 
 
@@ -41,6 +42,8 @@ class ListTrainings extends CometActor with CometListener {
     
     ".training *" #> trainingList.map(training => 
       ".name" #> training.name &
+      ".place" #> training.place &
+      ".date" #> DateUtil.format(training.date) &
       ".participantCount" #> training.participantCount &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", 
                           () => viewDetails(training.id, training.participantCount) )) &
