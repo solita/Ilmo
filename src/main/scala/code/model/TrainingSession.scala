@@ -26,7 +26,11 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
   }
   object date extends MappedDateTime(this)
   object participants extends MappedOneToMany(Participant, Participant.trainingSession, OrderBy(Participant.id, Ascending)) 
+}
 
+object TrainingSession extends TrainingSession with LongKeyedMetaMapper[TrainingSession] {
+  override def fieldOrder = List(training,place,date,maxParticipants)
+  
   //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
   def getWithParticipantCount = 
     DB.runQuery("""select d.id, t.name, d.date_c, d.place, count(p.TrainingSession)
@@ -55,9 +59,4 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
                                             (if (list(4) == "0") false else true),
                                             list(5).toLong));
 
-  
-}
-
-object TrainingSession extends TrainingSession with LongKeyedMetaMapper[TrainingSession] {
-  override def fieldOrder = List(training,place,date,maxParticipants)
 }
