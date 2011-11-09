@@ -6,6 +6,7 @@ import java.text.ParseException
 import java.util.Date
 
 object DateUtil {
+  
 	def parse(str:String) = { 
 	  try {
 	    new SimpleDateFormat(S ?? "date.format").parse(str)
@@ -16,5 +17,9 @@ object DateUtil {
 	
 	def format(date: Date) = {
 	  new SimpleDateFormat(S ?? "date.format").format(date)
+	}
+	
+	def parseSqlDate(str:String) = {
+	  new SimpleDateFormat("yyyy-MM-dd").parse(str)
 	}
 }
