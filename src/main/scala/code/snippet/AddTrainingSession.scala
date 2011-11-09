@@ -11,6 +11,9 @@ import java.util.Date
 import net.liftweb.util.FieldIdentifier
 import java.text.SimpleDateFormat
 import java.text.ParseException
+import scala.xml.NodeSeq
+import org.w3c.dom.Attr
+import scala.xml.Attribute
 
 
 object AddTrainingSession extends LiftScreen {
@@ -30,7 +33,7 @@ object AddTrainingSession extends LiftScreen {
 
   addFields(() => trainingSession.is.place)
   
-  val dateField = text(S ?? "training-session.date", "", 
+  val dateField = text(S ?? "training-session.date", "", FormParam("class", "datepicker"),
 	{ s: String => DateUtil.parse(s) match {
 	  case null => FieldError(currentField.box.get, Text(S ?? "training-session.error.training-date-format")) :: Nil
 	  case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "training-session.error.training-date-too-early")) :: Nil
