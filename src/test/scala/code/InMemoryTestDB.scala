@@ -16,8 +16,8 @@ object InMemoryDB {
 
 	def init {  
 		DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)  
-		Schemifier.destroyTables_!!(Schemifier.infoF _, Training, Participant)  
-		Schemifier.schemify(true, Schemifier.infoF _, Training, Participant)
+		Schemifier.destroyTables_!!(Schemifier.infoF _, Training, Participant, TrainingSession)  
+		Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 	}  
 
 	def shutdown {  

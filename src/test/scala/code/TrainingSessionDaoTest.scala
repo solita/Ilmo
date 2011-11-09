@@ -5,14 +5,17 @@ import net.liftweb.common.Empty
 import model.Participant
 import net.liftweb.mapper.By
 import code.model.TrainingSessionParticipantCountDto
+import code.model.TrainingSession
+import java.util.Date
 
-class TrainingDaoTest extends SpecificationWithJUnit { 
+class TrainingSessionDaoTest extends SpecificationWithJUnit { 
   
   "Trainings" should {  
     "be stored in the database" in {  
       InMemoryDB.init
       var training = Training.create.name("Test").description("desc").saveMe
-      var participants = Participant.find(By(Participant.training, training))
+      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
+      var participants = Participant.find(By(Participant.trainingSession, trainingSession))
       assert(training.name.is == "Test")
       participants mustEqual Empty      
     }
@@ -22,9 +25,9 @@ class TrainingDaoTest extends SpecificationWithJUnit {
     "contain participants" in {  
       InMemoryDB.init
       var training = Training.create.name("Test").description("desc").saveMe
-      var participant = Participant.create.name("name").training(training).saveMe()
-      var participants = Participant.find(By(Participant.training, training))
-      
+      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
+      var participant = Participant.create.name("name").trainingSession(trainingSession).saveMe()
+      var participants = Participant.find(By(Participant.trainingSession, trainingSession))
       participants must have size(1)      
     }
   }
@@ -33,13 +36,15 @@ class TrainingDaoTest extends SpecificationWithJUnit {
     "contain a participant if participant has participated" in {  
       InMemoryDB.init
       
-      Training.create.name("training_without_participant").description("desc").save
+      var trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
+      TrainingSession.create.date(new Date).training(trainingNoParticipants).place("Place").saveMe
       
       var training = Training.create.name("training_with_participant").description("desc").saveMe
+      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
       
       val participantName = "name"
-      Participant.create.name(participantName).training(training).save     
-      var trainingList = Training.getWithParticipantCountForParticipantId(participantName)
+      Participant.create.name(participantName).trainingSession(trainingSession).save     
+      var trainingList = TrainingSession.getWithParticipantCountForParticipantId(participantName)
       
       trainingList must have size(2)
       

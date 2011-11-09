@@ -13,7 +13,7 @@ import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.Training
+import code.model.{Training, TrainingSession}
 import net.liftweb.http.js.JsCmd
 
 
@@ -34,9 +34,9 @@ class ListTrainings extends CometActor with CometListener {
   override def render = {
     
     val trainingList = if ( DataCenter hasSignInName ) { 
-      Training.getWithParticipantCountForParticipantId(DataCenter.getName()) 
+      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName()) 
     } else {
-      Training.getWithParticipantCount
+      TrainingSession.getWithParticipantCount
     }
     
     ".training *" #> trainingList.map(training => 
@@ -66,8 +66,8 @@ class ListTrainings extends CometActor with CometListener {
       Noop
   }
   
-  def viewDetails(trainingId: Long, participantCount: Long) : JsCmd = {
-    DataCenter.setSelectedTraining(trainingId)     
+  def viewDetails(trainingSessionId: Long, participantCount: Long) : JsCmd = {
+    DataCenter.setSelectedTrainingSession(trainingSessionId)     
   }
 
 }
