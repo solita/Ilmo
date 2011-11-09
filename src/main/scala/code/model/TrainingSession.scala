@@ -29,6 +29,7 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
   
   MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? ("training-session." + s)}) 
 
+  //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
   def getWithParticipantCount = 
     DB.runQuery("""select d.id, t.name, d.date_c, d.place, count(p.TrainingSession)
                    from TrainingSession d left outer join Participant p on d.id = p.TrainingSession join Training t on d.Training = t.id 
