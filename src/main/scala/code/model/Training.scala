@@ -70,7 +70,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
                         .map(list => new TrainingParticipantCountDto2(
                                             list(0).toLong,
                                             list(1),
-                                            (if (list(2) == Nil) false else true),
+                                            (if (list(2) == "0") false else true),
                                             list(3).toLong));
   
 }
