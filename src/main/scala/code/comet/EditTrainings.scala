@@ -1,4 +1,4 @@
-package code.comet
+package code.snippet
 
 import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
@@ -15,17 +15,13 @@ import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.Training
 import net.liftweb.http.js.JsCmd
+import code.comet.DataCenter
+import code.comet.TrainingDeleted
 
 
-class EditTrainings extends CometActor with CometListener {
+class EditTrainings {
   
-  def registerWith = DataCenter
-  
-  override def lowPriority = {
-    case _ => reRender
-  }
-  
-   override def render = {
+   def listTrainings = {
     
     ".training *" #>  Training.getWithParticipantCount.map(training => 
       ".name" #> training.name &

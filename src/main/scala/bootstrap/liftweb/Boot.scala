@@ -40,8 +40,6 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("code")
     
-    TableSorter.init
-
     // Build SiteMap
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
