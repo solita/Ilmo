@@ -4,7 +4,7 @@ import code.model.Training
 import net.liftweb.common.Empty
 import model.Participant
 import net.liftweb.mapper.By
-import code.model.TrainingParticipantCountDto2
+import code.model.TrainingSessionParticipantCountDto
 
 class TrainingDaoTest extends SpecificationWithJUnit { 
   

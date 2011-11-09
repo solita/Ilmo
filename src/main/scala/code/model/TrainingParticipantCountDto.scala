@@ -1,7 +1,8 @@
 package code.model
 
-class TrainingParticipantCountDto(id: Long, name: String, participantCount: Long) {
+class TrainingSessionParticipantCountDto(id: Long, name: String, hasSignedInUserParticipated: Boolean, participantCount: Long) {
   def id() : Long = id;
   def name(): String = name;
   def participantCount(): Long = participantCount;
+  def hasSignedInUserParticipated(): Boolean = hasSignedInUserParticipated;
 }

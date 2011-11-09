@@ -55,7 +55,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
                    from Training d left outer join Participant p on d.id = p.Training
                    group by d.id, d.name""")
                         ._2 // first contains column names
-                        .map(list => new TrainingParticipantCountDto2(
+                        .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
                                             list(1),
                                             false,
@@ -68,7 +68,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
                    )
                      group by depid, depname, has_participated""", List(participantName))
                         ._2 // first contains column names
-                        .map(list => new TrainingParticipantCountDto2(
+                        .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
                                             list(1),
                                             (if (list(2) == "0") false else true),
