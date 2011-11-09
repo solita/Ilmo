@@ -52,7 +52,7 @@ class ListTrainings extends CometActor with CometListener {
     if ( false ) { // training is full
       Text(S ?? "training.full")
     }    
-    else if ( DataCenter.hasSignInName() && !hasSignedInUserParticipated) {
+    else if ( DataCenter.hasSignInName() && !hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.register", () => register(trainingId, participantCount))
     }
     else {
