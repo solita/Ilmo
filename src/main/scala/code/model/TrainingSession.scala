@@ -25,9 +25,7 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
 	}
   }
   object date extends MappedDate(this)
-  object participants extends MappedOneToMany(Participant, Participant.trainingSession, OrderBy(Participant.id, Ascending))
-  
-  MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? ("training-session." + s)}) 
+  object participants extends MappedOneToMany(Participant, Participant.trainingSession, OrderBy(Participant.id, Ascending)) 
 
   //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
   def getWithParticipantCount = 

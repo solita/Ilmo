@@ -40,10 +40,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
   
   object linkToMaterial extends MappedString(this,100)
   object description extends MappedTextarea(this, 1500)
-  object other extends MappedTextarea(this, 1500)
-  
-  MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? ("training." + s)}) 
-  
+  object other extends MappedTextarea(this, 1500) 
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {

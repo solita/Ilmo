@@ -17,26 +17,26 @@ import scala.xml.Attribute
 
 
 object AddTrainingSession extends LiftScreen {
+   
+  override def screenTop = <b>{S ?? "trainingsession.add"}</b>
   
   object trainingSession extends ScreenVar(TrainingSession.create)
-   
-  override def screenTop = <b>{S ?? "training-session.add"}</b>
-  
-  val trainings: List[Box[Training]] = Empty :: Training.findAll().map(t => Full(t))
   
   // Fields
   
-  val training = select[Box[Training]](S ?? "training-session.training", Empty, trainings)((box: Box[Training]) => box match {
+  def trainings() = Training.findAll().map(t => Full(t))
+  
+  val trainingSelector = select[Box[Training]](S ?? "trainingsession.training", Empty, trainings)((box: Box[Training]) => box match {
     case Full(t) => t.name.get
     case default => ""
   })
-
+  
   addFields(() => trainingSession.is.place)
   
-  val dateField = text(S ?? "training-session.date", "", FormParam("class", "datepicker"),
+  val dateField = text(S ?? "trainingsession.date", "", FormParam("class", "datepicker"),
 	{ s: String => DateUtil.parse(s) match {
-	  case null => FieldError(currentField.box.get, Text(S ?? "training-session.error.training-date-format")) :: Nil
-	  case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "training-session.error.training-date-too-early")) :: Nil
+	  case null => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-format")) :: Nil
+	  case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-too-early")) :: Nil
 	  case _ => Nil
 	}})
 	
@@ -48,14 +48,14 @@ object AddTrainingSession extends LiftScreen {
   
   def validateTrainingSession: Errors = {
     var errors: List[FieldError] = Nil 
-    if(training.isEmpty) errors = FieldError(training, Text(S ?? "training-session.error.training-missing")) :: errors
+    if(trainingSelector.isEmpty) errors = FieldError(trainingSelector, Text(S ?? "trainingsession.error.training-missing")) :: errors
     errors
   }
     
   def finish() {
     trainingSession.is.date(DateUtil.parse(dateField.is))
-    trainingSession.is.training(training.get)
+    trainingSession.is.training(trainingSelector.get)
     trainingSession.is.save
-    S.notice(S ?? "training-session.created")
+    S.notice(S ?? "trainingsession.created")
   }
 }

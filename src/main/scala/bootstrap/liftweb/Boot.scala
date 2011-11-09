@@ -37,6 +37,8 @@ class Boot {
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 
+    MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})
+    
     // where to search snippet
     LiftRules.addToPackages("code")
     
