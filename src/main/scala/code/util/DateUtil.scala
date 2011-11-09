@@ -20,6 +20,6 @@ object DateUtil {
 	}
 	
 	def parseSqlDate(str:String) = {
-	  new SimpleDateFormat("yyyy-MM-dd").parse(str)
+	  new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(str)
 	}
 }

@@ -18,13 +18,13 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
     
 	def validateGiven(mp : Int) = {
 	  if (mp <= 0) {
-	    List(FieldError(this, S ?? "training-session.error.max-participants-too-small"))
+	    List(FieldError(this, S ?? "trainingsession.error.max-participants-too-small"))
 	  } else {
 	    List[FieldError]()
 	  }
 	}
   }
-  object date extends MappedDate(this)
+  object date extends MappedDateTime(this)
   object participants extends MappedOneToMany(Participant, Participant.trainingSession, OrderBy(Participant.id, Ascending)) 
 
   //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
