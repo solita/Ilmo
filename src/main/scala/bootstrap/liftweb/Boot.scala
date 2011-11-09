@@ -47,7 +47,7 @@ class Boot {
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "training.add") / "add_training",
       Menu(S ?? "training.edit") / "edit_training",
-      Menu(S ?? "training-session.add") / "add_training_session"
+      Menu(S ?? "trainingsession.add") / "add_training_session"
     )
     
     LiftRules.setSiteMap(sitemap)
