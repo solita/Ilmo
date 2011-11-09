@@ -17,13 +17,14 @@ import code.model.Training
 import net.liftweb.http.js.JsCmd
 import code.comet.DataCenter
 import code.comet.TrainingDeleted
+import code.model.TrainingSession
 
 
 class EditTrainings {
   
    def listTrainings = {
     
-    ".training *" #>  Training.getWithParticipantCount.map(training => 
+    ".training *" #>  TrainingSession.getWithParticipantCount.map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
       ".remove" #> getRemoveButton(training.id, training.participantCount) &

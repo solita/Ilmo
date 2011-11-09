@@ -13,21 +13,15 @@ import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.Training
+import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 
 
-class EditTrainings extends CometActor with CometListener {
+class EditTrainings {
   
-  def registerWith = DataCenter
-  
-  override def lowPriority = {
-    case _ => reRender
-  }
-  
-   override def render = {
+   def listTrainings = {
     
-    ".training *" #>  Training.getWithParticipantCount.map(training => 
+    ".training *" #>  TrainingSession.getWithParticipantCount.map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
       ".remove" #> getRemoveButton(training.id, training.participantCount) &
@@ -42,7 +36,7 @@ class EditTrainings extends CometActor with CometListener {
   }
   
   def removeTraining(trainingId: Long, participantCount: Long) : JsCmd = {
-      Training.findByKey(trainingId) match {
+      TrainingSession.findByKey(trainingId) match {
         case Full(training) => training.delete_!
         case _ => Nil
       }
@@ -51,4 +45,6 @@ class EditTrainings extends CometActor with CometListener {
   }  
   
 }
+
+
 

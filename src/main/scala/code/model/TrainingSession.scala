@@ -4,6 +4,7 @@ import _root_.net.liftweb.mapper._
 import net.liftweb.util._
 import net.liftweb.http._
 import java.util.Locale
+import code.model.TrainingSessionParticipantCountDto
 
 class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with OneToMany[Long, TrainingSession] {
   def getSingleton = TrainingSession
