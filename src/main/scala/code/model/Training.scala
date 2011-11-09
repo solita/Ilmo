@@ -55,9 +55,10 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
                    from Training d left outer join Participant p on d.id = p.Training
                    group by d.id, d.name""")
                         ._2 // first contains column names
-                        .map(list => new TrainingParticipantCountDto(
+                        .map(list => new TrainingParticipantCountDto2(
                                             list(0).toLong,
                                             list(1),
+                                            false,
                                             list(2).toLong));
 
   def getWithParticipantCountForParticipantId(participantName: String) = 

@@ -33,20 +33,26 @@ class ListTrainings extends CometActor with CometListener {
   
   override def render = {
     
-    ".training *" #> Training.getWithParticipantCount.map(training => 
+    val trainingList = if ( DataCenter hasSignInName ) { 
+      Training.getWithParticipantCountForParticipantId(DataCenter.getName()) 
+    } else {
+      Training.getWithParticipantCount
+    }
+    
+    ".training *" #> trainingList.map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", 
                           () => viewDetails(training.id, training.participantCount) )) &
-      ".register" #> ( getRegisterButton(training.id, training.participantCount) )
+      ".register" #> ( getRegisterButton(training.id, training.participantCount, training.hasSignedInUserParticipated()) )
     )
   }
   
-  def getRegisterButton(trainingId: Long, participantCount: Long) = {
+  def getRegisterButton(trainingId: Long, participantCount: Long, hasSignedInUserParticipated: Boolean) = {
     if ( false ) { // training is full
       Text(S ?? "training.full")
     }    
-    else if ( DataCenter.hasSignInName() ) {
+    else if ( DataCenter.hasSignInName() && !hasSignedInUserParticipated) {
       SHtml.ajaxButton(S ?? "training.register", () => register(trainingId, participantCount))
     }
     else {
