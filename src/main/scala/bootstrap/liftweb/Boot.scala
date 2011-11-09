@@ -12,6 +12,7 @@ import code.model._
 import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
 import java.util.ResourceBundle
+import net.liftweb.widgets.tablesorter.TableSorter
 
 
 /**
@@ -38,12 +39,15 @@ class Boot {
 
     // where to search snippet
     LiftRules.addToPackages("code")
+    
+    TableSorter.init
 
     // Build SiteMap
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "trainings" + "2") / "index2",
       Menu(S ?? "training.add") / "add_training",
+      Menu(S ?? "training.edit") / "edit_training",
       Menu(S ?? "training-session.add") / "add_training_session"
       
     )
