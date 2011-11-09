@@ -16,6 +16,7 @@ import code.model.Participant
 
 case class NewTraining(name: String)
 case class NewParticipant(name: String, trainingId: Long)
+case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
     
