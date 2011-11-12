@@ -12,6 +12,7 @@ import code.model._
 import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
 import java.util.ResourceBundle
+import code.model.calendar.CalendarICSFileHelper
 
 
 /**
@@ -78,5 +79,9 @@ class Boot {
 
     // Make a transaction span the whole HTTP request
     S.addAround(DB.buildLoanWrapper)
+    
+    // stateful — associated with a servlet container session
+    LiftRules.dispatch.append(CalendarICSFileHelper);
+    
   }
 }

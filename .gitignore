@@ -5,6 +5,7 @@
 .target
 .cache
 *.db
+.DS_store
 project/boot
 project/plugins/project
 project/target
