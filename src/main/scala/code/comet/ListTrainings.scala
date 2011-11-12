@@ -13,8 +13,9 @@ import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.Training
+import code.model.{Training, TrainingSession}
 import net.liftweb.http.js.JsCmd
+import code.util.DateUtil
 
 
 
@@ -33,20 +34,28 @@ class ListTrainings extends CometActor with CometListener {
   
   override def render = {
     
-    ".training *" #> Training.getWithParticipantCount.map(training => 
+    val trainingList = if ( DataCenter hasSignInName ) { 
+      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName()) 
+    } else {
+      TrainingSession.getWithParticipantCount
+    }
+    
+    ".training *" #> trainingList.map(training => 
       ".name" #> training.name &
+      ".place" #> training.place &
+      ".date" #> DateUtil.format(training.date) &
       ".participantCount" #> training.participantCount &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", 
                           () => viewDetails(training.id, training.participantCount) )) &
-      ".register" #> ( getRegisterButton(training.id, training.participantCount) )
+      ".register" #> ( getRegisterButton(training.id, training.participantCount, training.hasSignedInUserParticipated()) )
     )
   }
   
-  def getRegisterButton(trainingId: Long, participantCount: Long) = {
+  def getRegisterButton(trainingId: Long, participantCount: Long, hasSignedInUserParticipated: Boolean) = {
     if ( false ) { // training is full
       Text(S ?? "training.full")
     }    
-    else if ( DataCenter.hasSignInName() ) {
+    else if ( DataCenter.hasSignInName() && !hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.register", () => register(trainingId, participantCount))
     }
     else {
@@ -60,8 +69,8 @@ class ListTrainings extends CometActor with CometListener {
       Noop
   }
   
-  def viewDetails(trainingId: Long, participantCount: Long) : JsCmd = {
-    DataCenter.setSelectedTraining(trainingId)     
+  def viewDetails(trainingSessionId: Long, participantCount: Long) : JsCmd = {
+    DataCenter.setSelectedTrainingSession(trainingSessionId)     
   }
 
 }

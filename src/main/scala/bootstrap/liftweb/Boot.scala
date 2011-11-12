@@ -37,16 +37,17 @@ class Boot {
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 
+    MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})
+    
     // where to search snippet
     LiftRules.addToPackages("code")
-
+    
     // Build SiteMap
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
-      Menu(S ?? "trainings" + "2") / "index2",
       Menu(S ?? "training.add") / "add_training",
-      Menu(S ?? "training-session.add") / "add_training_session"
-      
+      Menu(S ?? "training.edit") / "edit_training",
+      Menu(S ?? "trainingsession.add") / "add_training_session"
     )
     
     LiftRules.setSiteMap(sitemap)

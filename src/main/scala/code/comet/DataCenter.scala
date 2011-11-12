@@ -11,19 +11,22 @@ import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import code.model.Training
+import code.model.TrainingSession
 import code.model.Participant
 
 case class NewTraining(name: String)
+case class NewTrainingSession
 case class NewParticipant(name: String, trainingId: Long)
+case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
     
 object DataCenter extends LiftActor with ListenerManager {
  
-    object selectedTraining extends SessionVar[Box[Long]](Empty)
-    def getSelectedTraining = selectedTraining.is
-    def setSelectedTraining(trainingId: Long) = {
-      selectedTraining.set(Full(trainingId))
+    object selectedTrainingSession extends SessionVar[Box[Long]](Empty)
+    def getSelectedTrainingSession = selectedTrainingSession.is
+    def setSelectedTrainingSession(trainingSessionId: Long) = {
+      selectedTrainingSession.set(Full(trainingSessionId))
       updateListeners
     }
     
@@ -40,9 +43,6 @@ object DataCenter extends LiftActor with ListenerManager {
     
     /**
      * When we update the listeners, what message do we send?
-     * We send the msgs, which is an immutable data structure,
-     * so it can be shared with lots of threads without any
-     * danger or locking.
      */
     def createUpdate = SignIn
   
@@ -52,19 +52,24 @@ object DataCenter extends LiftActor with ListenerManager {
         setName(name)
         updateListeners()
       }
-      case NewParticipant(name: String, trainingId: Long) => {
-        addParticipant(name, trainingId)
+      case NewParticipant(name: String, trainingSessionId: Long) => {
+        addParticipant(name, trainingSessionId)
       }
     }
     
-    def addParticipant(name: String, trainingId: Long) {
-      println("saving " + name + " to " + trainingId)
-      Training.findByKey(trainingId) match {
-        case Full(training) => {
-          Participant.create.name(name).training(training).save
+    def addParticipant(name: String, trainingSessionId: Long) = {
+      println("saving " + name + " to " + trainingSessionId)
+      TrainingSession.findByKey(trainingSessionId) match {
+        case Full(trainingSession) => {
+          Participant.create.name(name).trainingSession(trainingSession).save
+        }
       }
-        updateListeners
+      updateListeners
     }
-  }
+      
+    def addTrainingSession(trainingSession: TrainingSession) =  {
+      trainingSession.save 
+      updateListeners
+    }
     
 }
