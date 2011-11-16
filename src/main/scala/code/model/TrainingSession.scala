@@ -46,10 +46,12 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(4).toLong));
 
   def getWithParticipantCountForParticipantId(participantName: String) = 
-    DB.runQuery("""select depid, depname, depdate, place, has_participated, count(*) from ( 
-                     select d.id depid, t.name depname, d.date_c depdate, d.place place, (select 1 from Participant p2 where p2.name = ? and d.id = p2.TrainingSession) has_participated
-                     from TrainingSession d left outer join Participant p on d.id = p.TrainingSession join Training t on d.Training = t.id
-                   ) group by depid, depname, has_participated order by depdate""", List(participantName))
+    DB.runQuery("""select sessionid, sessionname, sessiondate, place, has_participated, participants from ( 
+                     select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.place place, 
+    				 	(select 1 from Participant p2 where p2.name = ? and s.id = p2.TrainingSession) has_participated,
+    					(select count(*) from Participant p where p.TrainingSession = s.id) participants 
+                     from TrainingSession s join Training t on s.Training = t.id
+                   ) group by sessionid, sessionname, has_participated order by sessiondate""", List(participantName))
                         ._2 // first contains column names
                         .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
