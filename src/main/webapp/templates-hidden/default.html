@@ -62,6 +62,42 @@
 	list-style: none;
 }
 
+.msg_box {
+	display:block;
+	text-decoration:none;
+	list-style: none;
+	width: 50%;
+	margin-left: 25%;
+	margin-bottom: 5px;
+	border: 1px solid;
+}
+
+.msg_box ul {
+	margin: 0px;
+	list-style: none;
+}
+
+.msg_box ul li {
+	margin-bottom: 2px;
+	margin-top: 2px;
+	font-weight: bold;
+}
+
+.error_box {
+	background-color: rgb(255,200,200);
+	border-color: red;
+}
+
+.warning_box {
+	background-color: rgb(255,255,200);
+	border-color: yellow;
+}
+
+.notice_box {
+	background-color: rgb(215,215,255);
+	border-color: blue;
+}
+
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
 .ui-timepicker-div dl{ text-align: left; }
@@ -83,14 +119,16 @@
 
       <div class="column span-6 colborder sidebar">
         <hr class="space" />
-
-	<span class="lift:Menu.builder"></span>
-
-        <div class="lift:Msgs?showAll=true"></div>
+		<span class="lift:Menu.builder"></span>
         <hr class="space" />
       </div>
 
       <div class="column span-17 last">
+        <div class="lift:Msgs?showAll=false">
+		  	<lift:error_msg class="msg_box error_box" ></lift:error_msg>
+		  	<lift:warning_msg class="msg_box warning_box"></lift:warning_msg>
+		  	<lift:notice_msg class="msg_box notice_box"></lift:notice_msg>
+	  	</div>
         <div id="content">The main content will get bound here</div>
       </div>
 
