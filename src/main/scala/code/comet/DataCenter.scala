@@ -72,4 +72,13 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
     
+    def removeTraining(trainingId: Long) = {
+      Training.findByKey(trainingId) match {
+        case Full(training) => training.delete_!
+        case _ => False
+      }
+      //updateListeners
+    }
+    
+    
 }

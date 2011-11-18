@@ -15,22 +15,34 @@ import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
+import code.model.Training
 
 
 class EditTrainings {
   
    def listTrainings = {
     
-    ".training *" #>  TrainingSession.getWithParticipantCount.map(training => 
+    ".training *" #>  Training.findAll.map(training => 
       ".name" #> training.name &
-      ".participantCount" #> training.participantCount &
-      ".remove" #> getRemoveButton(training.id, training.participantCount) &
-      ".edit" #> getRemoveButton(training.id, training.participantCount)
+      ".remove" #> getRemoveButton(training.id)
+
+//      ".remove" #> getRemoveButton(training.id, training.participantCount) &
+//      ".edit" #> getRemoveButton(training.id, training.participantCount)
     ) 
     
   }
-   
-   def getRemoveButton(trainingId: Long, participantCount: Long) = {
+
+  def getRemoveButton(trainingId: Long) = {
+     // TODO disabloi, jos osallistujia?
+     SHtml.ajaxButton(S ?? "training.remove", () => removeTraining(trainingId))
+  }
+
+  def removeTraining(trainingId: Long) : JsCmd = {
+      DataCenter.removeTraining(trainingId)
+      Noop
+  }  
+     
+  def getRemoveButton(trainingId: Long, participantCount: Long) = {
      // TODO disabloi, jos osallistujia?
      SHtml.ajaxButton(S ?? "training.remove", () => removeTraining(trainingId, participantCount))
   }
