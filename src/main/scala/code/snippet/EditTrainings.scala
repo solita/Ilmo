@@ -1,4 +1,4 @@
-package code.comet
+package code.snippet
 
 import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
@@ -16,45 +16,41 @@ import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 import code.model.Training
+import net.liftweb.http.RequestVar
+import code.comet.DataCenter
+import scala.xml.Group
 
 
 class EditTrainings {
   
-   def listTrainings = {
+  private object selectedTraining extends RequestVar[Box[Training]](Empty)
+  
+  def listTrainings = {
     
     ".training *" #>  Training.findAll.map(training => 
       ".name" #> training.name &
-      ".remove" #> getRemoveButton(training.id)
-
-//      ".remove" #> getRemoveButton(training.id, training.participantCount) &
-//      ".edit" #> getRemoveButton(training.id, training.participantCount)
+      ".organizer" #> training.organizer &
+      ".linkToMaterial" #> <a href={training.linkToMaterial}>{training.linkToMaterial}</a> &
+      ".remove" #> SHtml.link("#", () => DataCenter.removeTraining(training), Text(S ?? "Remove")) &
+      ".edit" #> SHtml.link("edit_training", () => selectedTraining(Full(training)), Text(S ?? "Edit"))
     ) 
-    
   }
 
-  def getRemoveButton(trainingId: Long) = {
-     // TODO disabloi, jos osallistujia?
-     SHtml.ajaxButton(S ?? "training.remove", () => removeTraining(trainingId))
-  }
-
-  def removeTraining(trainingId: Long) : JsCmd = {
-      DataCenter.removeTraining(trainingId)
-      Noop
-  }  
-     
-  def getRemoveButton(trainingId: Long, participantCount: Long) = {
-     // TODO disabloi, jos osallistujia?
-     SHtml.ajaxButton(S ?? "training.remove", () => removeTraining(trainingId, participantCount))
+  private def saveTraining(training: Training) = training.validate match {
+    case Nil => training.save; S.redirectTo("/edit_training/index.html")
+    case x => S.error(x); selectedTraining(Full(training))
   }
   
-  def removeTraining(trainingId: Long, participantCount: Long) : JsCmd = {
-      TrainingSession.findByKey(trainingId) match {
-        case Full(training) => training.delete_!
-        case _ => Nil
-      }
-      DataCenter !! TrainingDeleted
-      Noop
-  }  
+  def edit(xhtml: NodeSeq): NodeSeq =
+    selectedTraining.map(t => 
+      <table>
+        {t.toForm(Empty, saveTraining _)}
+        <tr>
+          <td><a href="/edit_training/index.html">Cancel</a></td>
+          <td><input type="submit" value="Save"/></td>
+        </tr>
+      </table>
+  ) openOr {error("Training not found"); S.redirectTo("/edit_training/index.html")}
   
 }
 

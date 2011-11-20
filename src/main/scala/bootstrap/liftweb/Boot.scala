@@ -6,6 +6,7 @@ import Helpers._
 import common._
 import http._
 import sitemap._
+import sitemap.Loc.Link
 import Loc._
 import mapper._
 import code.model._
@@ -42,12 +43,15 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("code")
     
-    // Build SiteMap
+    // under edit we could have list-, edit- and confirm delete -html-pages
+    val editTrainingPages = new Link("edit_training" :: Nil, true) 
+      
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "training.add") / "add_training",
-      Menu(S ?? "training.edit") / "edit_training",
-      Menu(S ?? "trainingsession.add") / "add_training_session"
+      Menu(S ?? "trainingsession.add") / "add_training_session",
+      // TODO toimiiko wildcardit, menisi siistimmin?
+      Menu(Loc("edit_training", editTrainingPages, S ?? "training.edit"))
     )
     
     LiftRules.setSiteMap(sitemap)

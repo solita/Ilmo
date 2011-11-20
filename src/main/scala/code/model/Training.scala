@@ -13,7 +13,7 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     override def validations =  validateGiven _ :: Nil
 
     def validateGiven(name : String) = {
-      if (organizer.length == 0) {
+      if (name.length == 0) {
         List(FieldError(this, S ?? "training.error.name-missing"))
       } else if (name.length < 5) {
         List(FieldError(this, S ?? "training.error.name-too-short"))
