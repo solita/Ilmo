@@ -31,7 +31,7 @@ class EditTrainings {
       ".name" #> training.name &
       ".organizer" #> training.organizer &
       ".linkToMaterial" #> <a href={training.linkToMaterial}>{training.linkToMaterial}</a> &
-      ".remove" #> SHtml.link("#", () => DataCenter.removeTraining(training), Text(S ?? "Remove")) &
+      ".remove" #> SHtml.link("confirm", () => selectedTraining(Full(training)), Text(S ?? "Remove")) &
       ".edit" #> SHtml.link("edit_training", () => selectedTraining(Full(training)), Text(S ?? "Edit"))
     ) 
   }
@@ -52,6 +52,23 @@ class EditTrainings {
       </table>
   ) openOr {error("Training not found"); S.redirectTo("/edit_training/index.html")}
   
+  def confirmDelete = {
+    (for (training <- selectedTraining.is)
+     yield {
+        def deleteTraining() {
+          DataCenter.removeTraining(training)
+          S.redirectTo("index")
+        }
+
+        ".trainingname" #> training.name &
+        ".remove" #> SHtml.submit(S ?? "Remove", deleteTraining _)
+    }) 
+    match {
+      case Full(cssbindfunc) => cssbindfunc
+      case _ => error(S ?? "training.not-found"); S.redirectTo("index.html")
+    }
+  }
+
 }
 
 
