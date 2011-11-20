@@ -50,7 +50,7 @@ class EditTrainings {
           <td><input type="submit" value="Save"/></td>
         </tr>
       </table>
-  ) openOr {error("Training not found"); S.redirectTo("/edit_training/index.html")}
+  ) openOr {error(S ?? "training.not-found"); S.redirectTo("/edit_training/index.html")}
   
   def confirmDelete = {
     (for (training <- selectedTraining.is)

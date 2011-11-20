@@ -3,20 +3,24 @@
 <head>
   <script type="text/javascript">
     
-   // $(document).ready(initTableSorter());
-   
-   function initTableSorter() {
+   $(document).ready(function() {
        $("#traininglist") 
-        .tablesorter({widgets: ['zebra']}) 
-        .tablesorterPager({container: $("#pager")});    
-   }
+          .tablesorter({
+              widgets: ['zebra'],
+              headers: { 
+                3: { sorter: false }, 
+                4: { sorter: false } 
+              } 
+           }) 
+          .tablesorterPager({container: $("#pager")});    
+   });
    
   </script>
 </head>
   
   
    
-    <table id="traininglist">
+    <table id="traininglist" class="tablesorter">
       <thead><tr><th>Koulutus</th><th>Järjestäjä</th><th>Materiaali</th><th></th><th></th></tr></thead>
       <tbody class="lift:EditTrainings.listTrainings">
       
@@ -31,7 +35,6 @@
       </tbody>
     </table>
     
-    <!--
     <div id="pager" class="pager">
   	<form>
 		<img src="http://tablesorter.com/addons/pager/icons/first.png" class="first"/>
@@ -46,8 +49,8 @@
 			<option  value="40">40</option>
 		</select>
 	</form>
-  </div>
-  -->
+    </div>
+  
     
 </div>
     
