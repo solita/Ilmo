@@ -53,20 +53,30 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
-    if ( training.participantCount >= training.maxParticipants ) { // training is full
-      Text(S ?? "training.full")
-    }    
-    else if ( DataCenter.hasSignInName() && !training.hasSignedInUserParticipated ) {
-      SHtml.ajaxButton(S ?? "training.register", () => register(training.id))
+    if ( training.hasSignedInUserParticipated ) {
+      SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
+      
     }
     else {
-      Text("-")
+      if ( training.participantCount >= training.maxParticipants ) { 
+        Text(S ?? "training.full")
+      }
+      else if ( !DataCenter.hasSignInName() ) {
+        Text("-")  
+      }
+      else {
+        SHtml.ajaxButton(S ?? "training.register", () => register(training.id))
+      }
     }
-      
   }
   
   def register(trainingId: Long) : JsCmd = {
       DataCenter ! NewParticipant(DataCenter.getName(), trainingId)
+      Noop
+  }
+
+  def unregister(trainingId: Long) : JsCmd = {
+      DataCenter ! DelParticipant(DataCenter.getName(), trainingId)
       Noop
   }
   

@@ -13,10 +13,12 @@ import net.liftweb.common.Full
 import code.model.Training
 import code.model.TrainingSession
 import code.model.Participant
+import net.liftweb.mapper.By
 
 case class NewTraining(name: String)
 case class NewTrainingSession
 case class NewParticipant(name: String, trainingId: Long)
+case class DelParticipant(name: String, trainingId: Long)
 case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
@@ -30,14 +32,14 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
     
-    object firstname extends SessionVar[String]("")
+    object signInName extends SessionVar[String]("")
     
-    def hasSignInName() = !("" == firstname.is)
+    def hasSignInName() = !("" == signInName.is)
     
-    def getName() = firstname.is
+    def getName() = signInName.is
     
     def setName(name: String) = {
-        firstname.set(name)
+        signInName.set(name)
         updateListeners
     }
     
@@ -52,9 +54,10 @@ object DataCenter extends LiftActor with ListenerManager {
         setName(name)
         updateListeners()
       }
-      case NewParticipant(name: String, trainingSessionId: Long) => {
+      case NewParticipant(name: String, trainingSessionId: Long) =>
         addParticipant(name, trainingSessionId)
-      }
+      case DelParticipant(name: String, trainingSessionId: Long) =>
+        delParticipant(name, trainingSessionId)      
     }
     
     def addParticipant(name: String, trainingSessionId: Long) = {
@@ -66,7 +69,18 @@ object DataCenter extends LiftActor with ListenerManager {
       }
       updateListeners
     }
-      
+
+    def delParticipant(name: String, trainingSessionId: Long) = {
+      for {
+        trainingSession <- TrainingSession.findByKey(trainingSessionId)
+        participant <- Participant.findAll(
+            By(Participant.trainingSession, trainingSession), 
+            By(Participant.name, name)).headOption
+      } 
+      yield participant.delete_! 
+      updateListeners
+    }
+
     def addTrainingSession(trainingSession: TrainingSession) =  {
       trainingSession.save 
       updateListeners
