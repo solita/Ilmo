@@ -25,13 +25,7 @@ object AddTrainingSession extends LiftScreen {
   
   // Fields
   
-  def trainings() = Training.findAll().map(t => Full(t))
-  
-  val trainingSelector = select[Box[Training]](S ?? "trainingsession.training", Empty, trainings)((box: Box[Training]) => box match {
-    case Full(t) => t.name.get
-    case default => ""
-  })
-  
+  addFields(() => trainingSession.is.training)
   addFields(() => trainingSession.is.place)
   
   val dateField = text(S ?? "trainingsession.date", "", FormParam("class", "datepicker"),
@@ -43,19 +37,8 @@ object AddTrainingSession extends LiftScreen {
 	
   addFields(() => trainingSession.is.maxParticipants)
   
-  // Validations
-  
-  override def validations = validateTrainingSession _ :: super.validations
-  
-  def validateTrainingSession: Errors = {
-    var errors: List[FieldError] = Nil 
-    if(trainingSelector.isEmpty) errors = FieldError(trainingSelector, Text(S ?? "trainingsession.error.training-missing")) :: errors
-    errors
-  }
-    
   def finish() {
     trainingSession.is.date(DateUtil.parse(dateField.is))
-    trainingSession.is.training(trainingSelector.get)
     DataCenter.saveTrainingSession(trainingSession.is)
     S.notice(S ?? "trainingsession.created")
   }
