@@ -6,11 +6,17 @@ import net.liftweb.http._
 import java.util.Locale
 import java.util.Date
 import code.util.DateUtil
+import net.liftweb.common.Full
+import net.liftweb.common.Box
 
 class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with OneToMany[Long, TrainingSession] {
   def getSingleton = TrainingSession
   
-  object training extends MappedLongForeignKey(this, Training)
+  object training extends MappedLongForeignKey(this, Training) {
+    override def validSelectValues: Box[List[(Long, String)]] =
+        Full(Training.findAll.map(d => (d.id.is, d.name.is)))
+  }
+  
   object place extends MappedString(this,100)
   object maxParticipants extends MappedInt(this) {
     

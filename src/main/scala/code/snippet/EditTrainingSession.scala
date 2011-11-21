@@ -19,32 +19,38 @@ import code.model.Training
 import net.liftweb.http.RequestVar
 import code.comet.DataCenter
 import scala.xml.Group
+import java.text.SimpleDateFormat
 
 
-class EditTrainings {
+class EditTrainingSession {
   
-  private object selectedTraining extends RequestVar[Box[Training]](Empty)
+  private object selectedTrainingSession extends RequestVar[Box[TrainingSession]](Empty)
+  val format = new SimpleDateFormat(S ?? "date.format")
   
   def listTrainings = {
     
-    ".training *" #>  Training.findAll.map(training => 
-      ".name" #> training.name &
-      ".organizer" #> training.organizer &
-      ".linkToMaterial" #> <a href={training.linkToMaterial}>{training.linkToMaterial}</a> &
-      ".remove" #> SHtml.link("confirm", () => selectedTraining(Full(training)), Text(S ?? "Remove")) &
-      ".edit" #> SHtml.link("edit_training", () => selectedTraining(Full(training)), Text(S ?? "Edit"))
+    ".trainingsession *" #>  TrainingSession.getWithParticipantCount.map(t => 
+      ".time" #> format.format(t.date) &
+      ".name" #> t.name &
+      ".place" #> t.place &
+      ".remove" #> SHtml.link("confirm", () => loadTrainingSession(t.id), Text(S ?? "Remove")) &
+      ".edit" #> SHtml.link("edit_training", () => loadTrainingSession(t.id), Text(S ?? "Edit"))
     ) 
   }
+  
+  private def loadTrainingSession(id: Long) {
+    selectedTrainingSession(TrainingSession.findByKey(id))
+  }
 
-  private def saveTraining(training: Training) = training.validate match {
-    case Nil => DataCenter.saveTraining(training); S.redirectTo("index.html")
-    case x => S.error(x); selectedTraining(Full(training))
+  private def save(training: TrainingSession) = training.validate match {
+    case Nil => DataCenter.saveTrainingSession(training); S.redirectTo("index.html")
+    case x => S.error(x); selectedTrainingSession(Full(training))
   }
   
   def edit(xhtml: NodeSeq): NodeSeq =
-    selectedTraining.map(t => 
+    selectedTrainingSession.map(t => 
       <table>
-        {t.toForm(Empty, saveTraining _)}
+        {t.toForm(Empty, save _)}
         <tr>
           <td><a href="index.html">{S ?? "Cancel"}</a></td>
           <td><input type="submit" value={S ?? "Finish"}/></td>
@@ -53,14 +59,15 @@ class EditTrainings {
   ) openOr {error(S ?? "training.not-found"); S.redirectTo("index.html")}
   
   def confirmDelete = {
-    (for (training <- selectedTraining.is)
+    (for (trainingSession <- selectedTrainingSession.is)
      yield {
         def deleteTraining() {
-          DataCenter.removeTraining(training)
+          DataCenter.removeTrainingSession(trainingSession)
           S.redirectTo("index")
         }
 
-        ".trainingname" #> training.name &
+        ".trainingname" #> trainingSession.training.obj.get.name &
+        ".date" #> format.format(trainingSession.date.is) &
         ".remove" #> SHtml.submit(S ?? "Remove", deleteTraining _)
     }) 
     match {

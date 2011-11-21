@@ -10,28 +10,6 @@ import java.util.Date
 
 class TrainingSessionDaoTest extends SpecificationWithJUnit { 
   
-  "Trainings" should {  
-    "be stored in the database" in {  
-      InMemoryDB.init
-      var training = Training.create.name("Test").description("desc").saveMe
-      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
-      var participants = Participant.find(By(Participant.trainingSession, trainingSession))
-      assert(training.name.is == "Test")
-      participants mustEqual Empty      
-    }
-  }
-  
-  "Trainings" should {  
-    "contain participants" in {  
-      InMemoryDB.init
-      var training = Training.create.name("Test").description("desc").saveMe
-      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
-      var participant = Participant.create.name("name").trainingSession(trainingSession).saveMe()
-      var participants = Participant.find(By(Participant.trainingSession, trainingSession))
-      participants must have size(1)      
-    }
-  }
-  
   "List of Trainings" should {  
     "contain a participant if participant has participated" in {  
       InMemoryDB.init
@@ -57,4 +35,27 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
     }
   }
   
+  
+  "List of Trainings" should {  
+    "should have correct participant count" in {  
+      InMemoryDB.init
+      
+      var trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
+      TrainingSession.create.date(new Date).training(trainingNoParticipants).place("Place").saveMe
+      
+      var training = Training.create.name("training_with_participant").description("desc").saveMe
+      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
+      
+      Participant.create.name("p1").trainingSession(trainingSession).save
+      Participant.create.name("p2").trainingSession(trainingSession).save 
+
+      var trainingList = TrainingSession.getWithParticipantCount
+      
+      trainingList must have size(2)
+      
+      val resultTrainingWithParticipants = (trainingList filter (t => t.name == "training_with_participant")).head           
+      resultTrainingWithParticipants.participantCount must be equalTo(2)
+      
+    }
+  }
 }

@@ -9,33 +9,12 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
   def getSingleton = Training
 
   object name extends MappedString(this, 100) {
-    
-    override def validations =  validateGiven _ :: Nil
-
-    def validateGiven(name : String) = {
-      if (name.length == 0) {
-        List(FieldError(this, S ?? "training.error.name-missing"))
-      } else if (name.length < 5) {
-        List(FieldError(this, S ?? "training.error.name-too-short"))
-      } else {
-        List[FieldError]()
-      }
-    }
-    
+    override def validations = { List(valMinLen(1, S ?? "training.error.name-missing"),
+                                      valMinLen(5, S ?? "training.error.name-too-short")) }
   }
 
   object organizer extends MappedString(this, 100) {
-    
-    override def validations =  validateGiven _ :: Nil
-    
-	def validateGiven(organizer : String) = {
-	  if (organizer.length == 0) {
-	    List(FieldError(this, S ?? "training.error.organizer-missing"))
-	  } else {
-	    List[FieldError]()
-	  }
-	}
-    
+    override def validations = List(valMinLen(1, S ?? "training.error.organizer-missing"))
   }
   
   object linkToMaterial extends MappedString(this,100)

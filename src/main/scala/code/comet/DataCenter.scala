@@ -81,7 +81,12 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
 
-    def addTrainingSession(trainingSession: TrainingSession) =  {
+    def saveTraining(training: Training) =  {
+      training.save 
+      updateListeners
+    }
+    
+    def saveTrainingSession(trainingSession: TrainingSession) =  {
       trainingSession.save 
       updateListeners
     }
@@ -91,5 +96,9 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
     
+    def removeTrainingSession(trainingSession: TrainingSession) = {
+      trainingSession.delete_!
+      updateListeners
+    }
     
 }

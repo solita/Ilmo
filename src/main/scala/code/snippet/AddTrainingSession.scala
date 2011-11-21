@@ -56,7 +56,7 @@ object AddTrainingSession extends LiftScreen {
   def finish() {
     trainingSession.is.date(DateUtil.parse(dateField.is))
     trainingSession.is.training(trainingSelector.get)
-    DataCenter.addTrainingSession(trainingSession.is)
+    DataCenter.saveTrainingSession(trainingSession.is)
     S.notice(S ?? "trainingsession.created")
   }
 }

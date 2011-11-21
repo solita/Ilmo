@@ -44,14 +44,16 @@ class Boot {
     LiftRules.addToPackages("code")
     
     // under edit we could have list-, edit- and confirm delete -html-pages
-    val editTrainingPages = new Link("edit_training" :: Nil, true) 
+    val editTrainingPages = new Link("edit_training" :: Nil, true)
+    val editTrainingSessionPages = new Link("edit_trainingsession" :: Nil, true)
       
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "training.add") / "add_training",
       Menu(S ?? "trainingsession.add") / "add_training_session",
       // TODO toimiiko wildcardit, menisi siistimmin?
-      Menu(Loc("edit_training", editTrainingPages, S ?? "training.edit"))
+      Menu(Loc("edit_training", editTrainingPages, S ?? "training.edit")),
+      Menu(Loc("edit_trainingsession", editTrainingSessionPages, S ?? "trainingsession.edit"))
     )
     
     LiftRules.setSiteMap(sitemap)
