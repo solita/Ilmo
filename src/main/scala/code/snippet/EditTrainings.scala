@@ -19,6 +19,8 @@ import code.model.Training
 import net.liftweb.http.RequestVar
 import code.comet.DataCenter
 import scala.xml.Group
+import net.liftweb.mapper.OrderBy
+import net.liftweb.mapper.Descending
 
 
 class EditTrainings {
@@ -27,7 +29,7 @@ class EditTrainings {
   
   def listTrainings = {
     
-    ".training *" #>  Training.findAll.map(training => 
+    ".training *" #>  Training.findAll(OrderBy(Training.id, Descending)).map(training => 
       ".name" #> training.name &
       ".organizer" #> training.organizer &
       ".linkToMaterial" #> <a href={training.linkToMaterial}>{training.linkToMaterial}</a> &
