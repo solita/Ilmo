@@ -48,14 +48,17 @@ class ListTrainings extends CometActor with CometListener {
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id) )) &
-      ".register" #> ( getRegisterButton(training) )
+      ".register" #> ( getRegisterButton(training) ) &
+      ".addtocalendar" #> <a href={"api/cal/"+training.id}>{S ?? "add.to.calendar"}</a>
     )
   }
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
-    if ( training.hasSignedInUserParticipated ) {
+    if ( training.date.before(new Date) ) {
+      Text("-")
+    }
+    else if ( training.hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
-      
     }
     else {
       if ( training.participantCount >= training.maxParticipants ) { 

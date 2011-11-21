@@ -1,6 +1,6 @@
 package code.model.calendar
-import org.joda.time.DateTime
 import java.text.SimpleDateFormat
+import java.util.Date
 
 /**
  * Represents a VEVENT in the iCalendar fileformat.
@@ -8,17 +8,17 @@ import java.text.SimpleDateFormat
  * Summary corresponds to subject in Outlook. 
  */
 class CalendarEvent(uid: String, 
-					startTime: DateTime, endTime: DateTime, 
+					startTime: Date, endTime: Date, 
                     summary: String ) {
   
   val format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
   
   val properties = List(
-      ("DTSTAMP", format.format(startTime.toDate())), // Outlook requires DSTAMP
+      ("DTSTAMP", format.format(startTime)), // Outlook requires DSTAMP
       ("UID", uid),
       ("SUMMARY", summary),
-      ("DTSTART;TZID=Finland/Helsinki", format.format(startTime.toDate())),
-      ("DTEND;TZID=Finland/Helsinki", format.format(endTime.toDate()))
+      ("DTSTART;TZID=Finland/Helsinki", format.format(startTime)),
+      ("DTEND;TZID=Finland/Helsinki", format.format(endTime))
   )
   
   def propsStr = properties.map { option => option._1 + ":" + option._2 }

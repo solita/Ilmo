@@ -5,6 +5,10 @@ import net.liftweb.http.GetRequest
 import net.liftweb.http.InMemoryResponse
 import java.text.SimpleDateFormat
 import org.joda.time.DateTime
+import code.model.TrainingSession
+import code.model.Training
+import net.liftweb.common.Box
+import net.liftweb.common.Full
 
 
 object CalendarICSFileHelper extends RestHelper {
@@ -15,17 +19,24 @@ object CalendarICSFileHelper extends RestHelper {
       try { Some(str.toLong) } catch { case _ => None }  
   }
 
-  def getICSFileForTraining(trainingId: Long) : InMemoryResponse = {
-    val response = "testi " + trainingId
-    val startTime = new DateTime();
-    val endTime = new DateTime();
+  private def createCalendar(trainingSession: TrainingSession): Box[Calendar] = {
+    for {training <- trainingSession.training.obj}
+    yield new Calendar( new CalendarEvent(trainingSession.id.is.toString, 
+                                          trainingSession.date.is, 
+                                          trainingSession.date.is, // FIXME we need end time for trainingsessions! 
+                                          training.name.is) :: Nil )
+  }
+  
+  def getICSFileForTraining(trainingSessionId: Long) : InMemoryResponse = {
     
-    val calendar = new Calendar( 
-        List( new CalendarEvent(trainingId.toString(), startTime, endTime, "testi") )
-    )
+    (for { trainingSession <- TrainingSession.findByKey(trainingSessionId)
+          calendar <- createCalendar(trainingSession)
+    } 
+    yield new InMemoryResponse(calendar.toString().getBytes("UTF-8"), 
+                               List("Content-Type" -> "text/calendar"), 
+                               Nil, 200)
+    ) openOr InMemoryResponse(Array(), Nil, Nil, 401)
         
-    new InMemoryResponse(calendar.toString().getBytes("UTF-8"), 
-        List("Content-Type" -> "text/calendar"), Nil, 200)
   }
 
   serve { 
