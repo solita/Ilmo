@@ -9,17 +9,24 @@ import java.util.Date
  */
 class CalendarEvent(uid: String, 
 					startTime: Date, endTime: Date, 
-                    summary: String ) {
+                    summary: String, location: String, description: String ) {
   
   val format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
   
   val properties = List(
       ("DTSTAMP", format.format(startTime)), // Outlook requires DSTAMP
       ("UID", uid),
-      ("SUMMARY", summary),
+      ("SUMMARY", textFormat(summary)),
       ("DTSTART;TZID=Finland/Helsinki", format.format(startTime)),
-      ("DTEND;TZID=Finland/Helsinki", format.format(endTime))
+      ("DTEND;TZID=Finland/Helsinki", format.format(endTime)),
+      ("LOCATION", textFormat(location)),
+      ("DESCRIPTION", textFormat(description))
   )
+  
+  def textFormat(text: String) = {
+	  text.replaceAll("\r", "")
+      	  .replaceAll("\n", "\\\\n")
+  }
   
   def propsStr = properties.map { option => option._1 + ":" + option._2 }
                            .reduceLeft { (option1, option2) => option1 + "\n" + option2 }
