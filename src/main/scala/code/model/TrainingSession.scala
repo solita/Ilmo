@@ -31,15 +31,16 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
 	}
   }
   object date extends MappedDateTime(this)
+  object endDate extends MappedDateTime(this)
   object participants extends MappedOneToMany(Participant, Participant.trainingSession, OrderBy(Participant.id, Ascending)) 
 }
 
 object TrainingSession extends TrainingSession with LongKeyedMetaMapper[TrainingSession] {
-  override def fieldOrder = List(training,place,date,maxParticipants)
+  override def fieldOrder = List(training,place,date,endDate,maxParticipants)
   
   //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
   def getWithParticipantCount = 
-    DB.runQuery("""select d.id, t.name, d.date_c, d.place, count(p.TrainingSession), d.maxParticipants 
+    DB.runQuery("""select d.id, t.name, d.date_c, d.endDate, d.place, count(p.TrainingSession), d.maxParticipants 
                    from TrainingSession d left outer join Participant p on d.id = p.TrainingSession join Training t on d.Training = t.id 
                    group by d.id, t.name order by d.date_c, d.id""")
                         ._2 // first contains column names
@@ -47,14 +48,15 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(0).toLong,
                                             list(1),
                                             DateUtil.parseSqlDate(list(2)),
-                                            list(3),
+                                            DateUtil.parseSqlDate(list(3)),
+                                            list(4),
                                             false,
-                                            list(4).toLong,
-                                            list(5).toLong));
+                                            list(5).toLong,
+                                            list(6).toLong));
 
   def getWithParticipantCountForParticipantId(participantName: String) = 
-    DB.runQuery("""select sessionid, sessionname, sessiondate, place, has_participated, participants, maxparts from ( 
-                     select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.place place, 
+    DB.runQuery("""select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participants, maxparts from ( 
+                     select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.endDate sessionEndDate, s.place place, 
     				 	(select 1 from Participant p2 where p2.name = ? and s.id = p2.TrainingSession) has_participated,
     					(select count(*) from Participant p where p.TrainingSession = s.id) participants,
     					s.maxParticipants as maxparts
@@ -65,9 +67,10 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(0).toLong,
                                             list(1),
                                             DateUtil.parseSqlDate(list(2)),
-                                            list(3),
-                                            (if (list(4) == "0") false else true),
-                                            list(5).toLong,
-                                            list(6).toLong));
+                                            DateUtil.parseSqlDate(list(3)),
+                                            list(4),
+                                            (if (list(5) == "0") false else true),
+                                            list(6).toLong,
+                                            list(7).toLong));
 
 }

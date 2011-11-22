@@ -28,17 +28,31 @@ object AddTrainingSession extends LiftScreen {
   addFields(() => trainingSession.is.training)
   addFields(() => trainingSession.is.place)
   
-  val dateField = text(S ?? "trainingsession.date", "", FormParam("class", "datepicker"),
+  def date(title: String) = text(S ?? title, "", FormParam("class", "datepicker"),
 	{ s: String => DateUtil.parse(s) match {
 	  case null => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-format")) :: Nil
 	  case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-too-early")) :: Nil
 	  case _ => Nil
-	}})
+	}}) 
+  
+  val dateField = date("trainingsession.date")
+  val endDateField = date("trainingsession.endDate")
 	
   addFields(() => trainingSession.is.maxParticipants)
   
+  override def validations = validateTrainingSession _ :: super.validations
+  
+  def validateTrainingSession: Errors = {
+    var errors: List[FieldError] = Nil
+    val start = DateUtil.parse(dateField.is)
+    val end = DateUtil.parse(endDateField.is)
+    if(end.before(start)) errors = FieldError(endDateField, Text(S ?? "trainingsession.error.end-before-start")) :: errors
+    errors
+  }
+  
   def finish() {
     trainingSession.is.date(DateUtil.parse(dateField.is))
+    trainingSession.is.endDate(DateUtil.parse(endDateField.is))
     DataCenter.saveTrainingSession(trainingSession.is)
     S.notice(S ?? "trainingsession.created")
   }

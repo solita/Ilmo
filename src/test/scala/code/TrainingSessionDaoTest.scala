@@ -15,10 +15,10 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       InMemoryDB.init
       
       var trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
-      TrainingSession.create.date(new Date).training(trainingNoParticipants).place("Place").saveMe
+      TrainingSession.create.date(new Date).endDate(new Date).training(trainingNoParticipants).place("Place").saveMe
       
       var training = Training.create.name("training_with_participant").description("desc").saveMe
-      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
+      var trainingSession = TrainingSession.create.date(new Date).endDate(new Date).training(training).place("Place").saveMe
       
       val participantName = "name"
       Participant.create.name(participantName).trainingSession(trainingSession).save     
@@ -41,10 +41,10 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       InMemoryDB.init
       
       var trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
-      TrainingSession.create.date(new Date).training(trainingNoParticipants).place("Place").saveMe
+      TrainingSession.create.date(new Date).endDate(new Date).training(trainingNoParticipants).place("Place").saveMe
       
       var training = Training.create.name("training_with_participant").description("desc").saveMe
-      var trainingSession = TrainingSession.create.date(new Date).training(training).place("Place").saveMe
+      var trainingSession = TrainingSession.create.date(new Date).endDate(new Date).training(training).place("Place").saveMe
       
       Participant.create.name("p1").trainingSession(trainingSession).save
       Participant.create.name("p2").trainingSession(trainingSession).save 
