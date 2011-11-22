@@ -10,7 +10,7 @@ div.container {
 }
 
 div.topBanner {
-	padding: 5px 0 0 5px;
+	padding: 15px 5px 5px 15px;
 }
 
 img.solitaLogo {
@@ -23,6 +23,4 @@ h1.title {
 	font-family: "Warnock Pro", "Goudy Old Style","Palatino","Book Antiqua", Georgia, serif;
 	font-style: italic;
 	margin-bottom: 10px;
-	position: relative;
-	bottom: 33px;
 }
