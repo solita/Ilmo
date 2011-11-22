@@ -1,4 +1,4 @@
-package code.snippet
+package code.comet
 
 import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
@@ -15,8 +15,6 @@ import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.Training
 import net.liftweb.http.js.JsCmd
-import code.comet.DataCenter
-import code.comet.TrainingDeleted
 import code.model.TrainingSession
 
 
