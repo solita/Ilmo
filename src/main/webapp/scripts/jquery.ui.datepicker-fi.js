@@ -2,6 +2,11 @@
 /* Written by Harri Kilpi� (harrikilpio@gmail.com). */
 jQuery(function($){
     $.datepicker.regional['fi'] = {
+    	timeOnlyTitle: 'Valitse aika',
+    	timeText: 'Aika',
+    	hourText: 'Tunti',
+    	minuteText: 'Minuutti',
+    	secondText: 'Sekuntti',
 		closeText: 'Sulje',
 		prevText: '&laquo;Edellinen',
 		nextText: 'Seuraava&raquo;',

@@ -1,0 +1,31 @@
+<div class="lift:surround?with=tablesort;at=sortablecontent">
+
+<head>
+  <script type="text/javascript">
+   function getTableSorterOptions() {
+     return {
+       widgets: ['zebra'],
+       headers: {3: { sorter: false }, 
+                 4: { sorter: false }}
+     }
+   }            
+  </script>
+</head>
+  
+    <table id="tabletosort" class="tablesorter">
+      <thead><tr><th>Koulutus</th><th>Järjestäjä</th><th>Materiaali</th><th></th><th></th></tr></thead>
+      <tbody class="lift:EditTrainings.listTrainings">
+      
+        <tr class="training">
+          <td><span class="name"></span></td>
+          <td><span class="organizer"></span></td>
+          <td><span class="linkToMaterial"></span></td>
+          <td><span class="remove"></span></td>
+          <td><span class="edit"></span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+</div>
+    

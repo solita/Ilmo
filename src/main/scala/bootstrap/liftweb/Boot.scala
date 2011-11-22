@@ -6,12 +6,14 @@ import Helpers._
 import common._
 import http._
 import sitemap._
+import sitemap.Loc.Link
 import Loc._
 import mapper._
 import code.model._
 import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
 import java.util.ResourceBundle
+import code.model.calendar.CalendarICSFileHelper
 
 
 /**
@@ -36,14 +38,22 @@ class Boot {
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 
+    MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})
+    
     // where to search snippet
     LiftRules.addToPackages("code")
-
-    // Build SiteMap
+    
+    // under edit we could have list-, edit- and confirm delete -html-pages
+    val editTrainingPages = new Link("edit_training" :: Nil, true)
+    val editTrainingSessionPages = new Link("edit_trainingsession" :: Nil, true)
+      
     def sitemap() = SiteMap(
       Menu(S ?? "trainings") / "index",
       Menu(S ?? "training.add") / "add_training",
-      Menu(S ?? "training-session.add") / "add_training_session"
+      Menu(S ?? "trainingsession.add") / "add_training_session",
+      // TODO toimiiko wildcardit, menisi siistimmin?
+      Menu(Loc("edit_training", editTrainingPages, S ?? "training.edit")),
+      Menu(Loc("edit_trainingsession", editTrainingSessionPages, S ?? "trainingsession.edit"))
     )
     
     LiftRules.setSiteMap(sitemap)
@@ -76,5 +86,9 @@ class Boot {
 
     // Make a transaction span the whole HTTP request
     S.addAround(DB.buildLoanWrapper)
+    
+    // stateful — associated with a servlet container session
+    LiftRules.dispatch.append(CalendarICSFileHelper);
+    
   }
 }

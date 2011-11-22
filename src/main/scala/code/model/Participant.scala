@@ -11,13 +11,10 @@ class Participant extends LongKeyedMapper[Participant] with IdPK {
                                       valMaxLen(50, "liian pitkä nimi")) }
   }
 
-  object training extends MappedLongForeignKey(this, Training) {
-    override def validSelectValues: Box[List[(Long, String)]] =
-        Full(Training.findAll.map(d => (d.id.is, d.name.is)))
-  }
+  object trainingSession extends MappedLongForeignKey(this, TrainingSession)
 
 }
 
 object Participant extends Participant with LongKeyedMetaMapper[Participant] {
-  override def fieldOrder = List(name, training)
+  override def fieldOrder = List(name, trainingSession)
 }

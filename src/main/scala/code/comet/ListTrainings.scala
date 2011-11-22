@@ -13,8 +13,10 @@ import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.Training
+import code.model.{Training, TrainingSession}
 import net.liftweb.http.js.JsCmd
+import code.util.DateUtil
+import code.model.TrainingSessionParticipantCountDto
 
 
 
@@ -34,40 +36,55 @@ class ListTrainings extends CometActor with CometListener {
   override def render = {
     
     val trainingList = if ( DataCenter hasSignInName ) { 
-      Training.getWithParticipantCountForParticipantId(DataCenter.getName()) 
+      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName()) 
     } else {
-      Training.getWithParticipantCount
+      TrainingSession.getWithParticipantCount
     }
     
     ".training *" #> trainingList.map(training => 
       ".name" #> training.name &
+      ".place" #> training.place &
+      ".date" #> DateUtil.format(training.date) &
       ".participantCount" #> training.participantCount &
-      ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", 
-                          () => viewDetails(training.id, training.participantCount) )) &
-      ".register" #> ( getRegisterButton(training.id, training.participantCount, training.hasSignedInUserParticipated()) )
+      ".maxParticipants" #> training.maxParticipants &
+      ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id) )) &
+      ".register" #> ( getRegisterButton(training) ) &
+      ".addtocalendar" #> <a href={"api/cal/"+training.id}>{S ?? "add.to.calendar"}</a>
     )
   }
   
-  def getRegisterButton(trainingId: Long, participantCount: Long, hasSignedInUserParticipated: Boolean) = {
-    if ( false ) { // training is full
-      Text(S ?? "training.full")
-    }    
-    else if ( DataCenter.hasSignInName() && !hasSignedInUserParticipated ) {
-      SHtml.ajaxButton(S ?? "training.register", () => register(trainingId, participantCount))
-    }
-    else {
+  def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
+    if ( training.date.before(new Date) ) {
       Text("-")
     }
-      
+    else if ( training.hasSignedInUserParticipated ) {
+      SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
+    }
+    else {
+      if ( training.participantCount >= training.maxParticipants ) { 
+        Text(S ?? "training.full")
+      }
+      else if ( !DataCenter.hasSignInName() ) {
+        Text("-")  
+      }
+      else {
+        SHtml.ajaxButton(S ?? "training.register", () => register(training.id))
+      }
+    }
   }
   
-  def register(trainingId: Long, participantCount: Long) : JsCmd = {
+  def register(trainingId: Long) : JsCmd = {
       DataCenter ! NewParticipant(DataCenter.getName(), trainingId)
       Noop
   }
+
+  def unregister(trainingId: Long) : JsCmd = {
+      DataCenter ! DelParticipant(DataCenter.getName(), trainingId)
+      Noop
+  }
   
-  def viewDetails(trainingId: Long, participantCount: Long) : JsCmd = {
-    DataCenter.setSelectedTraining(trainingId)     
+  def viewDetails(trainingSessionId: Long) : JsCmd = {
+    DataCenter.setSelectedTrainingSession(trainingSessionId)     
   }
 
 }

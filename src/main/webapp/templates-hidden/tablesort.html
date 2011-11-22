@@ -1,0 +1,35 @@
+<div class="lift:surround?with=default;at=content">
+
+<head>
+  <script type="text/javascript">
+    
+   $(document).ready(function() {
+       $("#tabletosort") 
+          .tablesorter(getTableSorterOptions()) 
+          .tablesorterPager({container: $("#pager")});    
+   });
+   
+  </script>
+</head>
+  
+    <div id="sortablecontent"></div>
+    
+    <div id="pager" class="pager">
+  	<form>
+		<img src="/images/first.png" class="first"/>
+		<img src="/images/prev.png" class="prev"/>
+		<input type="text" class="pagedisplay"/>
+		<img src="/images/next.png" class="next"/>
+		<img src="/images/last.png" class="last"/>
+		<select class="pagesize">
+			<option selected="selected"  value="10">10</option>
+			<option value="20">20</option>
+			<option value="30">30</option>
+			<option  value="40">40</option>
+		</select>
+	</form>
+    </div>
+  
+    
+</div>
+    

@@ -11,38 +11,40 @@ import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import code.model.Training
+import code.model.TrainingSession
 import code.model.Participant
+import net.liftweb.mapper.By
 
 case class NewTraining(name: String)
+case class NewTrainingSession
 case class NewParticipant(name: String, trainingId: Long)
+case class DelParticipant(name: String, trainingId: Long)
+case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
     
 object DataCenter extends LiftActor with ListenerManager {
  
-    object selectedTraining extends SessionVar[Box[Long]](Empty)
-    def getSelectedTraining = selectedTraining.is
-    def setSelectedTraining(trainingId: Long) = {
-      selectedTraining.set(Full(trainingId))
+    object selectedTrainingSession extends SessionVar[Box[Long]](Empty)
+    def getSelectedTrainingSession = selectedTrainingSession.is
+    def setSelectedTrainingSession(trainingSessionId: Long) = {
+      selectedTrainingSession.set(Full(trainingSessionId))
       updateListeners
     }
     
-    object firstname extends SessionVar[String]("")
+    object signInName extends SessionVar[String]("")
     
-    def hasSignInName() = !("" == firstname.is)
+    def hasSignInName() = !("" == signInName.is)
     
-    def getName() = firstname.is
+    def getName() = signInName.is
     
     def setName(name: String) = {
-        firstname.set(name)
+        signInName.set(name)
         updateListeners
     }
     
     /**
      * When we update the listeners, what message do we send?
-     * We send the msgs, which is an immutable data structure,
-     * so it can be shared with lots of threads without any
-     * danger or locking.
      */
     def createUpdate = SignIn
   
@@ -52,19 +54,51 @@ object DataCenter extends LiftActor with ListenerManager {
         setName(name)
         updateListeners()
       }
-      case NewParticipant(name: String, trainingId: Long) => {
-        addParticipant(name, trainingId)
-      }
+      case NewParticipant(name: String, trainingSessionId: Long) =>
+        addParticipant(name, trainingSessionId)
+      case DelParticipant(name: String, trainingSessionId: Long) =>
+        delParticipant(name, trainingSessionId)      
     }
     
-    def addParticipant(name: String, trainingId: Long) {
-      println("saving " + name + " to " + trainingId)
-      Training.findByKey(trainingId) match {
-        case Full(training) => {
-          Participant.create.name(name).training(training).save
+    def addParticipant(name: String, trainingSessionId: Long) = {
+      println("saving " + name + " to " + trainingSessionId)
+      TrainingSession.findByKey(trainingSessionId) match {
+        case Full(trainingSession) => {
+          Participant.create.name(name).trainingSession(trainingSession).save
+        }
       }
-        updateListeners
+      updateListeners
     }
-  }
+
+    def delParticipant(name: String, trainingSessionId: Long) = {
+      for {
+        trainingSession <- TrainingSession.findByKey(trainingSessionId)
+        participant <- Participant.findAll(
+            By(Participant.trainingSession, trainingSession), 
+            By(Participant.name, name)).headOption
+      } 
+      yield participant.delete_! 
+      updateListeners
+    }
+
+    def saveTraining(training: Training) =  {
+      training.save 
+      updateListeners
+    }
+    
+    def saveTrainingSession(trainingSession: TrainingSession) =  {
+      trainingSession.save 
+      updateListeners
+    }
+    
+    def removeTraining(training: Training) = {
+      training.delete_!
+      updateListeners
+    }
+    
+    def removeTrainingSession(trainingSession: TrainingSession) = {
+      trainingSession.delete_!
+      updateListeners
+    }
     
 }
