@@ -22,7 +22,7 @@ class EditTrainings {
   
    def listTrainings = {
     
-    ".training *" #>  TrainingSession.getWithParticipantCount.map(training => 
+    ".training *" #>  TrainingSession.getWithParticipantCount(new Date(0)).map(training => 
       ".name" #> training.name &
       ".participantCount" #> training.participantCount &
       ".remove" #> getRemoveButton(training.id, training.participantCount) &

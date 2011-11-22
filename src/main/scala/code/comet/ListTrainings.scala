@@ -17,6 +17,7 @@ import code.model.{Training, TrainingSession}
 import net.liftweb.http.js.JsCmd
 import code.util.DateUtil
 import code.model.TrainingSessionParticipantCountDto
+import java.util.Calendar
 
 
 
@@ -34,11 +35,12 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   override def render = {
-    
+    var fromDate = Calendar.getInstance()
+    fromDate.add(Calendar.MONTH, -1)
     val trainingList = if ( DataCenter hasSignInName ) { 
-      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName()) 
+      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName(), fromDate.getTime()) 
     } else {
-      TrainingSession.getWithParticipantCount
+      TrainingSession.getWithParticipantCount(fromDate.getTime())
     }
     
     ".training *" #> trainingList.map(training => 
