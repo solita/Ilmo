@@ -1,11 +1,28 @@
 body {
 	background-color: orange;
-	
 }
 
 div.container {
 	background-color: white;
 	height: 100%;
 	margin-top: 15px;
-	border-radius: 10px;
+	border-radius: 5px;
+}
+
+div.topBanner {
+	padding: 5px 0 0 5px;
+}
+
+img.solitaLogo {
+	display:inline;
+}
+
+h1.title {
+	color: #666;
+	display:inline;
+	font-family: "Warnock Pro", "Goudy Old Style","Palatino","Book Antiqua", Georgia, serif;
+	font-style: italic;
+	margin-bottom: 10px;
+	position: relative;
+	bottom: 33px;
 }
