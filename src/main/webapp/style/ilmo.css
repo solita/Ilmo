@@ -1,0 +1,11 @@
+body {
+	background-color: orange;
+	
+}
+
+div.container {
+	background-color: white;
+	height: 100%;
+	margin-top: 15px;
+	border-radius: 10px;
+}
