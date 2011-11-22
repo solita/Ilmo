@@ -37,7 +37,7 @@ class ListParticipants extends CometActor with CometListener {
     }
     yield 
       "#trainingdesc *" #> formatText(training.description.is) &
-      "#trainingorganizer *" #> training.organizer.is &
+      "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
       "#trainingother *" #> formatText(training.other.is) &
       ".participant *" #> trainingSession.participants.map(participant => ".name" #> participant.name.is)
@@ -46,6 +46,10 @@ class ListParticipants extends CometActor with CometListener {
       case Full(cssbindfunc) => cssbindfunc
       case _ => <span></span>
     }
+  }
+  
+  def formatTrainingOrganizer(organizer: String, email: String) = {
+    organizer + (if(email != null && email != "") " ( " + email + " )" else "");
   }
   
   def formatLink(text: String): NodeSeq = {

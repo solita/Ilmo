@@ -13,7 +13,7 @@ class CalendarTest extends SpecificationWithJUnit {
       val startTime = new Date();
       val endTime = new Date();
     
-      val event = new CalendarEvent("uid", startTime, endTime, "testi", "paikka", "kuvaus");
+      val event = new CalendarEvent("uid", startTime, endTime, "testi", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com");
       val calendar = new Calendar( event :: Nil );
       
       println(calendar.toString())
@@ -27,7 +27,7 @@ class CalendarTest extends SpecificationWithJUnit {
       val startTime = new Date();
       val endTime = new Date();
     
-      val event = new CalendarEvent("uid", startTime, endTime, "event summary", "paikka", "kuvaus");
+      val event = new CalendarEvent("uid", startTime, endTime, "event summary", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com");
       
       event.toString() must startWith ("BEGIN:VEVENT") and endWith("END:VEVENT")
     }
