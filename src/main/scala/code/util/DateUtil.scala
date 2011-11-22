@@ -8,21 +8,41 @@ import java.util.Calendar
 
 object DateUtil {
   
-	def parse(str: String) = { 
+  def parseDate(str: String) = 
+    new SimpleDateFormat(S ?? "date.format").parse(str)
+
+  def parseTime(str: String) = 
+    new SimpleDateFormat(S ?? "time.format").parse(str)
+    
+    
+	def parseDateTime(str: String) = { 
 	  try {
-	    new SimpleDateFormat(S ?? "date.format").parse(str)
+	    new SimpleDateFormat(S ?? "datetime.format").parse(str)
 	  } catch {
 	  	case e:ParseException => null 
 	  }
 	}
 	
-	def format(date: Date) = {
-	  new SimpleDateFormat(S ?? "date.format").format(date)
+	def formatDateTime(date: Date) = {
+	  new SimpleDateFormat(S ?? "datetime.format").format(date)
 	}
+	
+	def format(date: Date) = {
+    new SimpleDateFormat(S ?? "date.format").format(date)
+  }
 	
 	def formatTime(date: Date) = {
 	  new SimpleDateFormat(S ?? "time.format").format(date)
 	}
+	
+	def formatInterval(startdate: Date, endDate: Date) = {
+    println(startdate + " " + S ?? "datetime.format")
+	  formatDateTime(startdate) + " - " + 
+     (if ( isSameDay(startdate, endDate) ) 
+       formatTime(endDate) 
+     else 
+       formatDateTime(endDate)) 
+  }
 	
 	def parseSqlDate(str: String) = {
 	  new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(str)

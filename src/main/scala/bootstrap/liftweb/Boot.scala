@@ -14,6 +14,7 @@ import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
 import java.util.ResourceBundle
 import code.model.calendar.CalendarICSFileHelper
+import code.util.IlmoDateFormatter
 
 
 /**
@@ -88,7 +89,9 @@ class Boot {
     S.addAround(DB.buildLoanWrapper)
     
     // stateful — associated with a servlet container session
-    LiftRules.dispatch.append(CalendarICSFileHelper);
+    LiftRules.dispatch.append(CalendarICSFileHelper)
+    
+    LiftRules.dateTimeConverter.default.set(() => new IlmoDateFormatter())
     
   }
 }

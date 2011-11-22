@@ -20,17 +20,19 @@ import net.liftweb.http.RequestVar
 import code.comet.DataCenter
 import scala.xml.Group
 import java.text.SimpleDateFormat
+import code.util.DateUtil
 
 
 class EditTrainingSession {
   
   private object selectedTrainingSession extends RequestVar[Box[TrainingSession]](Empty)
-  val format = new SimpleDateFormat(S ?? "date.format")
+  val format = new SimpleDateFormat(S ?? "datetime.format")
+  val timeformat = new SimpleDateFormat(S ?? "time.format")
   
   def listTrainings = {
-    
+    println(S ?? "datetime.format")
     ".trainingsession *" #>  TrainingSession.getWithParticipantCount.map(t => 
-      ".time" #> format.format(t.date) &
+      ".time" #> DateUtil.formatInterval(t.date, t.endDate) &
       ".name" #> t.name &
       ".place" #> t.place &
       ".remove" #> SHtml.link("confirm", () => loadTrainingSession(t.id), Text(S ?? "Remove")) &
