@@ -9,19 +9,22 @@ import java.util.Date
  */
 class CalendarEvent(uid: String, 
 					startTime: Date, endTime: Date, 
-                    summary: String, location: String, description: String ) {
+                    summary: String, location: String, description: String,
+                    organizer: String, organizerEmail: String) {
   
   val format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
   
-  val properties = List(
-      ("DTSTAMP", format.format(startTime)), // Outlook requires DSTAMP
-      ("UID", uid),
-      ("SUMMARY", textFormat(summary)),
-      ("DTSTART;TZID=Finland/Helsinki", format.format(startTime)),
-      ("DTEND;TZID=Finland/Helsinki", format.format(endTime)),
-      ("LOCATION", textFormat(location)),
-      ("DESCRIPTION", textFormat(description))
-  )
+  val properties = 
+      ("DTSTAMP", format.format(startTime)) :: // Outlook requires DSTAMP
+      ("UID", uid) ::
+      ("SUMMARY", textFormat(summary)) ::
+      ("DTSTART;TZID=Finland/Helsinki", format.format(startTime)) ::
+      ("DTEND;TZID=Finland/Helsinki", format.format(endTime)) ::
+      ("LOCATION", textFormat(location)) ::
+      ("DESCRIPTION", textFormat(description)) ::
+      (if(organizerEmail != null && organizerEmail != "" && organizer != null && organizer != "") {
+        ("ORGANIZER;CN=" + organizer + ":MAILTO", organizerEmail) :: Nil
+      } else Nil)
   
   def textFormat(text: String) = {
 	  text.replaceAll("\r", "")

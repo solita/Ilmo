@@ -30,8 +30,8 @@ class EditTrainingSession {
   val timeformat = new SimpleDateFormat(S ?? "time.format")
   
   def listTrainings = {
-    println(S ?? "datetime.format")
-    ".trainingsession *" #>  TrainingSession.getWithParticipantCount.map(t => 
+    val afterDate = new Date(0); // since beginning of time
+    ".trainingsession *" #>  TrainingSession.getWithParticipantCount(afterDate).map(t => 
       ".time" #> DateUtil.formatInterval(t.date, t.endDate) &
       ".name" #> t.name &
       ".place" #> t.place &

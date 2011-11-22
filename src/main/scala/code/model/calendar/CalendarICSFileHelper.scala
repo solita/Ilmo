@@ -25,7 +25,8 @@ object CalendarICSFileHelper extends RestHelper {
                                           trainingSession.date.is, 
                                           trainingSession.endDate.is, 
                                           training.name.is, trainingSession.place,
-                                          training.description.is) :: Nil )
+                                          training.description.is,
+                                          training.organizer.is, training.organizerEmail.is) :: Nil )
   }
   
   def getICSFileForTraining(trainingSessionId: Long) : InMemoryResponse = {

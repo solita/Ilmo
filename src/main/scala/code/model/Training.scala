@@ -17,11 +17,13 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     override def validations = List(valMinLen(1, S ?? "training.error.organizer-missing"))
   }
   
+  object organizerEmail extends MappedString(this, 100)
+  
   object linkToMaterial extends MappedString(this,100)
   object description extends MappedTextarea(this, 1500)
   object other extends MappedTextarea(this, 1500) 
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {
-  override def fieldOrder = List(name, organizer, description, linkToMaterial, other)
+  override def fieldOrder = List(name, organizer, organizerEmail, description, linkToMaterial, other)
 }
