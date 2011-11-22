@@ -16,6 +16,8 @@ import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 import code.model.Training
+import scala.xml.Attribute
+import scala.xml.Null
 
 
 
@@ -36,7 +38,7 @@ class ListParticipants extends CometActor with CometListener {
     yield 
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> training.organizer.is &
-      "#traininglink *" #> training.linkToMaterial.is &
+      "#traininglink *" #> formatLink(training.linkToMaterial.is) &
       "#trainingother *" #> formatText(training.other.is) &
       ".participant *" #> trainingSession.participants.map(participant => ".name" #> participant.name.is)
     )
@@ -46,9 +48,16 @@ class ListParticipants extends CometActor with CometListener {
     }
   }
   
+  def formatLink(text: String): NodeSeq = {
+    if(text != null && text != "") {
+      var link = text
+      if(!link.startsWith("http://")) link = "http://" + link
+      <a>{text}</a> % Attribute(None, "href", Text(link), Null)
+    } else Text("-");
+  }
+  
   def formatText(text: String): NodeSeq = {
-    val texts = text.split("\n")
-    texts.map(t => <span>{t}</span>: NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
+    text.split("\n").map(t => Text(t): NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
   }
   
 }
