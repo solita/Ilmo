@@ -28,32 +28,27 @@ class ListParticipants extends CometActor with CometListener {
   }
   
   override def render = {
-    
     (for {
       trainingSessionId <- DataCenter.getSelectedTrainingSession 
       trainingSession <- TrainingSession.findByKey(trainingSessionId)
       training <- Training.findByKey(trainingSession.training)
     }
     yield 
-      "#trainingdesc" #> training.description.is &
+      "#trainingdesc *" #> formatText(training.description.is) &
+      "#trainingorganizer *" #> training.organizer.is &
+      "#traininglink *" #> training.linkToMaterial.is &
+      "#trainingother *" #> formatText(training.other.is) &
       ".participant *" #> trainingSession.participants.map(participant => ".name" #> participant.name.is)
-    ) 
+    )
     match {
       case Full(cssbindfunc) => cssbindfunc
       case _ => <span></span>
     }
-    
-//    
-//    DataCenter.getSelectedTrainingSession match {
-//      case Empty => <span></span>
-//      case Full(trainingSessionId: Long) => {
-//    	  val trainingSession = TrainingSession.findByKey(trainingSessionId).get
-//    	  val training = Training.findByKey(trainingSession.training.get).get
-//    	  
-//    	  "#trainingdesc" #> training.description.is &
-//    	  ".participant *" #> trainingSession.participants.map(participant => ".name" #> participant.name.is)
-//      }
-//    }
+  }
+  
+  def formatText(text: String): NodeSeq = {
+    val texts = text.split("\n")
+    texts.map(t => <span>{t}</span>: NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
   }
   
 }
