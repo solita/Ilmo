@@ -44,13 +44,19 @@ class ListTrainings extends CometActor with CometListener {
     ".training *" #> trainingList.map(training => 
       ".name" #> training.name &
       ".place" #> training.place &
-      ".date" #> DateUtil.format(training.date) &
+      ".date" #> formatDate(training.date, training.endDate) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id) )) &
       ".register" #> ( getRegisterButton(training) ) &
       ".addtocalendar" #> <a href={"api/cal/"+training.id}>{S ?? "add.to.calendar"}</a>
     )
+  }
+  
+  def formatDate(date: Date, endDate: Date) = {
+    DateUtil.format(date) + " - " + 
+     (if(DateUtil.isSameDay(date,endDate)) DateUtil.formatTime(endDate) else DateUtil.format(endDate)) 
+    
   }
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
