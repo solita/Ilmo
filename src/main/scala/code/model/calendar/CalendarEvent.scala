@@ -14,7 +14,7 @@ class CalendarEvent(uid: String,
   
   val format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
   
-  val properties = //List(
+  val properties = 
       ("DTSTAMP", format.format(startTime)) :: // Outlook requires DSTAMP
       ("UID", uid) ::
       ("SUMMARY", textFormat(summary)) ::
@@ -25,7 +25,6 @@ class CalendarEvent(uid: String,
       (if(organizerEmail != null && organizerEmail != "" && organizer != null && organizer != "") {
         ("ORGANIZER;CN=" + organizer + ":MAILTO", organizerEmail) :: Nil
       } else Nil)
-  //)
   
   def textFormat(text: String) = {
 	  text.replaceAll("\r", "")
