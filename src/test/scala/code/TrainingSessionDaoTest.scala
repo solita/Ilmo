@@ -22,7 +22,7 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       
       val participantName = "name"
       Participant.create.name(participantName).trainingSession(trainingSession).save     
-      var trainingList = TrainingSession.getWithParticipantCountForParticipantId(participantName)
+      var trainingList = TrainingSession.getWithParticipantCountForParticipantId(participantName, new Date(0))
       
       trainingList must have size(2)
       
@@ -49,13 +49,31 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       Participant.create.name("p1").trainingSession(trainingSession).save
       Participant.create.name("p2").trainingSession(trainingSession).save 
 
-      var trainingList = TrainingSession.getWithParticipantCount
+      var trainingList = TrainingSession.getWithParticipantCount(new Date(0))
       
       trainingList must have size(2)
       
       val resultTrainingWithParticipants = (trainingList filter (t => t.name == "training_with_participant")).head           
       resultTrainingWithParticipants.participantCount must be equalTo(2)
       
+    }
+  }
+  
+  "List of Trainings" should {
+    "should contain only trainings after the given date" in {
+      InMemoryDB.init
+      val cutofTime = new Date(100,4,5)
+      var training = Training.create.name("old_training").description("desc").saveMe
+      TrainingSession.create.date(new Date(100,0,5)).endDate(new Date).training(training).place("Place").saveMe
+      TrainingSession.create.date(cutofTime).endDate(new Date).training(training).place("Place").saveMe
+      TrainingSession.create.date(new Date(101,0,5)).endDate(new Date).training(training).place("Place").saveMe
+      
+      var trainingList = TrainingSession.getWithParticipantCount(cutofTime)
+      trainingList must have size(2)
+      trainingList foreach(t => {
+        t.date().before(cutofTime) must beFalse
+      }
+      )
     }
   }
 }

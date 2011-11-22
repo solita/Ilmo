@@ -29,7 +29,7 @@ class EditTrainingSession {
   
   def listTrainings = {
     
-    ".trainingsession *" #>  TrainingSession.getWithParticipantCount.map(t => 
+    ".trainingsession *" #>  TrainingSession.getWithParticipantCount(new Date(0)).map(t => 
       ".time" #> format.format(t.date) &
       ".name" #> t.name &
       ".place" #> t.place &
