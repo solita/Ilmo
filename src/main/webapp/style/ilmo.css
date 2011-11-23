@@ -26,3 +26,7 @@ h1.title {
 	font-style: italic;
 	margin-bottom: 10px;
 }
+
+a img {
+    vertical-align: bottom;
+}

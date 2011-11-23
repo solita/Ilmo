@@ -36,7 +36,7 @@ class ListTrainings extends CometActor with CometListener {
   
   override def render = {
     var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, -12)
+    fromDate.add(Calendar.MONTH, -6)
     val trainingList = if ( DataCenter hasSignInName ) { 
       TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName(), fromDate.getTime()) 
     } else {
@@ -51,7 +51,7 @@ class ListTrainings extends CometActor with CometListener {
       ".maxParticipants" #> training.maxParticipants &
       ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id) )) &
       ".register" #> ( getRegisterButton(training) ) &
-      ".addtocalendar" #> <a href={"api/cal/"+training.id}>{S ?? "add.to.calendar"}</a>
+      ".addtocalendar" #> <a href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
     )
   }
   

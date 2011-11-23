@@ -43,7 +43,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
     DB.runQuery("""select d.id, t.name, d.date_c, d.endDate, d.place, count(p.TrainingSession), d.maxParticipants 
                    from TrainingSession d left outer join Participant p on d.id = p.TrainingSession join Training t on d.Training = t.id
     			   where d.date_c >= ?
-                   group by d.id, t.name order by d.date_c, d.id""", List(afterDate))
+                   group by d.id, t.name order by d.date_c desc, d.id""", List(afterDate))
                         ._2 // first contains column names
                         .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
@@ -62,7 +62,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
     					(select count(*) from Participant p where p.TrainingSession = s.id) participants,
     					s.maxParticipants as maxparts
                      from TrainingSession s join Training t on s.Training = t.id
-                   ) where sessiondate >= ? group by sessionid, sessionname, has_participated order by sessiondate, sessionid""", List(participantName, afterDate))
+                   ) where sessiondate >= ? group by sessionid, sessionname, has_participated order by sessiondate desc, sessionid""", List(participantName, afterDate))
                         ._2 // first contains column names
                         .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
