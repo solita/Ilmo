@@ -34,6 +34,8 @@ class EditTrainingSession {
     ".trainingsession *" #>  TrainingSession.getWithParticipantCount(afterDate).map(t => 
       ".time" #> DateUtil.formatInterval(t.date, t.endDate) &
       ".name" #> t.name &
+      ".participantCount" #> t.participantCount &
+      ".maxParticipants" #> t.maxParticipants &
       ".place" #> t.place &
       ".remove" #> SHtml.link("confirm", () => loadTrainingSession(t.id), Text(S ?? "Remove")) &
       ".edit" #> SHtml.link("edit_training", () => loadTrainingSession(t.id), Text(S ?? "Edit"))
