@@ -37,6 +37,7 @@ class ListParticipants extends CometActor with CometListener {
       participants <- Full(trainingSession.participants.map(_.name).zipWithIndex)
     }
     yield 
+      "#trainingname *" #> training.name.is &
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &

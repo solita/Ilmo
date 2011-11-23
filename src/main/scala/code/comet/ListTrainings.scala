@@ -55,12 +55,6 @@ class ListTrainings extends CometActor with CometListener {
     )
   }
   
-  def formatDate(date: Date, endDate: Date) = {
-    DateUtil.format(date) + " - " + 
-     (if(DateUtil.isSameDay(date,endDate)) DateUtil.formatTime(endDate) else DateUtil.format(endDate)) 
-    
-  }
-  
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
     if ( training.date.before(new Date) ) {
       Text("-")

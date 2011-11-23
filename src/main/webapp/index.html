@@ -3,14 +3,29 @@
 <head>
 <style type="text/css">
 #participantList ol {
-  width:400px;
-  margin-bottom:20px;
+  width: 100%
+  margin-top: 18px
 }
 
 #participantList li {
-  line-height:1.5em;  
-  float:left;
-  width:30%;
+  line-height: 1.5em;  
+  float: left;
+  width: 20%;
+}
+
+#participantList p {
+  margin: 0;
+  padding: 0;
+}
+
+#trainingdesc {
+  font-size: 11px;
+  text-indent: 0;
+}
+
+#participantList #trainingname {
+  font-weight: bold;
+  font-size: 14px;
 }
 
 #clearfloats {
@@ -18,12 +33,14 @@
   clear:both;
 }
 
-#participantList p {
-  margin-left: 0;
-}
-.title {
+#participantList .title {
   float: left;
   margin-right: 12px;  
+}
+
+#organizer {
+  margin-top: 12px;
+  padding: 0px;
 }
 
 </style>
@@ -55,13 +72,17 @@
   
   
   <div id="participantList" class="lift:comet?type=ListParticipants">
+    <p id="trainingname"></p>
+    <p id="trainingdesc"></p>
+    
     <ol>
        <li class="participant"><span class="name"></span></li>
     </ol>
-    <p id="clearfloats"></p> 	
-    <p id="trainingdesc"></p>
-    <span class="title">Järjestäjä</span>
-    <p id="trainingorganizer"></p>
+    <p id="clearfloats"></p>
+    <div id="organizer"> 	
+      <span class="title">Järjestäjä</span>
+      <p id="trainingorganizer"></p>
+    <div>
     <span class="title">Linkki materiaaliin</span>
     <p id="traininglink"></p>
     <span class="title">Muut tiedot</span>

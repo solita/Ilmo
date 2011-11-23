@@ -14,7 +14,9 @@ div.topBanner {
 }
 
 img.solitaLogo {
-	display:inline;
+	margin-right: 36px;
+    margin-bottom: 7px;
+    vertical-align: bottom;
 }
 
 h1.title {

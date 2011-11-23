@@ -5,20 +5,21 @@
    function getTableSorterOptions() {
      return {
        widgets: ['zebra'],
-       headers: {3: { sorter: false }, 
-                 4: { sorter: false }}
+       headers: {4: { sorter: false }, 
+                 5: { sorter: false }}
      }
    }            
   </script>
 </head>
 
     <table id="tabletosort" class="tablesorter">
-      <thead><tr><th>Aika</th><th>Koulutus</th><th>Paikka</th><th></th><th></th></tr></thead>
+      <thead><tr><th>Aika</th><th>Koulutus</th><th>Osallistujat</th><th>Paikka</th><th></th><th></th></tr></thead>
       <tbody class="lift:EditTrainingSession.listTrainings">
       
         <tr class="trainingsession">
           <td><span class="time"></span></td>
           <td><span class="name"></span></td>
+          <td><span class="participantCount"></span> / <span class="maxParticipants"></span></td>
           <td><span class="place"></span></td>
           <td><span class="remove"></span></td>
           <td><span class="edit"></span></td>
