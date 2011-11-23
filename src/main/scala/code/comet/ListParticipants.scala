@@ -34,13 +34,14 @@ class ListParticipants extends CometActor with CometListener {
       trainingSessionId <- DataCenter.getSelectedTrainingSession 
       trainingSession <- TrainingSession.findByKey(trainingSessionId)
       training <- Training.findByKey(trainingSession.training)
+      participants <- Full(trainingSession.participants.map(_.name).zipWithIndex)
     }
     yield 
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
       "#trainingother *" #> formatText(training.other.is) &
-      ".participant *" #> trainingSession.participants.map(participant => ".name" #> participant.name.is)
+      ".participant" #> participants.map(p => (".participant [class]" #> (("col" + p._2%3)) & ".name *" #> p._1))
     )
     match {
       case Full(cssbindfunc) => cssbindfunc
