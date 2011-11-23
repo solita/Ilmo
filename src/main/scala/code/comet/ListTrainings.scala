@@ -36,7 +36,7 @@ class ListTrainings extends CometActor with CometListener {
   
   override def render = {
     var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, -1)
+    fromDate.add(Calendar.MONTH, -12)
     val trainingList = if ( DataCenter hasSignInName ) { 
       TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName(), fromDate.getTime()) 
     } else {
