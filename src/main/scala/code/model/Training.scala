@@ -17,11 +17,18 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
     override def validations = List(valMinLen(1, S ?? "training.error.organizer-missing"))
   }
   
-  object organizerEmail extends MappedString(this, 100)
-  
+  object organizerEmail extends MappedString(this, 100) {
+    override def validations = List(valMinLen(1, S ?? "training.error.organizer.email-missing"))
+  }
+
+  object description extends MappedTextarea(this, 1500) {
+    override def validations = List(valMinLen(1, S ?? "training.error.description-missing"))
+  }
+
+  // FIXME: tyypin pitäsi olla mappednullablestring ja paluuarvona box[String]
   object linkToMaterial extends MappedString(this,100)
-  object description extends MappedTextarea(this, 1500)
-  object other extends MappedTextarea(this, 1500) 
+  
+  object other extends MappedTextarea(this, 1500)
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {

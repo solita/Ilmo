@@ -57,22 +57,26 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(6).toLong));
 
   def getWithParticipantCountForParticipantId(participantName: String, afterDate: Date) = 
-    DB.runQuery("""select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participantCount, maxparts from ( 
-                     select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.endDate sessionEndDate, s.place place, 
-    				 	(select 1 from Participant p2 where p2.name = ? and s.id = p2.TrainingSession) has_participated,
-    					(select count(*) from Participant p where p.TrainingSession = s.id) participantCount,
-    					s.maxParticipants as maxparts
-                     from TrainingSession s join Training t on s.Training = t.id
-                   ) where sessiondate >= ? group by sessionid, sessionname, has_participated order by sessiondate desc, sessionid""", List(participantName, afterDate))
-                        ._2 // first contains column names
-                        .map(list => new TrainingSessionParticipantCountDto(
-                                            list(0).toLong,
-                                            list(1),
-                                            DateUtil.parseSqlDate(list(2)),
-                                            DateUtil.parseSqlDate(list(3)),
-                                            list(4),
-                                            (if (list(5) == "0") false else true),
-                                            list(6).toLong,
-                                            list(7).toLong));
+    
+    DB.runQuery(
+        """select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participantCount, maxparts from ( 
+               select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.endDate sessionEndDate, s.place place,         
+                      (select case when count(*)>0 then 'Y' else 'N' end from Participant p2 where p2.name = ? and s.id = p2.TrainingSession) has_participated,        
+                      (select count(*) from Participant p where p.TrainingSession = s.id) participantCount,
+                      s.maxParticipants as maxparts
+               from TrainingSession s join Training t on s.Training = t.id
+               where s.date_c >= ?
+           )
+           order by sessiondate desc, sessionid""",
+    List(participantName, afterDate))._2 
+        .map(list => new TrainingSessionParticipantCountDto(
+                list(0).toLong,
+                list(1),
+                DateUtil.parseSqlDate(list(2)),
+                DateUtil.parseSqlDate(list(3)),
+                list(4),
+                (if (list(5) == "Y") true else false),
+                list(6).toLong,
+                list(7).toLong));
 
 }

@@ -18,7 +18,8 @@
   padding: 0;
 }
 
-#trainingdesc {
+#participantList #trainingdesc {
+  margin-top: 12px;
   font-size: 11px;
   text-indent: 0;
 }
@@ -26,6 +27,10 @@
 #participantList #trainingname {
   font-weight: bold;
   font-size: 14px;
+}
+
+#participantList #trainingplace {
+  font-size: 10px;
 }
 
 #clearfloats {
@@ -42,6 +47,15 @@
   margin-top: 12px;
   padding: 0px;
 }
+
+#traininglist table tbody td {
+  font-size: 11px;
+}
+
+#traininglist table tbody td button {
+  font-size: 10px;
+}
+
 
 </style>
 </head>
@@ -72,7 +86,7 @@
   
   
   <div id="participantList" class="lift:comet?type=ListParticipants">
-    <p id="trainingname"></p>
+    <p><span id="trainingname"></span> <span id="trainingplace"></span></p>
     <p id="trainingdesc"></p>
     
     <ol>

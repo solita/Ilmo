@@ -23,6 +23,7 @@ case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
     
+// FIXME: muuta nimi esim. IlmoApplicationModel
 object DataCenter extends LiftActor with ListenerManager {
  
     object selectedTrainingSession extends SessionVar[Box[Long]](Empty)
@@ -81,6 +82,7 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
 
+    // FIXME: duplikaatiota
     def saveTraining(training: Training) =  {
       training.save 
       updateListeners

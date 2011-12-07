@@ -5,8 +5,8 @@
 #db.password=
 
 #to run on oracle
-#db.driver=oracle.jdbc.driver.OracleDriver
-#db.url=jdbc:oracle:thin:@<dbserverurl>:1521:<sid>
-#db.schema=
-#db.user=
-#db.password=
+db.driver=oracle.jdbc.driver.OracleDriver
+db.url=jdbc:oracle:thin:@tauros:1521:d102
+db.schema=ilmo
+db.user=ilmo
+db.password=ilmo
