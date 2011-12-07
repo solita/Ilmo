@@ -40,10 +40,11 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
   
   //TODO: Saisiko näitä kahta metodia refaktoroitua jotenkin siistimmäksi?
   def getWithParticipantCount(afterDate: Date) = 
-    DB.runQuery("""select d.id, t.name, d.date_c, d.endDate, d.place, count(p.TrainingSession), d.maxParticipants 
-                   from TrainingSession d left outer join Participant p on d.id = p.TrainingSession join Training t on d.Training = t.id
-    			   where d.date_c >= ?
-                   group by d.id, t.name order by d.date_c desc, d.id""", List(afterDate))
+    DB.runQuery("""select ts.id, t.name, ts.date_c, ts.endDate, ts.place, count(p.TrainingSession), ts.maxParticipants 
+                   from TrainingSession ts left outer join Participant p on ts.id = p.TrainingSession join Training t on ts.Training = t.id
+    			   where ts.date_c >= ?
+                   group by ts.id, t.name, ts.date_c, ts.endDate, ts.place, ts.maxParticipants
+                   order by ts.date_c desc, ts.id""", List(afterDate))
                         ._2 // first contains column names
                         .map(list => new TrainingSessionParticipantCountDto(
                                             list(0).toLong,
@@ -56,10 +57,10 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(6).toLong));
 
   def getWithParticipantCountForParticipantId(participantName: String, afterDate: Date) = 
-    DB.runQuery("""select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participants, maxparts from ( 
+    DB.runQuery("""select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participantCount, maxparts from ( 
                      select s.id sessionid, t.name sessionname, s.date_c sessiondate, s.endDate sessionEndDate, s.place place, 
     				 	(select 1 from Participant p2 where p2.name = ? and s.id = p2.TrainingSession) has_participated,
-    					(select count(*) from Participant p where p.TrainingSession = s.id) participants,
+    					(select count(*) from Participant p where p.TrainingSession = s.id) participantCount,
     					s.maxParticipants as maxparts
                      from TrainingSession s join Training t on s.Training = t.id
                    ) where sessiondate >= ? group by sessionid, sessionname, has_participated order by sessiondate desc, sessionid""", List(participantName, afterDate))
