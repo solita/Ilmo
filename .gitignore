@@ -6,6 +6,7 @@
 .cache
 *.db
 .DS_store
+lib/ojdbc14.jar
 project/boot
 project/plugins/project
 project/target
