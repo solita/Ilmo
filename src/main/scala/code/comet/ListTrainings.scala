@@ -57,7 +57,7 @@ class ListTrainings extends CometActor with CometListener {
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
     if ( training.date.before(new Date) ) {
-      Text("-")
+      Text(S ?? "past.training")
     }
     else if ( training.hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
