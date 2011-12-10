@@ -23,6 +23,7 @@ case class DelParticipant(name: String, trainingId: Long)
 case class TrainingDeleted
 case class RegisterMsg(name : String)
 case class SignIn
+case class StateChanged
     
 object DataCenter extends LiftActor with ListenerManager {
  
@@ -47,7 +48,7 @@ object DataCenter extends LiftActor with ListenerManager {
     /**
      * When we update the listeners, what message do we send?
      */
-    def createUpdate = SignIn
+    def createUpdate = StateChanged
   
     override def lowPriority = {
       case RegisterMsg(name: String) => {

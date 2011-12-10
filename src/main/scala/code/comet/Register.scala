@@ -10,10 +10,7 @@ class Register extends CometActor with CometListener {
     def registerWith = DataCenter
   
     override def lowPriority = {
-        case _ => {  
-            //partialUpdate(SetHtml("signin", <b>{DataCenter.getName}</b>))
-            reRender
-        }
+      case StateChanged => reRender
     }
     
     override def render = {

@@ -26,12 +26,7 @@ class ListTrainings extends CometActor with CometListener {
   def registerWith = DataCenter
   
   override def lowPriority = {
-    case NewParticipant(name: String, trainingId: Long) => {  
-        println(name ++ " registered")
-        reRender
-        //partialUpdate(SetHtml("metrics", buildMetricList(metrics)))
-    }
-    case _ => reRender
+    case StateChanged => reRender
   }
   
   override def render = {
@@ -57,7 +52,7 @@ class ListTrainings extends CometActor with CometListener {
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
     if ( training.date.before(new Date) ) {
-      Text(S ?? "past.training ")
+      Text(S ?? "past.training")
     }
     else if ( training.hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))

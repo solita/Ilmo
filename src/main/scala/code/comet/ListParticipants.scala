@@ -23,10 +23,15 @@ import scala.xml.Null
 
 class ListParticipants extends CometActor with CometListener {
   
+  private var selectedTraining: Box[Long] = Empty
+  
   def registerWith = DataCenter
   
+  def newTrainingSelected = 
+    DataCenter.getSelectedTrainingSession != selectedTraining
+    
   override def lowPriority = {
-    case _ => reRender
+    case StateChanged if newTrainingSelected => reRender
   }
   
   override def render = {
