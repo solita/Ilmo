@@ -9,14 +9,15 @@ import code.model.TrainingSession
 import code.model.Training
 import net.liftweb.common.Box
 import net.liftweb.common.Full
-
+import net.liftweb.http.BadResponse
+import net.liftweb.util.Helpers._
+import net.liftweb.http.LiftResponse
 
 object CalendarICSFileHelper extends RestHelper {
 
-  // TODO this extractor is probably predefined somewhere, but where?
-  object AsLong {
-    def unapply(str: String) : Option[Long] = 
-      try { Some(str.toLong) } catch { case _ => None }  
+  object AsTraining {
+    def unapply(trainingSessionId: String) : Option[TrainingSession] = 
+      tryo(trainingSessionId.toInt).flatMap(TrainingSession.findByKey(_))
   }
 
   private def createCalendar(trainingSession: TrainingSession): Box[Calendar] = {
@@ -24,25 +25,24 @@ object CalendarICSFileHelper extends RestHelper {
     yield new Calendar( new CalendarEvent(trainingSession.id.is.toString, 
                                           trainingSession.date.is, 
                                           trainingSession.endDate.is, 
-                                          training.name.is, trainingSession.place,
+                                          training.name.is, 
+                                          trainingSession.place,
                                           training.description.is,
-                                          training.organizer.is, training.organizerEmail.is) :: Nil )
+                                          training.organizer.is, 
+                                          training.organizerEmail.is) :: Nil )
   }
   
-  def getICSFileForTraining(trainingSessionId: Long) : InMemoryResponse = {
+  def getICSFileForTraining(trainingSession: TrainingSession): LiftResponse = {
     
-    (for { trainingSession <- TrainingSession.findByKey(trainingSessionId)
-          calendar <- createCalendar(trainingSession)
-    } 
-    yield new InMemoryResponse(calendar.toString().getBytes("UTF-8"), 
+    tryo(InMemoryResponse(createCalendar(trainingSession).toString().getBytes("UTF-8"), 
                                List("Content-Type" -> "text/calendar"), 
                                Nil, 200)
-    ) openOr InMemoryResponse(Array(), Nil, Nil, 401)
+    ) openOr BadResponse()
         
   }
 
   serve { 
-    case Req("api" :: "cal" :: AsLong(id) :: _, _, GetRequest) => getICSFileForTraining(id)
+    case Req("api" :: "cal" :: AsTraining(training) :: _, _, GetRequest) => getICSFileForTraining(training)
   }
   
 }
