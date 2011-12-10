@@ -39,7 +39,7 @@ class EditTrainings {
   }
 
   private def saveTraining(training: Training) = training.validate match {
-    case Nil => DataCenter.saveTraining(training); S.redirectTo("index.html")
+    case Nil => DataCenter.saveAndUpdateListeners(training); S.redirectTo("index.html")
     case x => S.error(x); selectedTraining(Full(training))
   }
   
@@ -58,7 +58,7 @@ class EditTrainings {
     (for (training <- selectedTraining.is)
      yield {
         def deleteTraining() {
-          DataCenter.removeTraining(training)
+          DataCenter.removeAndUpdateListeners(training)
           S.redirectTo("index")
         }
 

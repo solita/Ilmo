@@ -14,6 +14,7 @@ import code.model.Training
 import code.model.TrainingSession
 import code.model.Participant
 import net.liftweb.mapper.By
+import net.liftweb.mapper.Mapper
 
 case class NewTraining(name: String)
 case class NewTrainingSession
@@ -81,23 +82,13 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
 
-    def saveTraining(training: Training) =  {
-      training.save 
+    def saveAndUpdateListeners[B <: Mapper[B]](entity: B) = {
+      entity.save
       updateListeners
     }
-    
-    def saveTrainingSession(trainingSession: TrainingSession) =  {
-      trainingSession.save 
-      updateListeners
-    }
-    
-    def removeTraining(training: Training) = {
-      training.delete_!
-      updateListeners
-    }
-    
-    def removeTrainingSession(trainingSession: TrainingSession) = {
-      trainingSession.delete_!
+
+    def removeAndUpdateListeners[B <: Mapper[B]](entity: B) = {
+      entity.delete_!
       updateListeners
     }
     
