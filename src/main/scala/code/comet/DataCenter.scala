@@ -16,14 +16,10 @@ import code.model.Participant
 import net.liftweb.mapper.By
 import net.liftweb.mapper.Mapper
 
-case class NewTraining(name: String)
-case class NewTrainingSession
 case class NewParticipant(name: String, trainingId: Long)
 case class DelParticipant(name: String, trainingId: Long)
-case class TrainingDeleted
 case class RegisterMsg(name : String)
-case class SignIn
-case class StateChanged
+case object StateChanged
     
 object DataCenter extends LiftActor with ListenerManager {
  

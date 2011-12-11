@@ -52,7 +52,7 @@ class EditTrainings {
           <td><input type="submit" value={S ?? "Finish"}/></td>
         </tr>
       </table>
-  ) openOr {error(S ?? "training.not-found"); S.redirectTo("index.html")}
+  ) openOr {S.error(S ?? "training.not-found"); S.redirectTo("index.html")}
   
   def confirmDelete = {
     (for (training <- selectedTraining.is)
@@ -67,7 +67,7 @@ class EditTrainings {
     }) 
     match {
       case Full(cssbindfunc) => cssbindfunc
-      case _ => error(S ?? "training.not-found"); S.redirectTo("index.html")
+      case _ => S.error(S ?? "training.not-found"); S.redirectTo("index.html")
     }
   }
 

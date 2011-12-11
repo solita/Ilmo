@@ -2,6 +2,8 @@ name := "ilmo"
 
 seq(webSettings: _*)
 
+scalacOptions += "-deprecation"
+
 resolvers += "Java.net Maven2 Repository" at "http://download.java.net/maven/2/"
 
 resolvers += "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots"

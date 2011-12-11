@@ -3,7 +3,6 @@ import code.comet.DataCenter
 import net.liftweb.http.{S, RequestVar, SHtml}
 import net.liftweb.http.js.JsCmds
 import scala.xml.Text
-import code.comet.RegisterMsg
 
 class SignIn {
   
