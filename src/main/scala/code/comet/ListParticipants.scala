@@ -46,7 +46,6 @@ class ListParticipants extends CometActor with CometListener {
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
-      "#trainingother *" #> formatText(training.other.is) &
       ".participant" #> participants.map(p => (".participant [class]" #> (("col" + p._2%3)) & ".name *" #> p._1))
     )
     match {

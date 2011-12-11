@@ -65,9 +65,9 @@ object DataCenter extends LiftActor with ListenerManager {
     def addParticipant(name: String, trainingSessionId: Long) = {
       println("saving " + name + " to " + trainingSessionId)
       TrainingSession.findByKey(trainingSessionId) match {
-        case Full(trainingSession) => {
+        case Full(trainingSession) =>
           Participant.create.name(name).trainingSession(trainingSession).save
-        }
+        case _ => // this could happen if training was removed, in this app we dont care..
       }
       updateListeners
     }
