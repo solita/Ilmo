@@ -29,14 +29,11 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
     
-    object signInName extends SessionVar[String]("")
-    
-    def hasSignInName() = !("" == signInName.is)
-    
-    def getName() = signInName.is
-    
-    def setName(name: String) = {
-        signInName.set(name)
+    object currentUserName extends SessionVar[String]("")
+    def hasCurrentUserName() = !("" == currentUserName.is)
+    def getCurrentUserName() = currentUserName.is
+    def setCurrentUserName(name: String) = {
+        currentUserName.set(name)
         updateListeners
     }
     
@@ -52,7 +49,7 @@ object DataCenter extends LiftActor with ListenerManager {
         delParticipant(name, trainingSessionId)      
     }
     
-    def addParticipant(name: String, trainingSessionId: Long) = {
+    private def addParticipant(name: String, trainingSessionId: Long) = {
       TrainingSession.findByKey(trainingSessionId) match {
         case Full(trainingSession) =>
           Participant.create.name(name).trainingSession(trainingSession).save
@@ -61,7 +58,7 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
 
-    def delParticipant(name: String, trainingSessionId: Long) = {
+    private def delParticipant(name: String, trainingSessionId: Long) = {
       for {
         trainingSession <- TrainingSession.findByKey(trainingSessionId)
         participant <- Participant.findAll(

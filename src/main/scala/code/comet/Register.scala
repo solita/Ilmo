@@ -15,10 +15,8 @@ class Register extends CometActor with CometListener {
     }
     
     override def render = {
-      println("name in session is " + DataCenter.getName)
-
-      if (DataCenter.hasSignInName) {
-          Text( (S ?? "welcome").format(DataCenter.getName()))
+      if (DataCenter.hasCurrentUserName) {
+          Text( (S ?? "welcome").format(DataCenter.getCurrentUserName()))
       }
       else {
           SHtml.ajaxForm(
@@ -33,7 +31,7 @@ class Register extends CometActor with CometListener {
     }
     
     def signin(name: String) {
-      DataCenter.setName(name)
+      DataCenter.setCurrentUserName(name)
       reRender
     }
       
