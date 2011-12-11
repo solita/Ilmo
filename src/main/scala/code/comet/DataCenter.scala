@@ -53,7 +53,6 @@ object DataCenter extends LiftActor with ListenerManager {
     }
     
     def addParticipant(name: String, trainingSessionId: Long) = {
-      println("saving " + name + " to " + trainingSessionId)
       TrainingSession.findByKey(trainingSessionId) match {
         case Full(trainingSession) =>
           Participant.create.name(name).trainingSession(trainingSession).save

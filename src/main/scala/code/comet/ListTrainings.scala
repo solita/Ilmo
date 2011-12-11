@@ -69,20 +69,24 @@ class ListTrainings extends CometActor with CometListener {
       }
     }
   }
-  
+      
   def register(trainingId: Long) : JsCmd = {
       DataCenter ! NewParticipant(DataCenter.getName(), trainingId)
-      Noop
+      makeLoadingIconVisible  
   }
 
   def unregister(trainingId: Long) : JsCmd = {
       DataCenter ! DelParticipant(DataCenter.getName(), trainingId)
-      Noop
+      makeLoadingIconVisible
   }
   
   def viewDetails(trainingSessionId: Long) : JsCmd = {
-    DataCenter.setSelectedTrainingSession(trainingSessionId)     
+      DataCenter.setSelectedTrainingSession(trainingSessionId)
+      makeLoadingIconVisible
   }
 
+  def makeLoadingIconVisible =
+    SetHtml("loader-img", <img src="/images/small-ajax-loader.gif" />)
+    
 }
 
