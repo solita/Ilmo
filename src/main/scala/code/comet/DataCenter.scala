@@ -18,7 +18,6 @@ import net.liftweb.mapper.Mapper
 
 case class NewParticipant(name: String, trainingId: Long)
 case class DelParticipant(name: String, trainingId: Long)
-case class RegisterMsg(name : String)
 case object StateChanged
     
 object DataCenter extends LiftActor with ListenerManager {
@@ -47,11 +46,6 @@ object DataCenter extends LiftActor with ListenerManager {
     def createUpdate = StateChanged
   
     override def lowPriority = {
-      case RegisterMsg(name: String) => {
-        println("got register msg")
-        setName(name)
-        updateListeners()
-      }
       case NewParticipant(name: String, trainingSessionId: Long) =>
         addParticipant(name, trainingSessionId)
       case DelParticipant(name: String, trainingSessionId: Long) =>
