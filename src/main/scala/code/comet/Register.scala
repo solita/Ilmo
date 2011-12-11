@@ -4,6 +4,7 @@ import net.liftweb.http.{S, RequestVar, SHtml}
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.js.JsCmds.SetHtml
+import scala.xml.Text
 
 class Register extends CometActor with CometListener {
 
@@ -17,7 +18,7 @@ class Register extends CometActor with CometListener {
       println("name in session is " + DataCenter.getName)
 
       if (DataCenter.hasSignInName) {
-          <span></span>
+          Text( (S ?? "welcome").format(DataCenter.getName()))
       }
       else {
           SHtml.ajaxForm(

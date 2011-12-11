@@ -62,7 +62,7 @@ class ListTrainings extends CometActor with CometListener {
         Text(S ?? "training.full")
       }
       else if ( !DataCenter.hasSignInName() ) {
-        Text("-")  
+        <button type="button" disabled="disabled">{S ?? "training.register"}</button>  
       }
       else {
         SHtml.ajaxButton(S ?? "training.register", () => register(training.id))
