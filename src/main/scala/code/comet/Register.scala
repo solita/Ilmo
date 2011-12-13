@@ -4,23 +4,19 @@ import net.liftweb.http.{S, RequestVar, SHtml}
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.js.JsCmds.SetHtml
+import scala.xml.Text
 
 class Register extends CometActor with CometListener {
 
     def registerWith = DataCenter
   
     override def lowPriority = {
-        case _ => {  
-            //partialUpdate(SetHtml("signin", <b>{DataCenter.getName}</b>))
-            reRender
-        }
+      case StateChanged => reRender
     }
     
     override def render = {
-      println("name in session is " + DataCenter.getName)
-
-      if (DataCenter.hasSignInName) {
-          <span></span>
+      if (DataCenter.hasCurrentUserName) {
+          Text( (S ?? "welcome").format(DataCenter.getCurrentUserName()))
       }
       else {
           SHtml.ajaxForm(
@@ -35,7 +31,7 @@ class Register extends CometActor with CometListener {
     }
     
     def signin(name: String) {
-      DataCenter.setName(name)
+      DataCenter.setCurrentUserName(name)
       reRender
     }
       

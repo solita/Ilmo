@@ -26,11 +26,9 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
   }
 
   // FIXME: tyypin pitäsi olla mappednullablestring ja paluuarvona box[String]
-  object linkToMaterial extends MappedString(this,100)
-  
-  object other extends MappedTextarea(this, 1500)
+  object linkToMaterial extends MappedString(this, 100)
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {
-  override def fieldOrder = List(name, organizer, organizerEmail, description, linkToMaterial, other)
+  override def fieldOrder = List(name, organizer, organizerEmail, description, linkToMaterial)
 }

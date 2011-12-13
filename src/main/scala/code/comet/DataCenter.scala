@@ -14,14 +14,11 @@ import code.model.Training
 import code.model.TrainingSession
 import code.model.Participant
 import net.liftweb.mapper.By
+import net.liftweb.mapper.Mapper
 
-case class NewTraining(name: String)
-case class NewTrainingSession
 case class NewParticipant(name: String, trainingId: Long)
 case class DelParticipant(name: String, trainingId: Long)
-case class TrainingDeleted
-case class RegisterMsg(name : String)
-case class SignIn
+case object StateChanged
     
 // FIXME: muuta nimi esim. IlmoApplicationModel
 object DataCenter extends LiftActor with ListenerManager {
@@ -33,45 +30,36 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
     
-    object signInName extends SessionVar[String]("")
-    
-    def hasSignInName() = !("" == signInName.is)
-    
-    def getName() = signInName.is
-    
-    def setName(name: String) = {
-        signInName.set(name)
+    object currentUserName extends SessionVar[String]("")
+    def hasCurrentUserName() = !("" == currentUserName.is)
+    def getCurrentUserName() = currentUserName.is
+    def setCurrentUserName(name: String) = {
+        currentUserName.set(name)
         updateListeners
     }
     
     /**
      * When we update the listeners, what message do we send?
      */
-    def createUpdate = SignIn
+    def createUpdate = StateChanged
   
     override def lowPriority = {
-      case RegisterMsg(name: String) => {
-        println("got register msg")
-        setName(name)
-        updateListeners()
-      }
       case NewParticipant(name: String, trainingSessionId: Long) =>
         addParticipant(name, trainingSessionId)
       case DelParticipant(name: String, trainingSessionId: Long) =>
         delParticipant(name, trainingSessionId)      
     }
     
-    def addParticipant(name: String, trainingSessionId: Long) = {
-      println("saving " + name + " to " + trainingSessionId)
+    private def addParticipant(name: String, trainingSessionId: Long) = {
       TrainingSession.findByKey(trainingSessionId) match {
-        case Full(trainingSession) => {
+        case Full(trainingSession) =>
           Participant.create.name(name).trainingSession(trainingSession).save
-        }
+        case _ => // this could happen if training was removed, in this app we dont care..
       }
       updateListeners
     }
 
-    def delParticipant(name: String, trainingSessionId: Long) = {
+    private def delParticipant(name: String, trainingSessionId: Long) = {
       for {
         trainingSession <- TrainingSession.findByKey(trainingSessionId)
         participant <- Participant.findAll(
@@ -82,24 +70,13 @@ object DataCenter extends LiftActor with ListenerManager {
       updateListeners
     }
 
-    // FIXME: duplikaatiota
-    def saveTraining(training: Training) =  {
-      training.save 
+    def saveAndUpdateListeners[B <: Mapper[B]](entity: B) = {
+      entity.save
       updateListeners
     }
-    
-    def saveTrainingSession(trainingSession: TrainingSession) =  {
-      trainingSession.save 
-      updateListeners
-    }
-    
-    def removeTraining(training: Training) = {
-      training.delete_!
-      updateListeners
-    }
-    
-    def removeTrainingSession(trainingSession: TrainingSession) = {
-      trainingSession.delete_!
+
+    def removeAndUpdateListeners[B <: Mapper[B]](entity: B) = {
+      entity.delete_!
       updateListeners
     }
     

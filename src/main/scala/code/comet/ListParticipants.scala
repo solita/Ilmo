@@ -24,11 +24,15 @@ import code.util.DateUtil
 
 class ListParticipants extends CometActor with CometListener {
   
+  private var selectedTraining: Box[Long] = Empty
+  
   def registerWith = DataCenter
   
+  def newTrainingSelected = 
+    DataCenter.getSelectedTrainingSession != selectedTraining
+    
   override def lowPriority = {
-    // TODO: ei rerenderiä, jos koulutus on jo valittu 
-    case _ => reRender
+    case StateChanged if newTrainingSelected => reRender
   }
   
   override def render = {
@@ -44,7 +48,6 @@ class ListParticipants extends CometActor with CometListener {
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
-      "#trainingother *" #> formatText(training.other.is) &
       ".participant" #> participants.map(p => (".participant [class]" #> (("col" + p._2%3)) & ".name *" #> p._1))
     )
     match {

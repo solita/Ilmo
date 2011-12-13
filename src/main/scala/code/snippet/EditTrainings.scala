@@ -47,7 +47,7 @@ class EditTrainings {
   }
 
   private def saveTraining(training: Training) = training.validate match {
-    case Nil => DataCenter.saveTraining(training); S.redirectTo("index.html")
+    case Nil => DataCenter.saveAndUpdateListeners(training); S.redirectTo("index.html")
     case x => S.error(x); selectedTraining(Full(training))
   }
   
@@ -60,13 +60,13 @@ class EditTrainings {
           <td><input type="submit" value={S ?? "Finish"}/></td>
         </tr>
       </table>
-  ) openOr {error(S ?? "training.not-found"); S.redirectTo("index.html")}
+  ) openOr {S.error(S ?? "training.not-found"); S.redirectTo("index.html")}
   
   def confirmDelete = {
     (for (training <- selectedTraining.is)
      yield {
         def deleteTraining() {
-          DataCenter.removeTraining(training)
+          DataCenter.removeAndUpdateListeners(training)
           S.redirectTo("index")
         }
 
@@ -75,7 +75,7 @@ class EditTrainings {
     }) 
     match {
       case Full(cssbindfunc) => cssbindfunc
-      case _ => error(S ?? "training.not-found"); S.redirectTo("index.html")
+      case _ => S.error(S ?? "training.not-found"); S.redirectTo("index.html")
     }
   }
 

@@ -26,38 +26,39 @@ class ListTrainings extends CometActor with CometListener {
   def registerWith = DataCenter
   
   override def lowPriority = {
-    case NewParticipant(name: String, trainingId: Long) => {  
-        println(name ++ " registered")
-        reRender
-        //partialUpdate(SetHtml("metrics", buildMetricList(metrics)))
-    }
-    case _ => reRender
+    case StateChanged => reRender
   }
   
   override def render = {
-    var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, -6)
-    val trainingList = if ( DataCenter hasSignInName ) { 
-      TrainingSession.getWithParticipantCountForParticipantId(DataCenter.getName(), fromDate.getTime()) 
-    } else {
-      TrainingSession.getWithParticipantCount(fromDate.getTime())
-    }
-    
-    ".training *" #> trainingList.map(training => 
-      ".name" #> training.name &
-      ".place" #> training.place &
-      ".date" #> DateUtil.formatInterval(training.date, training.endDate) &
+    ".training *" #> getTrainingList.map(training => 
+      ".name *" #> training.name &
+      ".place *" #> training.place &
+      ".date *" #> DateUtil.formatInterval(training.date, training.endDate) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
-      ".viewdetails" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id) )) &
-      ".register" #> ( getRegisterButton(training) ) &
-      ".addtocalendar" #> <a href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
+      ".viewdetails *" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id)) ) &
+      ".register *" #> ( getRegisterButton(training) ) &
+      ".addtocalendar *" #> <a href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
     )
+  }
+  
+  private def getTrainingList = {
+    if ( DataCenter hasCurrentUserName ) 
+      TrainingSession.getWithParticipantCountForParticipantId(
+          DataCenter getCurrentUserName(), trainingsSinceDate) 
+    else 
+      TrainingSession.getWithParticipantCount(trainingsSinceDate)
+  }
+  
+  private def trainingsSinceDate = {
+    var fromDate = Calendar.getInstance()
+    fromDate.add(Calendar.MONTH, -6)
+    fromDate.getTime()
   }
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {
     if ( training.date.before(new Date) ) {
-      Text("-")
+      Text(S ?? "past.training")
     }
     else if ( training.hasSignedInUserParticipated ) {
       SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
@@ -66,28 +67,32 @@ class ListTrainings extends CometActor with CometListener {
       if ( training.participantCount >= training.maxParticipants ) { 
         Text(S ?? "training.full")
       }
-      else if ( !DataCenter.hasSignInName() ) {
-        Text("-")  
+      else if ( !DataCenter.hasCurrentUserName() ) {
+        <button type="button" disabled="disabled">{S ?? "training.register"}</button>  
       }
       else {
         SHtml.ajaxButton(S ?? "training.register", () => register(training.id))
       }
     }
   }
-  
+      
   def register(trainingId: Long) : JsCmd = {
-      DataCenter ! NewParticipant(DataCenter.getName(), trainingId)
-      Noop
+      DataCenter ! NewParticipant(DataCenter getCurrentUserName, trainingId)
+      makeLoadingIconVisible  
   }
 
   def unregister(trainingId: Long) : JsCmd = {
-      DataCenter ! DelParticipant(DataCenter.getName(), trainingId)
-      Noop
+      DataCenter ! DelParticipant(DataCenter getCurrentUserName, trainingId)
+      makeLoadingIconVisible
   }
   
   def viewDetails(trainingSessionId: Long) : JsCmd = {
-    DataCenter.setSelectedTrainingSession(trainingSessionId)     
+      DataCenter.setSelectedTrainingSession(trainingSessionId)
+      makeLoadingIconVisible
   }
 
+  def makeLoadingIconVisible =
+    SetHtml("loader-img", <img src="/images/small-ajax-loader.gif" />)
+    
 }
 

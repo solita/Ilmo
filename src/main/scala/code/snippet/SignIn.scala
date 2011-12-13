@@ -3,7 +3,6 @@ import code.comet.DataCenter
 import net.liftweb.http.{S, RequestVar, SHtml}
 import net.liftweb.http.js.JsCmds
 import scala.xml.Text
-import code.comet.RegisterMsg
 
 class SignIn {
   
@@ -14,13 +13,13 @@ class SignIn {
     def render = {
 
         if ( "" != firstname.is && "" != lastname.is ) {
-            DataCenter.setName(firstname.is + " " + lastname.is)
+            DataCenter setCurrentUserName(firstname.is + " " + lastname.is)
         }
         
         else if ( "" != name.is ) {
-            DataCenter.setName(name.is)
+            DataCenter setCurrentUserName(name.is)
         }
         
-        <span></span>
+        Text("")
     }
 }
