@@ -37,7 +37,7 @@ class ListTrainings extends CometActor with CometListener {
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".register *" #> ( getRegisterButton(training) ) &
-      ".addtocalendar *" #> <a href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
+      ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
     )
   }
   
