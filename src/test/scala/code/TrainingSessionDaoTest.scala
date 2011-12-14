@@ -7,6 +7,7 @@ import net.liftweb.mapper.By
 import code.model.TrainingSessionParticipantCountDto
 import code.model.TrainingSession
 import java.util.Date
+import org.joda.time.DateTime
 
 class TrainingSessionDaoTest extends SpecificationWithJUnit { 
   
@@ -35,7 +36,47 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
     }
   }
   
+  private def arbitraryTraining = Training.create.name("test").description("desc")
   
+  private def arbitraryTrainingSession(training: Training) = 
+    TrainingSession.create.date(new Date).endDate(new Date)
+        .training(training).place("place")
+        
+  private def arbitraryParticipant(session: TrainingSession) = 
+    Participant.create.name("henkilo").trainingSession(session)
+    
+  private def dateForDay(d: Int) = new DateTime().withDayOfMonth(d).toDate()
+    
+  "Most popular trainings" should {  
+    "should contain trainings which have the most participants" in {  
+      InMemoryDB.init
+      
+      val t1 = arbitraryTraining.name("t1").saveMe
+      val t2 = arbitraryTraining.name("t2").saveMe
+      
+      val s1 = arbitraryTrainingSession(t1).endDate(dateForDay(10)).saveMe
+      val s2 = arbitraryTrainingSession(t1).endDate(dateForDay(15)).saveMe
+      
+      val s3 = arbitraryTrainingSession(t2).endDate(dateForDay(9)).saveMe
+      val s4 = arbitraryTrainingSession(t2).endDate(dateForDay(12)).saveMe
+      
+      arbitraryParticipant(s1).saveMe
+      arbitraryParticipant(s2).saveMe
+      
+      for (s <- List(s3,s4); i <- List(1,2)) yield arbitraryParticipant(s).saveMe
+      
+      var trainingList = TrainingSession.getPopularTrainings
+      
+      trainingList must have size(2)
+      
+      val resultTraining2 = trainingList.find(_.name == "t2").head
+      resultTraining2.count mustBe 4l
+      resultTraining2.minDate.getTime() mustBe s4.date.getTime()
+      resultTraining2.maxDate mustBe s4.endDate
+
+    }
+  }
+    
   "List of Trainings" should {  
     "should have correct participant count" in {  
       InMemoryDB.init
