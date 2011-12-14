@@ -18,6 +18,7 @@ import net.liftweb.http.js.JsCmd
 import code.model.Training
 import scala.xml.Attribute
 import scala.xml.Null
+import code.util.DateUtil
 
 
 
@@ -43,6 +44,7 @@ class ListParticipants extends CometActor with CometListener {
     }
     yield 
       "#trainingname *" #> training.name.is &
+      "#trainingplace *" #> formatPlace(trainingSession) &
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
@@ -52,6 +54,10 @@ class ListParticipants extends CometActor with CometListener {
       case Full(cssbindfunc) => cssbindfunc
       case _ => <span></span>
     }
+  }
+  
+  def formatPlace(session: TrainingSession) = {
+    session.place.is + " " + DateUtil.formatInterval(session.date.is, session.endDate.is)
   }
   
   def formatTrainingOrganizer(organizer: String, email: String) = {
@@ -67,7 +73,11 @@ class ListParticipants extends CometActor with CometListener {
   }
   
   def formatText(text: String): NodeSeq = {
-    text.split("\n").map(t => Text(t): NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
+    if (text == null) { 
+      Text("-")
+    } else {
+      text.split("\n").map(t => Text(t): NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
+    }
   }
   
 }

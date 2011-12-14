@@ -23,7 +23,8 @@
   padding: 0;
 }
 
-#trainingdesc {
+#participantList #trainingdesc {
+  margin-top: 12px;
   font-size: 11px;
   text-indent: 0;
 }
@@ -31,6 +32,10 @@
 #participantList #trainingname {
   font-weight: bold;
   font-size: 14px;
+}
+
+#participantList #trainingplace {
+  font-size: 10px;
 }
 
 #clearfloats {
@@ -48,6 +53,18 @@
   padding: 0px;
 }
 
+#traininglist table tbody td {
+  font-size: 11px;
+}
+
+#traininglist table tbody td a {
+  text-decoration: none;
+}
+
+#traininglist table tbody td button {
+  font-size: 10px;
+}
+
 #loader-img {
   float: right;
 }
@@ -61,7 +78,7 @@
   <div id="traininglist" class="lift:comet?type=ListTrainings">
     <table>
       <thead><tr>
-        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th></th><th><span id="loader-img"></span></th>
+        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th><span id="loader-img"></span></th>
       </tr></thead>
       <tbody>
       
@@ -70,7 +87,6 @@
           <td class="date"></td>
           <td class="place"></td>
           <td><span class="participantCount"></span> / <span class="maxParticipants"></span></td>
-          <td class="viewdetails"></td>
           <td class="register"></td>
           <td class="addtocalendar"></td>
         </tr>
@@ -81,7 +97,7 @@
   
   
   <div id="participantList" class="lift:comet?type=ListParticipants">
-    <p id="trainingname"></p>
+    <p><span id="trainingname"></span> <span id="trainingplace"></span></p>
     <p id="trainingdesc"></p>
     
     <ol>

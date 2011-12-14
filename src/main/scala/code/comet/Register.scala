@@ -20,7 +20,7 @@ class Register extends CometActor with CometListener {
       }
       else {
           SHtml.ajaxForm(
-             <span>Jos haluat ilmoittautua, anna nimesi? </span> ++
+             Text(S ?? "what.is.your.name") ++
              /* SHtml.text generates a text input that invokes a Scala
               * callback (in this case, the login method) with the text
               * it contains when the form is submitted. */

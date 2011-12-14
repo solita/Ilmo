@@ -23,15 +23,23 @@ import code.util.IlmoDateFormatter
  */
 class Boot {
   def boot {
+    
     if (!DB.jndiJdbcConnAvailable_?) {
-      val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver", 
-			     Props.get("db.url") openOr 
-			     "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-			     Props.get("db.user"), Props.get("db.password"))
+      val vendor = new StandardDBVendor(
+          getProp("db.driver") openOr "org.h2.Driver", 
+	      getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
+		  getProp("db.user"), 
+		  getProp("db.password"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
-
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
+    }
+    
+    def getProp(key: String): Box[String] = {
+      sys.props.get(key) match {
+        case Some(value) => Full(value)
+        case None => Props.get(key)
+      }
     }
 
     // Use Lift's Mapper ORM to populate the database

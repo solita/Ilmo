@@ -31,14 +31,13 @@ class ListTrainings extends CometActor with CometListener {
   
   override def render = {
     ".training *" #> getTrainingList.map(training => 
-      ".name *" #> training.name &
+      ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) &
       ".place *" #> training.place &
       ".date *" #> DateUtil.formatInterval(training.date, training.endDate) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
-      ".viewdetails *" #> ( SHtml.ajaxButton(S ?? "training.viewdetails", () => viewDetails(training.id)) ) &
       ".register *" #> ( getRegisterButton(training) ) &
-      ".addtocalendar *" #> <a href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
+      ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
     )
   }
   

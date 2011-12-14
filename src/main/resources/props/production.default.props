@@ -1,0 +1,6 @@
+#to run on oracle
+db.driver=oracle.jdbc.driver.OracleDriver
+db.url=jdbc:oracle:thin:@<dbserverurl>:1521:<sid>
+#db.schema=
+#db.user=
+#db.password=

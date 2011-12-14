@@ -32,10 +32,18 @@ class EditTrainings {
     ".training *" #>  Training.findAll(OrderBy(Training.id, Descending)).map(training => 
       ".name" #> training.name &
       ".organizer" #> training.organizer &
-      ".linkToMaterial" #> <a href={training.linkToMaterial}>{training.linkToMaterial}</a> &
+      ".linkToMaterial" #> toEmptySpanOrLink(training.linkToMaterial) &
       ".remove" #> SHtml.link("confirm", () => selectedTraining(Full(training)), Text(S ?? "Remove")) &
       ".edit" #> SHtml.link("edit_training", () => selectedTraining(Full(training)), Text(S ?? "Edit"))
     ) 
+  }
+  
+  private def toEmptySpanOrLink(link: String): NodeSeq = {
+    if (link == null) {
+      Text("")
+    } else {
+      <a href={link}>{link}</a>
+    }
   }
 
   private def saveTraining(training: Training) = training.validate match {

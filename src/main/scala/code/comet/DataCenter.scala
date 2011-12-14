@@ -20,6 +20,7 @@ case class NewParticipant(name: String, trainingId: Long)
 case class DelParticipant(name: String, trainingId: Long)
 case object StateChanged
     
+// FIXME: muuta nimi esim. IlmoApplicationModel
 object DataCenter extends LiftActor with ListenerManager {
  
     object selectedTrainingSession extends SessionVar[Box[Long]](Empty)

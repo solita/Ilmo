@@ -1,5 +1,12 @@
-db.driver=org.h2.Driver
-db.url=jdbc:h2:ilmo.db;AUTO_SERVER=TRUE
-db.schema=PUBLIC
-db.user=sa
+#db.driver=org.h2.Driver
+#db.url=jdbc:h2:ilmo.db;AUTO_SERVER=TRUE
+#db.schema=PUBLIC
+#db.user=sa
+#db.password=
+
+#to run on oracle
+db.driver=oracle.jdbc.driver.OracleDriver
+db.url=jdbc:oracle:thin:@tauros:1521:d102
+db.schema=ilmo
+db.user=
 db.password=
