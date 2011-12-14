@@ -57,6 +57,10 @@
   font-size: 11px;
 }
 
+#traininglist table tbody td a {
+  text-decoration: none;
+}
+
 #traininglist table tbody td button {
   font-size: 10px;
 }
@@ -74,7 +78,7 @@
   <div id="traininglist" class="lift:comet?type=ListTrainings">
     <table>
       <thead><tr>
-        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th></th><th><span id="loader-img"></span></th>
+        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th><span id="loader-img"></span></th>
       </tr></thead>
       <tbody>
       
@@ -83,7 +87,6 @@
           <td class="date"></td>
           <td class="place"></td>
           <td><span class="participantCount"></span> / <span class="maxParticipants"></span></td>
-          <td class="viewdetails"></td>
           <td class="register"></td>
           <td class="addtocalendar"></td>
         </tr>
