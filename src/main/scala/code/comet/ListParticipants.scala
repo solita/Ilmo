@@ -28,12 +28,21 @@ class ListParticipants extends CometActor with CometListener {
   
   def registerWith = DataCenter
   
+  def isSelected(trainingSessionId: Long) = Full(trainingSessionId) == selectedTraining
+  
   def newTrainingSelected = 
     DataCenter.getSelectedTrainingSession != selectedTraining
-    
+  
+  def setTraining = selectedTraining = DataCenter.getSelectedTrainingSession
+
   override def lowPriority = {
-    case StateChanged if newTrainingSelected => reRender
+    case TrainingSelected(tId) if newTrainingSelected => setTraining; reRender
+    case NewParticipant(pname, tId) if isSelected(tId) => reRender
+    case DelParticipant(pname, tId) if isSelected(tId) => reRender
+    case TrainingsChanged => reRender
+    case msg if msg.isInstanceOf[StateChanged] => Noop
   }
+  
   
   override def render = {
     (for {

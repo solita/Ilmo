@@ -16,18 +16,24 @@ import code.model.Participant
 import net.liftweb.mapper.By
 import net.liftweb.mapper.Mapper
 
-case class NewParticipant(name: String, trainingId: Long)
-case class DelParticipant(name: String, trainingId: Long)
-case object StateChanged
-    
-// FIXME: muuta nimi esim. IlmoApplicationModel
+abstract class StateChanged
+case object TrainingsChanged extends StateChanged
+case class TrainingSelected(trainingSessionId: Long) extends StateChanged
+case class NewParticipant(name: String, trainingId: Long) extends StateChanged
+case class DelParticipant(name: String, trainingId: Long) extends StateChanged
+case class UserSignedIn(name: String) extends StateChanged
+
+
+// FIXME: muuta nimi esim. IlmoListenerManager
 object DataCenter extends LiftActor with ListenerManager {
- 
+    
+    private var message: Option[StateChanged] = None
+  
     object selectedTrainingSession extends SessionVar[Box[Long]](Empty)
     def getSelectedTrainingSession = selectedTrainingSession.is
     def setSelectedTrainingSession(trainingSessionId: Long) = {
       selectedTrainingSession.set(Full(trainingSessionId))
-      updateListeners
+      notifyListenersWith(TrainingSelected(trainingSessionId))
     }
     
     object currentUserName extends SessionVar[String]("")
@@ -35,13 +41,15 @@ object DataCenter extends LiftActor with ListenerManager {
     def getCurrentUserName() = currentUserName.is
     def setCurrentUserName(name: String) = {
         currentUserName.set(name)
-        updateListeners
+        notifyListenersWith(UserSignedIn(name))
     }
     
-    /**
-     * When we update the listeners, what message do we send?
-     */
-    def createUpdate = StateChanged
+    def notifyListenersWith(messageToListeners: StateChanged) {
+      message = Some(messageToListeners)
+      updateListeners
+    }
+    
+    def createUpdate = message get
   
     override def lowPriority = {
       case NewParticipant(name: String, trainingSessionId: Long) =>
@@ -56,7 +64,7 @@ object DataCenter extends LiftActor with ListenerManager {
           Participant.create.name(name).trainingSession(trainingSession).save
         case _ => // this could happen if training was removed, in this app we dont care..
       }
-      updateListeners
+      notifyListenersWith(NewParticipant(name, trainingSessionId))
     }
 
     private def delParticipant(name: String, trainingSessionId: Long) = {
@@ -67,17 +75,17 @@ object DataCenter extends LiftActor with ListenerManager {
             By(Participant.name, name)).headOption
       } 
       yield participant.delete_! 
-      updateListeners
+      notifyListenersWith(DelParticipant(name, trainingSessionId))
     }
 
     def saveAndUpdateListeners[B <: Mapper[B]](entity: B) = {
       entity.save
-      updateListeners
+      notifyListenersWith(TrainingsChanged)
     }
 
     def removeAndUpdateListeners[B <: Mapper[B]](entity: B) = {
       entity.delete_!
-      updateListeners
+      notifyListenersWith(TrainingsChanged)
     }
     
 }

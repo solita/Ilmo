@@ -23,12 +23,18 @@ import java.util.Calendar
 
 class ListTrainings extends CometActor with CometListener {
   
+  private var showTrainingsSinceMonths = -6;
+  
   def registerWith = DataCenter
-  
+
   override def lowPriority = {
-    case StateChanged => reRender
+    case UserSignedIn(name) => reRender
+    case NewParticipant(name, tId) => reRender
+    case DelParticipant(name, tId) => reRender
+    case TrainingsChanged => reRender
+    case msg if msg.isInstanceOf[StateChanged] => Noop
   }
-  
+
   override def render = {
     ".training *" #> getTrainingList.map(training => 
       ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) &
@@ -51,7 +57,7 @@ class ListTrainings extends CometActor with CometListener {
   
   private def trainingsSinceDate = {
     var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, -6)
+    fromDate.add(Calendar.MONTH, showTrainingsSinceMonths)
     fromDate.getTime()
   }
   
