@@ -12,17 +12,31 @@ class Register extends CometActor with CometListener {
     def registerWith = DataCenter
   
     override def lowPriority = {
-      case UserSignedIn(name) => reRender
+      case NewParticipant(pname, tId) => viewMsg(localizedText("new.participant.msg", pname))
+      case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
+      case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
+      case UserSignedIn(name) => partialUpdate(SetHtml("welcome", getWelcomeTextOrAskNameForm))
       case msg if msg.isInstanceOf[StateChanged] => Noop
     }
     
+    def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 
+    
+    def localizedText(localizationKey: String, param: String*) = 
+      if (param.length == 0) Text(S ?? localizationKey)
+      else Text((S ?? localizationKey).format(param.head))
+    
     override def render = {
+      "#welcome *" #> getWelcomeTextOrAskNameForm &
+      "#ilmomsg *" #> Text("")
+    }
+    
+    def getWelcomeTextOrAskNameForm = {
       if (DataCenter.hasCurrentUserName) {
-          Text( (S ?? "welcome").format(DataCenter.getCurrentUserName()))
+          localizedText("welcome", DataCenter.getCurrentUserName())
       }
       else {
           SHtml.ajaxForm(
-             Text(S ?? "what.is.your.name") ++
+             localizedText("what.is.your.name") ++
              /* SHtml.text generates a text input that invokes a Scala
               * callback (in this case, the login method) with the text
               * it contains when the form is submitted. */

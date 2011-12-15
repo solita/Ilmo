@@ -65,20 +65,37 @@
   font-size: 10px;
 }
 
-#loader-img {
-  float: right;
+table#welcometable {
+  margin-bottom: 0;
+}
+
+table#welcometable td#ilmomsg {
+  padding: 0;
+  vertical-align: bottom;
+  text-align: right;
+}
+
+table#welcometable td#welcome {
+  padding: 0;
 }
 
 </style>
 </head>
 
   <span id="signin"></span>
-  <div class="lift:comet?type=Register"></div>
+  <div class="lift:comet?type=Register">
+    <table id="welcometable">
+      <tr><td id="welcome"></td><td id="ilmomsg"></td></tr>
+    </table>
+    <!--
+    <span id="welcome"></span> <span id="ilmomsg"></span>
+    -->
+  </div>
   
   <div id="traininglist" class="lift:comet?type=ListTrainings">
     <table>
       <thead><tr>
-        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th><span id="loader-img"></span></th>
+        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th></th>
       </tr></thead>
       <tbody>
       

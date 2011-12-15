@@ -83,21 +83,15 @@ class ListTrainings extends CometActor with CometListener {
       
   def register(trainingId: Long) : JsCmd = {
       DataCenter ! NewParticipant(DataCenter getCurrentUserName, trainingId)
-      makeLoadingIconVisible  
   }
 
   def unregister(trainingId: Long) : JsCmd = {
       DataCenter ! DelParticipant(DataCenter getCurrentUserName, trainingId)
-      makeLoadingIconVisible
   }
   
   def viewDetails(trainingSessionId: Long) : JsCmd = {
       DataCenter.setSelectedTrainingSession(trainingSessionId)
-      makeLoadingIconVisible
   }
 
-  def makeLoadingIconVisible =
-    SetHtml("loader-img", <img src="/images/small-ajax-loader.gif" />)
-    
 }
 
