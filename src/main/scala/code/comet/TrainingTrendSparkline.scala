@@ -19,6 +19,11 @@ class TrainingTrendSparkline extends CometActor with CometListener {
     
     override def render = {
       // todo hae kannasta data
+      /* Oraclessa
+       * with months as (select add_months(sysdate, -level+1) as m from dual connect by level <= 12)
+           select m.m, (select count(*) from trainingsession where to_char(date_c,'mmyyyy')=to_char(m.m,'mmyyyy'))
+           from months m; 
+       */
       val data = JsArray(100,500,300,200,400,500,400,400,
                        100,200, 345, 412, 111, 234, 490);
       
