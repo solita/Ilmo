@@ -79,6 +79,23 @@ table#welcometable td#welcome {
   padding: 0;
 }
 
+#traininglist #monthlinksheader {
+  text-align: right;
+}
+
+#traininglist #monthlinksheader a {
+  text-decoration: none;
+}
+
+
+#traininglist #monthlinksheader span {
+  margin: 0 6px 0 0;
+}
+
+#traininglist #monthlinksheader .selected {
+  font-weight: bold;
+}
+
 </style>
 </head>
 
@@ -95,7 +112,7 @@ table#welcometable td#welcome {
   <div id="traininglist" class="lift:comet?type=ListTrainings">
     <table>
       <thead><tr>
-        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th></th><th></th>
+        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th id="monthlinksheader" colspan="2"><span id="monthsback"></span> kk</th>
       </tr></thead>
       <tbody>
       

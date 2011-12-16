@@ -22,12 +22,13 @@ case class TrainingSelected(trainingSessionId: Long) extends StateChanged
 case class NewParticipant(name: String, trainingId: Long) extends StateChanged
 case class DelParticipant(name: String, trainingId: Long) extends StateChanged
 case class UserSignedIn(name: String) extends StateChanged
+case object Init extends StateChanged
 
 
 // FIXME: muuta nimi esim. IlmoListenerManager
 object DataCenter extends LiftActor with ListenerManager {
     
-    private var message: Option[StateChanged] = None
+    private var message: Option[StateChanged] = Some(Init)
   
     object selectedTrainingSession extends SessionVar[Box[Long]](Empty)
     def getSelectedTrainingSession = selectedTrainingSession.is

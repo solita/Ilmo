@@ -23,7 +23,7 @@ import java.util.Calendar
 
 class ListTrainings extends CometActor with CometListener {
   
-  private var showTrainingsSinceMonths = -6;
+  private var showTrainingsSinceMonths = 0;
   
   def registerWith = DataCenter
 
@@ -36,6 +36,7 @@ class ListTrainings extends CometActor with CometListener {
   }
 
   override def render = {
+    "#monthsback" #> getTrainingsSinceMonthsLinks &
     ".training *" #> getTrainingList.map(training => 
       ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) &
       ".place *" #> training.place &
@@ -45,6 +46,14 @@ class ListTrainings extends CometActor with CometListener {
       ".register *" #> ( getRegisterButton(training) ) &
       ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
     )
+  }
+    
+  private def getTrainingsSinceMonthsLinks = {
+    def textFor(n: Int) = {
+      if (showTrainingsSinceMonths!=n) SHtml.a(() => {showTrainingsSinceMonths = n; reRender}, <span class="selected">{n}</span>)  
+      else <span>{n}</span>
+    }
+    List(12, 6, 3, 0).map(textFor _).reduceLeft[NodeSeq](_++_)
   }
   
   private def getTrainingList = {
@@ -57,7 +66,7 @@ class ListTrainings extends CometActor with CometListener {
   
   private def trainingsSinceDate = {
     var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, showTrainingsSinceMonths)
+    fromDate.add(Calendar.MONTH, -showTrainingsSinceMonths)
     fromDate.getTime()
   }
   

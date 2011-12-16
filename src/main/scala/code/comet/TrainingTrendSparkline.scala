@@ -21,8 +21,12 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       // todo hae kannasta data
       val data = JsArray(100,500,300,200,400,500,400,400,
                        100,200, 345, 412, 111, 234, 490);
-      val opts = JsObj(("stroke" -> "#444444"),
-                       ("background" -> "#FFFFFF"));
+      
+      // todo värit ei toimi
+      val opts = JsObj(("zeroAxis" -> false),
+                       ("barColor" -> "blue"),
+                       ("nullColor" -> "red"),
+                       ("background" -> "white"));
       Sparklines.onLoad("bar", SparklineStyle.BAR, data, opts);
     }
     
