@@ -15,6 +15,7 @@ import java.util.Locale
 import java.util.ResourceBundle
 import code.model.calendar.CalendarICSFileHelper
 import code.util.IlmoDateFormatter
+import net.liftweb.widgets.sparklines.Sparklines
 
 
 /**
@@ -23,6 +24,8 @@ import code.util.IlmoDateFormatter
  */
 class Boot {
   def boot {
+    
+    Sparklines.init
     
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = new StandardDBVendor(
