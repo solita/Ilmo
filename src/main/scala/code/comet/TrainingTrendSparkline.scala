@@ -44,7 +44,6 @@ class TrainingTrendSparkline extends CometActor with CometListener {
     override def render = {
       val data = getMonthlyParticipantCounts
       
-      // todo värit ei toimi
       val opts = JsObj(("zeroAxis" -> false),
                        ("type" -> "bar"),
                        ("barcolor" -> "#9999FF"),
