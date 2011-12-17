@@ -93,4 +93,16 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                     ));
     }
 
+    def getMonthlyParticipantCount(afterDate: Date) = {
+        DB.runQuery("""
+          select y, m, count(*) from (
+              select extract(year from date_c) as y, extract(month from date_c) as m
+              from trainingsession s inner join participant p on p.trainingsession = s.id
+              where date_c >= ?
+          )     
+          group by y, m
+        """, List(afterDate))._2.map(
+            list => MonthlyParticipantCountDto(list(0).toInt, list(1).toInt, list(2).toInt))
+    }
+
 }

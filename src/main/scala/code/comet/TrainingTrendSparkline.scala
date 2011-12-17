@@ -7,6 +7,12 @@ import net.liftweb.http.js.JE.JsObj
 import net.liftweb.http.js.JsCmds.Noop
 import net.liftweb.widgets.sparklines.Sparklines
 import net.liftweb.widgets.sparklines.SparklineStyle
+import net.liftweb.http.js.JsExp
+import net.liftweb.http.js.JE.Num
+import net.liftweb.http.js.JE.JsRaw
+import net.liftweb.http.js.JE.Call
+import code.model.TrainingSession
+import org.joda.time.DateTime
 
 class TrainingTrendSparkline extends CometActor with CometListener {
   
@@ -17,22 +23,33 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       case msg if msg.isInstanceOf[StateChanged] => Noop
     }
     
+    def getMonthlyParticipantCounts: JsArray = {
+      val monthsback = 18
+      val afterDate = new DateTime().minusMonths(monthsback).withDayOfMonth(1)
+      val months = (0 to monthsback).map(afterDate.plusMonths)
+      
+      var participantCounts = TrainingSession.getMonthlyParticipantCount(afterDate.toDate)
+      
+      def getCountFor(y: Int, m: Int) = 
+        participantCounts.filter(pc => pc.year == y && pc.month == m) match {
+        case Nil => 0
+        case stats => stats.head.count
+      }
+      
+      val counts = for (m <- months) yield getCountFor(m.getYear, m.getMonthOfYear)
+      JsArray(counts.toList.map(Num(_)))  
+    }
+    
     override def render = {
-      // todo hae kannasta data
-      /* Oraclessa
-       * with months as (select add_months(sysdate, -level+1) as m from dual connect by level <= 12)
-           select m.m, (select count(*) from trainingsession where to_char(date_c,'mmyyyy')=to_char(m.m,'mmyyyy'))
-           from months m; 
-       */
-      val data = JsArray(100,500,300,200,400,500,400,400,
-                       100,200, 345, 412, 111, 234, 490);
+      val data = getMonthlyParticipantCounts
       
       // todo värit ei toimi
       val opts = JsObj(("zeroAxis" -> false),
-                       ("barColor" -> "blue"),
-                       ("nullColor" -> "red"),
-                       ("background" -> "white"));
-      Sparklines.onLoad("bar", SparklineStyle.BAR, data, opts);
+                       ("type" -> "bar"),
+                       ("barcolor" -> "#9999FF"),
+                       ("zeroColor" -> "#EBEBFF"));
+      
+      Call("drawGraph", data, opts).cmd
     }
     
 }

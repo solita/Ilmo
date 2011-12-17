@@ -25,7 +25,7 @@ import net.liftweb.widgets.sparklines.Sparklines
 class Boot {
   def boot {
     
-    Sparklines.init
+    //Sparklines.init
     
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = new StandardDBVendor(

@@ -117,4 +117,38 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       )
     }
   }
+  
+  private def dayMonth(day: Int, month: Int) = 
+    new DateTime().withDayOfMonth(day).withMonthOfYear(month).toDate()
+
+    
+  "TrainingSession getMonthlyParticipantCount" should {  
+    "should have correct monthly participant counts" in {  
+      InMemoryDB.init
+      
+      val t1 = arbitraryTraining.name("t1").saveMe
+      val t2 = arbitraryTraining.name("t2").saveMe
+      
+      val s1 = arbitraryTrainingSession(t1).date(dayMonth(10,1)).saveMe
+      val s2 = arbitraryTrainingSession(t1).date(dayMonth(15,1)).saveMe
+      
+      val s3 = arbitraryTrainingSession(t2).date(dayMonth(10,2)).saveMe
+      val s4 = arbitraryTrainingSession(t2).date(dayMonth(15,2)).saveMe
+      
+      arbitraryParticipant(s1).saveMe
+      arbitraryParticipant(s2).saveMe
+      
+      for (s <- List(s3,s4); i <- List(1,2)) yield arbitraryParticipant(s).saveMe
+      
+      var participantCounts = TrainingSession.getMonthlyParticipantCount(dayMonth(1,1))
+      
+      val january = participantCounts.find(_.month == 1).head
+      january.count mustBe 2
+      
+      val feb = participantCounts.find(_.month == 2).head
+      feb.count mustBe 4
+
+    }
+  }
+  
 }
