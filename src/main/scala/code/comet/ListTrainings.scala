@@ -23,7 +23,7 @@ import java.util.Calendar
 
 class ListTrainings extends CometActor with CometListener {
   
-  private var showTrainingsSinceMonths = 0;
+  private var showTrainingsSinceMonths = 3;
   
   def registerWith = DataCenter
 
@@ -44,16 +44,23 @@ class ListTrainings extends CometActor with CometListener {
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".register *" #> ( getRegisterButton(training) ) &
-      ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}><img src="/images/Calendar-Add-16.png" /></a>
+      ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}>
+                                <img src="/images/Calendar-Add-16.png" /></a>
     )
   }
     
   private def getTrainingsSinceMonthsLinks = {
     def textFor(n: Int) = {
-      if (showTrainingsSinceMonths!=n) SHtml.a(() => {showTrainingsSinceMonths = n; reRender}, <span class="selected">{n}</span>)  
-      else <span>{n}</span>
+      val title = if (n == 0) S ?? "show.trainings.since.now"
+                  else (S ?? "show.trainings.since").format(n)
+      
+      if (showTrainingsSinceMonths!=n) 
+        SHtml.a(() => {showTrainingsSinceMonths = n; reRender}, 
+               <span title={title} class="selected">{n}</span>)  
+      else 
+        <span title={title}>{n}</span>
     }
-    List(12, 6, 3, 0).map(textFor _).reduceLeft[NodeSeq](_++_)
+    List(0,3,6,12,24).map(textFor _).reduceLeft[NodeSeq](_++_)
   }
   
   private def getTrainingList = {
