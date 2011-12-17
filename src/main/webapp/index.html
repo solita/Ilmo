@@ -69,15 +69,19 @@ table#welcometable {
   margin-bottom: 0;
 }
 
-table#welcometable td#ilmomsg {
+table#welcometable td {
   padding: 0;
+}
+
+#welcometable td span {
+  float: left;
+}
+
+table#welcometable td#ilmomsg {
   vertical-align: bottom;
   text-align: right;
 }
 
-table#welcometable td#welcome {
-  padding: 0;
-}
 
 #traininglist #monthlinksheader {
   text-align: right;
@@ -102,7 +106,13 @@ table#welcometable td#welcome {
   <span id="signin"></span>
   <div class="lift:comet?type=Register">
     <table id="welcometable">
-      <tr><td id="welcome"></td><td id="ilmomsg"></td></tr>
+      <tr>
+        <td>
+            <span id="signout"></span>
+            <span id="welcome"></span>
+        </td>
+        <td id="ilmomsg"></td>
+      </tr>
     </table>
   </div>
   

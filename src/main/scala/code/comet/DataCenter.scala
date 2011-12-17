@@ -40,6 +40,7 @@ object DataCenter extends LiftActor with ListenerManager {
     object currentUserName extends SessionVar[String]("")
     def hasCurrentUserName() = !("" == currentUserName.is)
     def getCurrentUserName() = currentUserName.is
+    def clearUserName = setCurrentUserName("")
     def setCurrentUserName(name: String) = {
         currentUserName.set(name)
         notifyListenersWith(UserSignedIn(name))

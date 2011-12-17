@@ -6,6 +6,7 @@ import net.liftweb.http.CometListener
 import net.liftweb.http.js.JsCmds.SetHtml
 import net.liftweb.http.js.JsCmds.Noop
 import scala.xml.Text
+import DataCenter._
 
 class Register extends CometActor with CometListener {
 
@@ -15,8 +16,13 @@ class Register extends CometActor with CometListener {
       case NewParticipant(pname, tId) => viewMsg(localizedText("new.participant.msg", pname))
       case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
       case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
-      case UserSignedIn(name) => partialUpdate(SetHtml("welcome", getWelcomeTextOrAskNameForm))
+      case UserSignedIn(name) => updateWelcomeText
       case msg if msg.isInstanceOf[StateChanged] => Noop
+    }
+    
+    def updateWelcomeText = {
+      partialUpdate(SetHtml("welcome", getWelcomeTextOrAskNameForm))
+      partialUpdate(SetHtml("signout", showSignoutLogoIfUserHasSignedIn))
     }
     
     def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 
@@ -26,13 +32,21 @@ class Register extends CometActor with CometListener {
       else Text((S ?? localizationKey).format(param.head))
     
     override def render = {
+      "#signout *" #> showSignoutLogoIfUserHasSignedIn &
       "#welcome *" #> getWelcomeTextOrAskNameForm &
       "#ilmomsg *" #> Text("")
     }
     
+    def showSignoutLogoIfUserHasSignedIn = {
+      if (hasCurrentUserName)
+        SHtml.a(() => {clearUserName}, <img title="signout" src="/images/signout.png"/>)
+      else 
+        Text("")
+    }
+    
     def getWelcomeTextOrAskNameForm = {
-      if (DataCenter.hasCurrentUserName) {
-          localizedText("welcome", DataCenter.getCurrentUserName())
+      if (hasCurrentUserName) {
+          localizedText("welcome", getCurrentUserName)
       }
       else {
           SHtml.ajaxForm(
@@ -46,8 +60,6 @@ class Register extends CometActor with CometListener {
       }
     }
     
-    def signin(name: String) {
-      DataCenter.setCurrentUserName(name)
-    }
+    def signin(name: String) = setCurrentUserName(name)
       
 }
