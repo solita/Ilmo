@@ -13,6 +13,7 @@ import net.liftweb.http.js.JE.JsRaw
 import net.liftweb.http.js.JE.Call
 import code.model.TrainingSession
 import org.joda.time.DateTime
+import DataCenter._
 
 class TrainingTrendSparkline extends CometActor with CometListener {
   
@@ -20,7 +21,7 @@ class TrainingTrendSparkline extends CometActor with CometListener {
   
     override def lowPriority = {
       case TrainingsChanged => reRender
-      case msg if msg.isInstanceOf[StateChanged] => Noop
+      case msg if ilmomsg(msg) => Noop
     }
     
     def getMonthlyParticipantCounts: JsArray = {

@@ -17,7 +17,7 @@ class Register extends CometActor with CometListener {
       case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
       case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
       case UserSignedIn(name) => updateWelcomeText
-      case msg if msg.isInstanceOf[StateChanged] => Noop
+      case msg if ilmomsg(msg) => Noop
     }
     
     def updateWelcomeText = {

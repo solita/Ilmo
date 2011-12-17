@@ -90,4 +90,5 @@ object DataCenter extends LiftActor with ListenerManager {
       notifyListenersWith(TrainingsChanged)
     }
     
+    def ilmomsg(msg: Any) = msg.isInstanceOf[StateChanged]
 }

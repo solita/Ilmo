@@ -18,7 +18,7 @@ import net.liftweb.http.js.JsCmd
 import code.util.DateUtil
 import code.model.TrainingSessionParticipantCountDto
 import java.util.Calendar
-
+import DataCenter._
 
 
 class ListTrainings extends CometActor with CometListener {
@@ -32,7 +32,7 @@ class ListTrainings extends CometActor with CometListener {
     case NewParticipant(name, tId) => reRender
     case DelParticipant(name, tId) => reRender
     case TrainingsChanged => reRender
-    case msg if msg.isInstanceOf[StateChanged] => Noop
+    case msg if ilmomsg(msg) => Noop
   }
 
   override def render = {

@@ -19,7 +19,7 @@ import code.model.Training
 import scala.xml.Attribute
 import scala.xml.Null
 import code.util.DateUtil
-
+import DataCenter._
 
 
 class ListParticipants extends CometActor with CometListener {
@@ -40,7 +40,7 @@ class ListParticipants extends CometActor with CometListener {
     case NewParticipant(pname, tId) if isSelected(tId) => reRender
     case DelParticipant(pname, tId) if isSelected(tId) => reRender
     case TrainingsChanged => reRender
-    case msg if msg.isInstanceOf[StateChanged] => Noop
+    case msg if ilmomsg(msg) => Noop
   }
   
   
