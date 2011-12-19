@@ -30,3 +30,15 @@ h1.title {
 a img {
     vertical-align: bottom;
 }
+
+td.form-left {
+	width: 33%;
+}
+
+td.form-right {
+	width: 67%;
+}
+
+label {
+	font-weight: normal;
+}

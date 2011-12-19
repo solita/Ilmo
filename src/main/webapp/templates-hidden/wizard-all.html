@@ -8,7 +8,7 @@
       <table>
 	<tbody>
             <tr lift:bind="wizard:line">
-              <td>
+              <td class="form-left">
 		<wizard:label>
 		  <label wizard:for="">
 		    <wizard:bind></wizard:bind>
@@ -29,7 +29,7 @@
 		  </ul>
 		</wizard:field_errors>
               </td>
-              <td>
+              <td class="form-right">
 		<wizard:form></wizard:form>
 	      </td>
             </tr>
@@ -44,10 +44,10 @@
 	  <wizard:prev></wizard:prev> 
 	</td>
 	<td>
-	  <wizard:cancel></wizard:cancel>
+	  <wizard:next></wizard:next>
 	</td>
 	<td>
-	  <wizard:next></wizard:next>
+	  <wizard:cancel></wizard:cancel>
 	</td>
       </tr>
     </table>
