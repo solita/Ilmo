@@ -34,7 +34,7 @@ object CalendarICSFileHelper extends RestHelper {
   
   def getICSFileForTraining(trainingSession: TrainingSession): LiftResponse = {
     
-    tryo(InMemoryResponse(createCalendar(trainingSession).toString().getBytes("UTF-8"), 
+    tryo(InMemoryResponse(createCalendar(trainingSession).open_!.toString().getBytes("UTF-8"), 
                                List("Content-Type" -> "text/calendar"), 
                                Nil, 200)
     ) openOr BadResponse()
