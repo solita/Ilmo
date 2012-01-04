@@ -25,10 +25,9 @@ import net.liftweb.widgets.sparklines.Sparklines
 class Boot {
   def boot {
     
-    //Sparklines.init
     
     if (!DB.jndiJdbcConnAvailable_?) {
-      val vendor = new StandardDBVendor(
+      val vendor = new IlmoDBVendor(
           getProp("db.driver") openOr "org.h2.Driver", 
 	      getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
 		  getProp("db.user"), 
@@ -36,6 +35,7 @@ class Boot {
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
+      
     }
     
     def getProp(key: String): Box[String] = {
@@ -48,7 +48,7 @@ class Boot {
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
-    Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
+    //Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
 
     MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})
     
