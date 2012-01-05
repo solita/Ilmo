@@ -15,6 +15,7 @@ import code.model.TrainingSession
 import code.model.Participant
 import net.liftweb.mapper.By
 import net.liftweb.mapper.Mapper
+import net.liftweb.mapper.Like
 
 abstract class StateChanged
 case object TrainingsChanged extends StateChanged
@@ -55,12 +56,20 @@ object DataCenter extends LiftActor with ListenerManager {
   
     override def lowPriority = {
       case NewParticipant(name: String, trainingSessionId: Long) =>
-        addParticipant(name, trainingSessionId)
+        addParticipantIfNotExists(name, trainingSessionId)
       case DelParticipant(name: String, trainingSessionId: Long) =>
         delParticipant(name, trainingSessionId)      
     }
     
+    private def addParticipantIfNotExists(name: String, trainingSessionId: Long) = {
+      val existingParticipant = Participant.findAll(
+          By(Participant.trainingSession, trainingSessionId), Like(Participant.name, name))
+
+      if ( existingParticipant.isEmpty ) addParticipant(name, trainingSessionId);
+    }
+    
     private def addParticipant(name: String, trainingSessionId: Long) = {
+      
       TrainingSession.findByKey(trainingSessionId) match {
         case Full(trainingSession) =>
           Participant.create.name(name).trainingSession(trainingSession).save
