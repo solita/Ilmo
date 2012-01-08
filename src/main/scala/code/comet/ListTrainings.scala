@@ -28,7 +28,8 @@ class ListTrainings extends CometActor with CometListener {
   def registerWith = DataCenter
 
   override def lowPriority = {
-    case UserSignedIn(name) => reRender
+    case UserSignedIn(name) if isMyUser(name) => reRender // todo optimize
+    case UserSignedOut(name) if !hasCurrentUserName => reRender // todo optimize
     case NewParticipant(name, tId) => reRender
     case DelParticipant(name, tId) => reRender
     case TrainingsChanged => reRender

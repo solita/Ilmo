@@ -10,56 +10,59 @@ import DataCenter._
 
 class Register extends CometActor with CometListener {
 
+    private var isSignedIn = false
+    
     def registerWith = DataCenter
   
     override def lowPriority = {
       case NewParticipant(pname, tId) => viewMsg(localizedText("new.participant.msg", pname))
       case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
       case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
-      case UserSignedIn(name) => updateWelcomeText
+      case UserSignedIn(name) if isMyUser(name) => handleSignin
+      case UserSignedOut(name) if isSignedIn && !hasCurrentUserName => handleSignout
       case msg if ilmomsg(msg) => Noop
     }
     
-    def updateWelcomeText = {
-      partialUpdate(SetHtml("welcome", getWelcomeTextOrAskNameForm))
-      partialUpdate(SetHtml("signout", showSignoutLogoIfUserHasSignedIn))
+    private def handleSignout = {
+      isSignedIn = false
+      partialUpdate(SetHtml("welcome", askNameForm))
+      partialUpdate(SetHtml("signout", Text("")))
     }
     
-    def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 
+    private def handleSignin = {
+      isSignedIn = true
+      partialUpdate(SetHtml("welcome", welcomeText))
+      partialUpdate(SetHtml("signout", signoutLink))
+    }
     
-    def localizedText(localizationKey: String, param: String*) = 
-      if (param.length == 0) Text(S ?? localizationKey)
-      else Text((S ?? localizationKey).format(param.head))
-    
+    private def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 
+        
     override def render = {
       "#signout *" #> showSignoutLogoIfUserHasSignedIn &
       "#welcome *" #> getWelcomeTextOrAskNameForm &
       "#ilmomsg *" #> Text("")
     }
     
-    def showSignoutLogoIfUserHasSignedIn = {
-      if (hasCurrentUserName)
-        SHtml.a(() => {clearUserName}, <img title="signout" src="/images/signout.png"/>)
-      else 
-        Text("")
-    }
+    private def showSignoutLogoIfUserHasSignedIn =
+      if (hasCurrentUserName) signoutLink else Text("")
     
-    def getWelcomeTextOrAskNameForm = {
-      if (hasCurrentUserName) {
-          localizedText("welcome", getCurrentUserName)
-      }
-      else {
-          SHtml.ajaxForm(
+    private def getWelcomeTextOrAskNameForm = 
+      if (hasCurrentUserName) welcomeText else askNameForm
+
+    private def signoutLink = SHtml.a(() => {signout(getCurrentUserName)}, 
+                <img title="signout" src="/images/signout.png"/>)
+                
+    private def welcomeText = localizedText("welcome", getCurrentUserName)
+    
+    private def askNameForm = SHtml.ajaxForm(
              localizedText("what.is.your.name") ++
-             /* SHtml.text generates a text input that invokes a Scala
-              * callback (in this case, the login method) with the text
-              * it contains when the form is submitted. */
-              SHtml.text("", signin) 
-              ++ <input type="submit" value="Kirjaudu" />
-          )
-      }
-    }
+              SHtml.text("", signin) ++ 
+              <input type="submit" value="Kirjaudu" />)
+
+    private def signin(name: String) = setCurrentUserName(name)
     
-    def signin(name: String) = setCurrentUserName(name)
-      
+    private def localizedText(localizationKey: String, param: String*) = 
+      if (param.length == 0) Text(S ?? localizationKey)
+      else Text((S ?? localizationKey).format(param.head))
+
 }

@@ -23,6 +23,7 @@ case class TrainingSelected(trainingSessionId: Long) extends StateChanged
 case class NewParticipant(name: String, trainingId: Long) extends StateChanged
 case class DelParticipant(name: String, trainingId: Long) extends StateChanged
 case class UserSignedIn(name: String) extends StateChanged
+case class UserSignedOut(name: String) extends StateChanged
 case object Init extends StateChanged
 
 
@@ -41,7 +42,12 @@ object DataCenter extends LiftActor with ListenerManager {
     object currentUserName extends SessionVar[String]("")
     def hasCurrentUserName() = !("" == currentUserName.is)
     def getCurrentUserName() = currentUserName.is
+    def isMyUser(username: String) = getCurrentUserName equals username
     def clearUserName = setCurrentUserName("")
+    def signout(username: String) = {
+        currentUserName.set("")
+        notifyListenersWith(UserSignedOut(username))
+    }
     def setCurrentUserName(name: String) = {
         currentUserName.set(name)
         notifyListenersWith(UserSignedIn(name))
