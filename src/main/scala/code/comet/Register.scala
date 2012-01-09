@@ -38,17 +38,11 @@ class Register extends CometActor with CometListener {
     private def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 
         
     override def render = {
-      "#signout *" #> showSignoutLogoIfUserHasSignedIn &
-      "#welcome *" #> getWelcomeTextOrAskNameForm &
+      "#signout *" #> (if (hasCurrentUserName) signoutLink else Text("")) &
+      "#welcome *" #> (if (hasCurrentUserName) welcomeText else askNameForm) &
       "#ilmomsg *" #> Text("")
     }
     
-    private def showSignoutLogoIfUserHasSignedIn =
-      if (hasCurrentUserName) signoutLink else Text("")
-    
-    private def getWelcomeTextOrAskNameForm = 
-      if (hasCurrentUserName) welcomeText else askNameForm
-
     private def signoutLink = SHtml.a(() => {signout(getCurrentUserName)}, 
                 <img title="signout" src="/images/signout.png"/>)
                 

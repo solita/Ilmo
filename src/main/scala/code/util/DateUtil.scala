@@ -9,16 +9,6 @@ import org.joda.time.DateTime
 
 object DateUtil {
   
-  def main(args: Array[String]) = {
-    val d2 = new Date();
-    d2.setHours(12);
-    d2.setMinutes(0);
-    d2.setSeconds(0);
-    
-    val d = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(d2)
-    println(d)  
-  }
-  
   def parseDate(str: String) = 
     new SimpleDateFormat(S ?? "date.format").parse(str)
 
