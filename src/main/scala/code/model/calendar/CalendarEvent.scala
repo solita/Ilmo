@@ -22,10 +22,14 @@ class CalendarEvent(uid: String,
       ("DTEND;TZID=Finland/Helsinki", format.format(endTime)) ::
       ("LOCATION", textFormat(location)) ::
       ("DESCRIPTION", textFormat(description)) ::
-      (if(organizerEmail != null && organizerEmail != "" && organizer != null && organizer != "") {
-        ("ORGANIZER;CN=" + organizer + ":MAILTO", organizerEmail) :: Nil
-      } else Nil)
+      (if (hasOrganizer) 
+           ("ORGANIZER;CN=" + organizer + ":MAILTO", organizerEmail) :: Nil 
+       else Nil)
   
+  def hasOrganizer = !empty(organizerEmail) && !empty(organizer)
+  
+  def empty(str: String) = (str == null || str.equals(""))
+    
   def textFormat(text: String) = {
 	  text.replaceAll("\r", "")
       	  .replaceAll("\n", "\\\\n")
@@ -37,6 +41,7 @@ class CalendarEvent(uid: String,
   override def toString() : String = {
       "BEGIN:VEVENT" + 
       "\n" + propsStr + "\n" +
+      new CalendarAlarm + "\n" +
       "END:VEVENT"
   }
 }
