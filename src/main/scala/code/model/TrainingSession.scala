@@ -80,19 +80,6 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                 list(7).toLong));
 
   
-    def getPopularTrainings = {
-        DB.runQuery("""select t.name, min(date_c), max(endDate), count(*)
-                   from training t inner join trainingsession s on s.training = t.id
-                                   inner join participant p on p.trainingsession = s.id
-                   group by t.name
-        """)._2
-        .map(list => PopularTrainingDto(list(0), 
-                                    DateUtil.parseSqlDate(list(1)),
-                                    DateUtil.parseSqlDate(list(2)),
-                                    list(3).toLong
-                                    ));
-    }
-
     def getMonthlyParticipantCount(afterDate: Date) = {
         DB.runQuery("""
           select y, m, count(*) from (

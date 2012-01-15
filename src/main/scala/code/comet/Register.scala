@@ -10,8 +10,6 @@ import DataCenter._
 
 class Register extends CometActor with CometListener {
 
-    private var isSignedIn = false
-    
     def registerWith = DataCenter
   
     override def lowPriority = {
@@ -19,20 +17,16 @@ class Register extends CometActor with CometListener {
       case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
       case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
       case UserSignedIn(name) if isMyUser(name) => handleSignin
-      case UserSignedOut(name) if isSignedIn && !hasCurrentUserName => handleSignout
+      case UserSignedOut(name) if wasMyUser(name) && !hasCurrentUserName => handleSignout
       case msg if ilmomsg(msg) => Noop
     }
     
     private def handleSignout = {
-      isSignedIn = false
-      partialUpdate(SetHtml("welcome", askNameForm))
-      partialUpdate(SetHtml("signout", Text("")))
+      partialUpdate(SetHtml("welcome", askNameForm) & SetHtml("signout", Text("")))
     }
     
     private def handleSignin = {
-      isSignedIn = true
-      partialUpdate(SetHtml("welcome", welcomeText))
-      partialUpdate(SetHtml("signout", signoutLink))
+      partialUpdate(SetHtml("welcome", welcomeText) & SetHtml("signout", signoutLink))
     }
     
     private def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 

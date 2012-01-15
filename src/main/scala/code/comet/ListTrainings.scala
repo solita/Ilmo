@@ -19,6 +19,7 @@ import code.util.DateUtil
 import code.model.TrainingSessionParticipantCountDto
 import java.util.Calendar
 import DataCenter._
+import org.joda.time.DateTime
 
 
 class ListTrainings extends CometActor with CometListener {
@@ -29,7 +30,7 @@ class ListTrainings extends CometActor with CometListener {
 
   override def lowPriority = {
     case UserSignedIn(name) if isMyUser(name) => reRender // todo optimize
-    case UserSignedOut(name) if !hasCurrentUserName => reRender // todo optimize
+    case UserSignedOut(name) if wasMyUser(name) => reRender // todo optimize
     case NewParticipant(name, tId) => reRender
     case DelParticipant(name, tId) => reRender
     case TrainingsChanged => reRender
@@ -73,9 +74,7 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   private def trainingsSinceDate = {
-    var fromDate = Calendar.getInstance()
-    fromDate.add(Calendar.MONTH, -showTrainingsSinceMonths)
-    fromDate.getTime()
+    (new DateTime).minusMonths(showTrainingsSinceMonths).toDateMidnight().toDate()
   }
   
   def getRegisterButton(training: TrainingSessionParticipantCountDto) = {

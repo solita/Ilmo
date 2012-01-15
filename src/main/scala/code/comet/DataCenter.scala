@@ -39,13 +39,15 @@ object DataCenter extends LiftActor with ListenerManager {
       notifyListenersWith(TrainingSelected(trainingSessionId))
     }
     
+    object previousUserName extends SessionVar[String]("")
     object currentUserName extends SessionVar[String]("")
     def hasCurrentUserName() = !("" == currentUserName.is)
     def getCurrentUserName() = currentUserName.is
     def isMyUser(username: String) = getCurrentUserName equals username
-    def clearUserName = setCurrentUserName("")
+    def wasMyUser(username: String) = previousUserName.is equals username
     def signout(username: String) = {
         currentUserName.set("")
+        previousUserName.set(username)
         notifyListenersWith(UserSignedOut(username))
     }
     def setCurrentUserName(name: String) = {
