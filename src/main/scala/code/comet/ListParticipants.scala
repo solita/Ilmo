@@ -20,6 +20,7 @@ import scala.xml.Attribute
 import scala.xml.Null
 import code.util.DateUtil
 import DataCenter._
+import scala.collection.mutable.Buffer
 
 
 class ListParticipants extends CometActor with CometListener {
@@ -49,7 +50,7 @@ class ListParticipants extends CometActor with CometListener {
       trainingSessionId <- DataCenter.getSelectedTrainingSession 
       trainingSession <- TrainingSession.findByKey(trainingSessionId)
       training <- Training.findByKey(trainingSession.training)
-      participants <- Full(trainingSession.participants.map(_.name).zipWithIndex)
+      participants <- Full(trainingSession.participants.map(_.name.is))
     }
     yield 
       "#trainingname *" #> training.name.is &
@@ -57,13 +58,21 @@ class ListParticipants extends CometActor with CometListener {
       "#trainingdesc *" #> formatText(training.description.is) &
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
-      ".participant" #> participants.map(p => (".participant [class]" #> (("col" + p._2%3)) & ".name *" #> p._1))
+      ".participant *" #> participants &
+      "#emailAddressList *" #> getMailAddressList(participants)
     )
     match {
       case Full(cssbindfunc) => cssbindfunc
       case _ => <span></span>
     }
   }
+  
+  def getMailAddressList(participantNames: Buffer[String]): String = {
+    participantNames
+      .map(_.replace(" ", "."))
+      .map(name => name++"@solita.fi")
+      .mkString(";")
+  } 
   
   def formatPlace(session: TrainingSession) = {
     session.place.is + " " + DateUtil.formatInterval(session.date.is, session.endDate.is)

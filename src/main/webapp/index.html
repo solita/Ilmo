@@ -104,7 +104,23 @@ table#welcometable td#ilmomsg {
   margin: 0 6px 2px 0;
 }
 
+#emailLink {
+  text-decoration: none;
+}
+
 </style>
+
+<script language="javascript" type="text/javascript">
+
+function showEmailList() {
+  showCopyThisTextPopup($('div#emailAddressList').text());
+}
+
+function showCopyThisTextPopup(text) {
+  window.prompt ("Kopsi osoitelista outlookiin Ctrl+C. Enter sulkee ikkunan.", text);
+}
+</script>
+
 </head>
 
   <span id="signin"></span>
@@ -145,16 +161,26 @@ table#welcometable td#ilmomsg {
     <p><span id="trainingname"></span> <span id="trainingplace"></span></p>
     <p id="trainingdesc"></p>
     
-    <ol>
-       <li class="participant"><span class="name"></span></li>
+    <ol id="participantOl">
+       <li class="participant"></li>
     </ol>
     <p id="clearfloats"></p>
+    
+    <div id="emailAddressList" style=visibility:hidden></div>
+    
+    <a id="emailLink" href="#" onClick="showEmailList();">
+        <img src="/images/mail_icon.png" />
+        <span>Maili osallistujille</span>
+    </a>
+    
     <div id="organizer"> 	
       <span class="title">Järjestäjä</span>
       <p id="trainingorganizer"></p>
     <div>
     <span class="title">Linkki materiaaliin</span>
     <p id="traininglink"></p>
+    
+    
     
   </div>
     
