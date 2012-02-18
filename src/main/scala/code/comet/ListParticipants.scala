@@ -69,8 +69,11 @@ class ListParticipants extends CometActor with CometListener {
   
   def getMailAddressList(participantNames: Buffer[String]): String = {
     participantNames
+      .map(_.toLowerCase())
       .map(_.replace(" ", "."))
-      .map(name => name++"@solita.fi")
+      .map(_.replace("ä", "a"))
+      .map(_.replace("ö", "o"))
+      .map(_+"@solita.fi")
       .mkString(";")
   } 
   
