@@ -110,17 +110,6 @@ table#welcometable td#ilmomsg {
 
 </style>
 
-<script language="javascript" type="text/javascript">
-
-function showEmailList() {
-  showCopyThisTextPopup($('div#emailAddressList').text());
-}
-
-function showCopyThisTextPopup(text) {
-  window.prompt ("Kopsi osoitelista outlookiin Ctrl+C. Enter sulkee ikkunan.", text);
-}
-</script>
-
 </head>
 
   <span id="signin"></span>
@@ -166,12 +155,10 @@ function showCopyThisTextPopup(text) {
     </ol>
     <p id="clearfloats"></p>
     
-    <div id="emailAddressList" style=visibility:hidden></div>
-    
-    <a id="emailLink" href="#" onClick="showEmailList();">
+    <a id="emailParticipantsLink" href="#">
         <img src="/images/mail_icon.png" />
         <span>Maili osallistujille</span>
-    </a>
+    </a>    
     
     <div id="organizer"> 	
       <span class="title">Järjestäjä</span>

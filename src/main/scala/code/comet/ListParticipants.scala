@@ -59,7 +59,8 @@ class ListParticipants extends CometActor with CometListener {
       "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
       "#traininglink *" #> formatLink(training.linkToMaterial.is) &
       ".participant *" #> participants &
-      "#emailAddressList *" #> getMailAddressList(participants)
+      "#emailParticipantsLink [href]" #> getMailtoHref(participants, training.name.is,
+                                                       trainingSession)
     )
     match {
       case Full(cssbindfunc) => cssbindfunc
@@ -67,7 +68,14 @@ class ListParticipants extends CometActor with CometListener {
     }
   }
   
-  def getMailAddressList(participantNames: Buffer[String]): String = {
+  def getMailtoHref(participants: Seq[String], trainingName: String,
+                    trainingSession: TrainingSession): String = {
+    "mailto:" + getMailAddressList(participants) +
+    "?subject=" + trainingName + " " + interval(trainingSession) +
+    "&body=" + "Hyvä osallistuja!"
+  }
+  
+  def getMailAddressList(participantNames: Seq[String]): String = {
     participantNames
       .map(_.toLowerCase())
       .map(_.replace(" ", "."))
@@ -78,8 +86,12 @@ class ListParticipants extends CometActor with CometListener {
   } 
   
   def formatPlace(session: TrainingSession) = {
-    session.place.is + " " + DateUtil.formatInterval(session.date.is, session.endDate.is)
+    session.place.is + " " + interval(session)
   }
+  
+  def interval(session: TrainingSession): String = 
+    DateUtil.formatInterval(session.date.is, session.endDate.is)
+  
   
   def formatTrainingOrganizer(organizer: String, email: String) = {
     organizer + (if(email != null && email != "") " ( " + email + " )" else "");
