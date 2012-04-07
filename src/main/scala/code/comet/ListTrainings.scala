@@ -20,11 +20,18 @@ import code.model.TrainingSessionParticipantCountDto
 import java.util.Calendar
 import DataCenter._
 import org.joda.time.DateTime
-
+import net.liftweb.http.js.JE.Call
+import net.liftweb.http.js.JsExp
+import net.liftweb.http.js.JE.Num
+import net.liftweb.http.js.JE.JsRaw
+import scala.xml.Elem
+import scala.xml.Node
 
 class ListTrainings extends CometActor with CometListener {
   
   private var showTrainingsSinceMonths = 3;
+  private val pagesize = 6
+  private val pager = new TablePaginator
   
   def registerWith = DataCenter
 
@@ -38,33 +45,32 @@ class ListTrainings extends CometActor with CometListener {
   }
 
   override def render = {
-    "#monthsback" #> getTrainingsSinceMonthsLinks &
-    ".training *" #> getTrainingList.map(training => 
+    var trainings = getTrainingList
+    val futureTrainingCount = trainings.filter(_.date().after(TimeHelpers.now)).length
+    
+    pager.setCount(trainings.length)
+    // upcoming training must be visible.. always..  
+    pager.setPageSize(scala.math.max(futureTrainingCount, pagesize)) 
+    
+    trainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
+    
+    "#paginator *" #> pager.buildPaginatorButtons &
+    ".training *" #> trainings.map(training => 
       ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) &
       ".place *" #> training.place &
       ".date *" #> DateUtil.formatInterval(training.date, training.endDate) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".register *" #> ( getRegisterButton(training) ) &
-      ".addtocalendar *" #> <a title={S ?? "add.to.calendar"} href={"api/cal/"+training.id}>
-                                <img src="/images/Calendar-Add-16.png" /></a>
-    )
-  }
-    
-  private def getTrainingsSinceMonthsLinks = {
-    def textFor(n: Int) = {
-      val title = if (n == 0) S ?? "show.trainings.since.now"
-                  else (S ?? "show.trainings.since").format(n)
-      
-      if (showTrainingsSinceMonths!=n) 
-        SHtml.a(() => {showTrainingsSinceMonths = n; reRender}, 
-               <span title={title} class="selected">{n}</span>)  
-      else 
-        <span title={title}>{n}</span>
-    }
-    List(0,3,6,12,24).map(textFor _).reduceLeft[NodeSeq](_++_)
+      ".addtocalendar *" #> addToCalendarLink(training.id)
+    ) 
   }
   
+  private def addToCalendarLink(trainingId: Long) =
+    <a title={S ?? "add.to.calendar"} href={"api/cal/"+trainingId}>
+        <img src="/images/Calendar-Add-16.png" />
+    </a>
+    
   private def getTrainingList = {
     if ( DataCenter hasCurrentUserName ) 
       TrainingSession.getWithParticipantCountForParticipantId(
@@ -107,6 +113,36 @@ class ListTrainings extends CometActor with CometListener {
   
   def viewDetails(trainingSessionId: Long) : JsCmd = {
       DataCenter.setSelectedTrainingSession(trainingSessionId)
+  }
+  
+  class TablePaginator {
+
+    private var pagesize = 3; 
+    private var firstrow = 1;
+    private var count = 0;
+    
+    def setCount(c: Int) = count = c 
+    def setPageSize(p: Int) = pagesize = p
+    def getPageSize = pagesize
+    def getIndexOfFirstVisibleRow = firstrow
+    
+    def buildPaginatorButtons: NodeSeq = 
+      if (count < pagesize) Text("") else prevLink ++ statusSpan ++ nextLink
+    
+    private def prevImg = <img class="prev" src="/images/prev.png" />
+    private def nextImg = <img class="next" src="/images/next.png" />
+    private def showingFirstPage = firstrow == 1
+    private def showingLastPage = firstrow + pagesize > count
+    
+    private def prevLink =
+      if ( showingFirstPage ) prevImg else SHtml.a(() => {firstrow -= pagesize; reRender}, prevImg)
+
+    private def nextLink =
+      if ( showingLastPage ) nextImg else SHtml.a(() => {firstrow += pagesize; reRender}, nextImg)
+
+    private def statusSpan = <span>{"%s - %s / %s".format(
+          firstrow, scala.math.min(firstrow + pagesize - 1, count), count)}</span>
+
   }
 
 }

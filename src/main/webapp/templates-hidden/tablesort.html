@@ -3,11 +3,16 @@
 <head>
   <script type="text/javascript">
     
-   $(document).ready(function() {
+   $(document).ready(
+    tablesort    
+   );
+   
+   function tablesort() {
        $("#tabletosort") 
           .tablesorter(getTableSorterOptions()) 
           .tablesorterPager({container: $("#pager")});    
-   });
+   }
+   
    
   </script>
 </head>

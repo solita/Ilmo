@@ -3,10 +3,6 @@
 <head>
 <style type="text/css">
 
-#traininglist td {
-  font-size: 11px;
-}
-
 #participantList ol {
   width: 100%;
   margin-top: 18px
@@ -53,6 +49,14 @@
   padding: 0px;
 }
 
+#traininglist {
+  margin-bottom: 0;
+}
+
+#traininglist th {
+  font-size: 11px;
+}
+
 #traininglist table tbody td {
   font-size: 11px;
 }
@@ -82,24 +86,6 @@ table#welcometable td#ilmomsg {
   text-align: right;
 }
 
-
-#traininglist #monthlinksheader {
-  text-align: right;
-}
-
-#traininglist #monthlinksheader a {
-  text-decoration: none;
-}
-
-
-#traininglist #monthlinksheader span {
-  margin: 0 6px 0 0;
-}
-
-#traininglist #monthlinksheader .selected {
-  font-weight: bold;
-}
-
 #signout img {
   margin: 0 6px 2px 0;
 }
@@ -107,6 +93,19 @@ table#welcometable td#ilmomsg {
 #emailLink {
   text-decoration: none;
 }
+
+#paginator {
+  margin: 6px 0 12px 0;
+}
+
+#paginator img {
+  vertical-align: top;
+}
+
+#paginator span {
+  margin: 0 6px 0 6px;
+}
+
 
 </style>
 
@@ -125,12 +124,20 @@ table#welcometable td#ilmomsg {
     </table>
   </div>
   
-  <div id="traininglist" class="lift:comet?type=ListTrainings">
-    <table>
-      <thead><tr>
-        <th>Koulutus</th><th>Aika</th><th>Paikka</th><th>Osallistujia</th><th id="monthlinksheader" colspan="2"><span id="monthsback"></span></th>
-      </tr></thead>
-      <tbody>
+  <div class="lift:comet?type=ListTrainings">
+    <table id="traininglist">
+      <thead>
+        <tr>
+          <th>Koulutus</th>
+          <th>Aika</th>
+          <th>Paikka</th>
+          <th>Osallistujia</th>
+          <th>Ilmoittautuminen</th>
+          <th>Kalenteriin</th>
+          <!--  <th id="monthlinksheader" colspan="2"><span id="monthsback"></span></th> -->
+        </tr>
+      </thead>
+      <tbody >
       
         <tr class="training">
           <td class="name"></td>
@@ -138,13 +145,14 @@ table#welcometable td#ilmomsg {
           <td class="place"></td>
           <td><span class="participantCount"></span> / <span class="maxParticipants"></span></td>
           <td class="register"></td>
-          <td class="addtocalendar"></td>
+          <td class="addtocalendar"></td> 
         </tr>
         
       </tbody>
     </table>
+    
+    <div id="paginator"></div>
   </div>
-  
   
   <div id="participantList" class="lift:comet?type=ListParticipants">
     <p><span id="trainingname"></span> <span id="trainingplace"></span></p>
