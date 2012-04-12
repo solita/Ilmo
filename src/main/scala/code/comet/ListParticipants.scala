@@ -21,9 +21,17 @@ import scala.xml.Null
 import code.util.DateUtil
 import DataCenter._
 import scala.collection.mutable.Buffer
+import net.liftweb.http.js.JE.Call
+import net.liftweb.json.DefaultFormats
+import net.liftweb.json.Serialization.write
 
-
+case class TrainingDetails(name: String, place: String, date: String, desc: String, organizer: String,
+                           materialLink: String, maxparticipants: Int, participants: List[String],
+                           mailtoParticipantsHref: String)
+                           
 class ListParticipants extends CometActor with CometListener {
+  
+  implicit val formats = DefaultFormats
   
   private var selectedTraining: Box[Long] = Empty
   
@@ -37,35 +45,39 @@ class ListParticipants extends CometActor with CometListener {
   def setTraining = selectedTraining = DataCenter.getSelectedTrainingSession
 
   override def lowPriority = {
-    case TrainingSelected(tId) if newTrainingSelected => setTraining; reRender
-    case NewParticipant(pname, tId) if isSelected(tId) => reRender
-    case DelParticipant(pname, tId) if isSelected(tId) => reRender
-    case TrainingsChanged => reRender
+    case TrainingSelected(tId) if newTrainingSelected => setTraining; updateTrainingUI()
+    case NewParticipant(pname, tId) if isSelected(tId) => updateTrainingUI()
+    case DelParticipant(pname, tId) if isSelected(tId) => updateTrainingUI()
+    // todo viesteja pitais hienojakoistaa: trainingadded, trainingsessionadded, ..edited, ..
+    case TrainingsChanged => updateTrainingUI()
     case msg if ilmomsg(msg) => Noop
   }
   
   
-  override def render = {
+  def updateTrainingUI(): JsCmd = {
     (for {
       trainingSessionId <- DataCenter.getSelectedTrainingSession 
       trainingSession <- TrainingSession.findByKey(trainingSessionId)
       training <- Training.findByKey(trainingSession.training)
-      participants <- Full(trainingSession.participants.map(_.name.is))
+      participants <- Full(trainingSession.participants.toList.map(_.name.is))
     }
     yield 
-      "#trainingname *" #> training.name.is &
-      "#trainingplace *" #> formatPlace(trainingSession) &
-      "#trainingdesc *" #> formatText(training.description.is) &
-      "#trainingorganizer *" #> formatTrainingOrganizer(training.organizer.is, training.organizerEmail.is) &
-      "#traininglink *" #> formatLink(training.linkToMaterial.is) &
-      ".participant *" #> participants &
-      "#emailParticipantsLink [href]" #> getMailtoHref(participants, training.name.is,
-                                                       trainingSession)
+      partialUpdate(
+          // todo builder-pattern ja enkoodaus utf8?
+          Call("foo", write(TrainingDetails(training.name.is, trainingSession.place.is,
+              interval(trainingSession), training.description.is, training.organizer.is,
+              training.linkToMaterial.is, trainingSession.maxParticipants, participants,
+              getMailtoHref(participants, training.name.is, trainingSession))))
+      )
     )
     match {
-      case Full(cssbindfunc) => cssbindfunc
-      case _ => <span></span>
+      case Full(partialupdate) => partialupdate
+      case _ => Noop
     }
+  }
+  
+  override def render = {
+    if ( !DataCenter.getSelectedTrainingSession.isEmpty ) updateTrainingUI() else Noop
   }
   
   def getMailtoHref(participants: Seq[String], trainingName: String,
@@ -85,33 +97,8 @@ class ListParticipants extends CometActor with CometListener {
       .mkString(";")
   } 
   
-  def formatPlace(session: TrainingSession) = {
-    session.place.is + " " + interval(session)
-  }
-  
   def interval(session: TrainingSession): String = 
     DateUtil.formatInterval(session.date.is, session.endDate.is)
-  
-  
-  def formatTrainingOrganizer(organizer: String, email: String) = {
-    organizer + (if(email != null && email != "") " ( " + email + " )" else "");
-  }
-  
-  def formatLink(text: String): NodeSeq = {
-    if(text != null && text != "") {
-      var link = text
-      if(!link.startsWith("http://")) link = "http://" + link
-      <a>{text}</a> % Attribute(None, "href", Text(link), Null)
-    } else Text("-");
-  }
-  
-  def formatText(text: String): NodeSeq = {
-    if (text == null) { 
-      Text("-")
-    } else {
-      text.split("\n").map(t => Text(t): NodeSeq).reduceLeft((a,b) => a ++ <br/> ++ b)
-    }
-  }
   
 }
 

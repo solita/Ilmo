@@ -3,47 +3,6 @@
 <head>
 <style type="text/css">
 
-#participantList ol {
-  width: 100%;
-  margin-top: 18px
-}
-
-#participantList li {
-  line-height: 1.5em;  
-  float: left;
-  width: 25%;
-}
-
-#participantList p {
-  margin: 0;
-  padding: 0;
-}
-
-#participantList #trainingdesc {
-  margin-top: 12px;
-  font-size: 11px;
-  text-indent: 0;
-}
-
-#participantList #trainingname {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-#participantList #trainingplace {
-  font-size: 10px;
-}
-
-#clearfloats {
-  padding-top: 20px;
-  clear:both;
-}
-
-#participantList .title {
-  float: left;
-  margin-right: 12px;  
-}
-
 #organizer {
   margin-top: 12px;
   padding: 0px;
@@ -106,9 +65,13 @@ table#welcometable td#ilmomsg {
   margin: 0 6px 0 6px;
 }
 
+#maxparticipants {
+  visibility: hidden;
+  float: left;
+  width: 0;
+}
 
 </style>
-
 </head>
 
   <span id="signin"></span>
@@ -154,28 +117,7 @@ table#welcometable td#ilmomsg {
     <div id="paginator"></div>
   </div>
   
-  <div id="participantList" class="lift:comet?type=ListParticipants">
-    <p><span id="trainingname"></span> <span id="trainingplace"></span></p>
-    <p id="trainingdesc"></p>
-    
-    <ol id="participantOl">
-       <li class="participant"></li>
-    </ol>
-    <p id="clearfloats"></p>
-    
-    <a id="emailParticipantsLink" href="#">
-        <img src="/images/mail_icon.png" />
-        <span>Maili osallistujille</span>
-    </a>    
-    
-    <div id="organizer"> 	
-      <span class="title">Järjestäjä</span>
-      <p id="trainingorganizer"></p>
-    <div>
-    <span class="title">Linkki materiaaliin</span>
-    <p id="traininglink"></p>
-    
-    
-    
-  </div>
+  <div class="lift:embed?what=training_details">training details</div>
+  
+</div>
     

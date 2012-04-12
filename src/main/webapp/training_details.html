@@ -1,0 +1,173 @@
+<div id="trainingwrapper">
+
+<head>
+<style type="text/css">
+
+#trainingDetails ol {
+  width: 100%;
+  margin-top: 18px
+}
+
+#trainingDetails li {
+  line-height: 1.5em;  
+  float: left;
+  width: 25%;
+}
+
+#trainingDetails p {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+}
+
+#trainingDetails #trainingdesc {
+  margin-top: 12px;
+  font-size: 11px;
+  text-indent: 0;
+  float: left;
+}
+
+#trainingDetails #trainingname {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#trainingDetails #trainingplace {
+  font-size: 10px;
+}
+
+#trainingDetails p > * {
+  margin-right: 12px;  
+}
+
+#trainingDetails #participantListText {
+  margin-top: 10px;  
+  clear: left;
+}
+
+#maxparticipants {
+  visibility: hidden;
+  float: left;
+  width: 0;
+}
+
+#participantCanvas { float: right; }
+
+#canvasDrawingErr { color: red; margin-top: 12px; font-size: 10px; }
+
+</style>
+<script type="text/javascript" src="/scripts/trainingdetailscanvas.js"></script>
+
+<script type="text/javascript">
+  
+  function foo(detailsJson) {
+    try {
+      viewTrainingDetails(detailsJson)
+    }
+    catch(err) {
+      viewError(err, 'Ei voitu avata koulutusta: ');
+    }
+  }
+  
+  function viewError(err, msg) {
+    $('#trainingwrapper').append('<div id="canvasDrawingErr">'+msg+err+'</div>');
+    
+    jQuery.each(jQuery.browser, function(i, val) {
+      $("<div>" + i + " : <span>" + val + "</span>")
+                .appendTo('#canvasDrawingErr');
+    });
+  }
+  
+  function viewTrainingDetails(detailsJson) {
+    var details = jQuery.parseJSON(detailsJson);
+    
+    if (supportedBrowser()) {
+      try { 
+        buildDetailsDivWithCanvas(details);
+      }
+      catch (err) {
+        buildDetailsDivWithCommaSeparatedList(details);
+        viewError(err, 'Osallistujien graafisessa esityksessa virhe: ');
+      }
+    }
+    else {
+      buildDetailsDivWithCommaSeparatedList(details);
+    }
+  }
+  
+  function supportedBrowser() {
+    var majorVersion = parseInt($.browser.version, 10);
+    return ( !$.browser.msie );
+  }
+  
+  function buildDetailsDivWithCommaSeparatedList(details) {
+    buildDetailsDiv(details);
+    $('#participantList').html('<p id="participantListText">'+details.participants.join(", ")+'</p>')
+  }
+  
+  function buildDetailsDivWithCanvas(details) {
+    buildDetailsDiv(details);
+    $('#participantList').html(canvasHtml(details))
+    
+    var context = document.getElementById('participantCanvas').getContext('2d');
+    TrainingDetailsCanvas.clear(context);
+    TrainingDetailsCanvas.draw(context, details);
+  }
+  
+  function canvasHtml(details) {
+    return '<canvas id="participantCanvas" width="'+
+      TrainingDetailsCanvas.width(details)+'" height="'+
+      TrainingDetailsCanvas.height()+'"></canvas>';
+  }
+  
+  function buildDetailsDiv(details) {
+    
+    $('#trainingDetails').remove();
+    
+    $('#trainingwrapper').append('<div id="trainingDetails"></div>');
+    var divi = $('#trainingDetails');
+    
+    var header = '<p>' + 
+        '<span id="trainingname">'+details.name+'</span>' +
+        '<span id="trainingplace">'+details.place+'</span>' +
+        '<span id="trainingdate">'+details.date+'</span>' +
+        '<span id="trainingorganizer">'+details.organizer+'</span>' +
+        '<a href='+details.materialLink+'>Lataa Materiaali</a>' +
+        '<a href='+details.mailtoParticipantsHref+'>Maili osallistujille</a>' +
+        '</p>';
+        
+    divi.append(header);
+    
+    divi.append('<p id="trainingdesc">'+details.desc.replace(/(\r\n|\n|\r)/gm, "<br>")+'</p>');
+    
+    divi.append('<div id="participantList"></div>')    
+    return divi;
+  }
+  
+</script>
+</head>
+  
+    <div class="lift:comet?type=ListParticipants"></div>
+    
+    <div id="trainingDetails">
+    <!-- 
+      <p>
+        <span id="trainingname"></span> 
+        <span id="trainingplace"></span>
+        <span id="trainingorganizer"></span>
+        <span id="traininglink"></span>
+      </p>
+      <p id="trainingdesc"></p>
+    
+      <span id="maxparticipants">n</span>
+      <canvas id="participantCanvas" width="900" height="300">test</canvas>  
+    
+      <a id="emailParticipantsLink" href="#">
+        <img src="/images/mail_icon.png" />
+        <span>Maili osallistujille</span>
+      </a>   
+     --> 
+    </div>
+    
+</div>
+    
