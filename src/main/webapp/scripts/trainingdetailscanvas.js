@@ -61,29 +61,28 @@ var TrainingDetailsCanvas = (function() {
   }
   
   function drawBackRest(ctx, x, y, fillStyle) {
-    ctx.beginPath();  
-    ctx.moveTo(x, y);  
-    ctx.lineTo(x+backWidth, y);  
-    ctx.lineTo(x+backWidth-backDiff, y+backHeight);  
-    ctx.lineTo(x+backDiff, y+backHeight);  
-    ctx.closePath();
-    ctx.fillStyle = "black";
-    ctx.stroke();
-    ctx.fillStyle = fillStyle;  
-    ctx.fill();
+    drawBackRestWithAngle(ctx, x, y, 0, fillStyle)
   }
   
   function drawBackRestMirrored(ctx, x, y, fillStyle) {
+    drawBackRestWithAngle(ctx, backWidth+x, backHeight+y, Math.PI, fillStyle);
+  }
+  
+  function drawBackRestWithAngle(ctx, x, y, angle, fillStyle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
     ctx.beginPath();  
-    ctx.moveTo(x+backDiff, y);  
-    ctx.lineTo(x+backWidth-backDiff, y);  
-    ctx.lineTo(x+backWidth, y+backHeight);  
-    ctx.lineTo(x, y+backHeight);  
+    ctx.moveTo(0, 0);  
+    ctx.lineTo(backWidth, 0);  
+    ctx.lineTo(backWidth-backDiff, backHeight);  
+    ctx.lineTo(backDiff, backHeight);  
     ctx.closePath();
     ctx.fillStyle = "black";
     ctx.stroke();
     ctx.fillStyle = fillStyle;  
     ctx.fill();
+    ctx.restore();
   }
   
   function drawChair(ctx, x, y, fillStyle) {      
@@ -91,6 +90,13 @@ var TrainingDetailsCanvas = (function() {
     drawBackRest(ctx, x, y, fillStyle);  
     drawSeat(ctx, x+backDiff, y+backHeight+1, fillStyle); 
   }
+  
+  function drawChairMirrored(ctx, x, y, fillStyle) {      
+    ctx.globalAlpha = 1.0;
+    drawBackRestMirrored(ctx, x, y+seatHeight, fillStyle);  
+    drawSeat(ctx, x+backDiff, y, fillStyle); 
+  }
+  
 
   function drawSeats(context, details) {
     var angle1 = -Math.PI / 6;
@@ -129,12 +135,6 @@ var TrainingDetailsCanvas = (function() {
     }    
   }
 
-  function drawChairMirrored(ctx, x, y, fillStyle) {      
-    ctx.globalAlpha = 1.0;
-    drawBackRestMirrored(ctx, x, y+seatHeight, fillStyle);  
-    drawSeat(ctx, x+backDiff, y, fillStyle); 
-  }
- 
   CanvasRenderingContext2D.prototype.roundRect = function(sx,sy,ex,ey,r) {
     var r2d = Math.PI/180;
     if( ( ex - sx ) - ( 2 * r ) < 0 ) { r = ( ( ex - sx ) / 2 ); } //ensure that the radius isn't too large for x
@@ -162,7 +162,7 @@ var TrainingDetailsCanvas = (function() {
     context.fillText(texti, 0, 0);
     context.restore();
   }
-
+  
   return {
     height: function() { return 300; },
     

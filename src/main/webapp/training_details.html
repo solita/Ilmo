@@ -3,15 +3,8 @@
 <head>
 <style type="text/css">
 
-#trainingDetails ol {
-  width: 100%;
-  margin-top: 18px
-}
-
 #trainingDetails li {
-  line-height: 1.5em;  
-  float: left;
-  width: 25%;
+  line-height: 1.2em;  
 }
 
 #trainingDetails p {
@@ -57,6 +50,7 @@
 
 </style>
 <script type="text/javascript" src="/scripts/trainingdetailscanvas.js"></script>
+<script type="text/javascript" src="/scripts/creole.js"></script>
 
 <script type="text/javascript">
   
@@ -71,6 +65,7 @@
   
   function viewError(err, msg) {
     $('#trainingwrapper').append('<div id="canvasDrawingErr">'+msg+err+'</div>');
+    alert(err.stack);
     
     jQuery.each(jQuery.browser, function(i, val) {
       $("<div>" + i + " : <span>" + val + "</span>")
@@ -120,6 +115,24 @@
       TrainingDetailsCanvas.height()+'"></canvas>';
   }
   
+  function useCreoleWikiMarkup() {
+    return true;
+  }
+  
+  function addDesc(parentDiv, trainingDesc) {
+    if ( useCreoleWikiMarkup() ) {
+        parentDiv.append('<p id="trainingdesc"></div>');
+        var div = document.getElementById('trainingdesc');
+    
+        var options = {};
+        var creole = new Parse.Simple.Creole(options);	
+        creole.parse(div, trainingDesc, options);
+    }
+    else {
+        parentDiv.append('<p id="trainingdesc">'+trainingDesc.replace(/(\r\n|\n|\r)/gm, "<br>")+'</p>');
+    }
+  } 
+  
   function buildDetailsDiv(details) {
     
     $('#trainingDetails').remove();
@@ -138,7 +151,7 @@
         
     divi.append(header);
     
-    divi.append('<p id="trainingdesc">'+details.desc.replace(/(\r\n|\n|\r)/gm, "<br>")+'</p>');
+    addDesc(divi, details.desc);
     
     divi.append('<div id="participantList"></div>')    
     return divi;
@@ -149,25 +162,7 @@
   
     <div class="lift:comet?type=ListParticipants"></div>
     
-    <div id="trainingDetails">
-    <!-- 
-      <p>
-        <span id="trainingname"></span> 
-        <span id="trainingplace"></span>
-        <span id="trainingorganizer"></span>
-        <span id="traininglink"></span>
-      </p>
-      <p id="trainingdesc"></p>
-    
-      <span id="maxparticipants">n</span>
-      <canvas id="participantCanvas" width="900" height="300">test</canvas>  
-    
-      <a id="emailParticipantsLink" href="#">
-        <img src="/images/mail_icon.png" />
-        <span>Maili osallistujille</span>
-      </a>   
-     --> 
-    </div>
+    <div id="trainingDetails"></div>
     
 </div>
     
