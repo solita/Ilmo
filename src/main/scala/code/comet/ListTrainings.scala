@@ -56,19 +56,19 @@ class ListTrainings extends CometActor with CometListener {
     
     "#paginator *" #> pager.buildPaginatorButtons &
     ".training *" #> trainings.map(training => 
-      ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) &
+      ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) & 
       ".place *" #> training.place &
       ".date *" #> DateUtil.formatInterval(training.date, training.endDate) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".register *" #> ( getRegisterButton(training) ) &
       ".addtocalendar *" #> addToCalendarLink(training.id)
-    ) 
+    )
   }
   
   private def addToCalendarLink(trainingId: Long) =
     <a title={S ?? "add.to.calendar"} href={"api/cal/"+trainingId}>
-        <img src="/images/Calendar-Add-16.png" />
+        <img src="/images/Calendar-Add-16.png" /> {S ?? "add.to.calendar"}
     </a>
     
   private def getTrainingList = {
