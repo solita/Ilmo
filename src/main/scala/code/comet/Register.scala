@@ -5,6 +5,8 @@ import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.js.JsCmds.SetHtml
 import net.liftweb.http.js.JsCmds.Noop
+import net.liftweb.http.js.JE.Call
+import net.liftweb.http.js.JE.JsFunc
 import scala.xml.Text
 import DataCenter._
 
@@ -16,7 +18,7 @@ class Register extends CometActor with CometListener {
       case NewParticipant(pname, tId) => viewMsg(localizedText("new.participant.msg", pname))
       case DelParticipant(pname, tId) => viewMsg(localizedText("del.participant.msg", pname))
       case TrainingsChanged => viewMsg(localizedText("trainings.changed.msg"))
-      case UserSignedIn(name) if isMyUser(name) => handleSignin
+      case UserSignedIn(name) if isMyUser(name) => handleSignin(name)
       case UserSignedOut(name) if wasMyUser(name) && !hasCurrentUserName => handleSignout
       case msg if ilmomsg(msg) => Noop
     }
@@ -25,8 +27,10 @@ class Register extends CometActor with CometListener {
       partialUpdate(SetHtml("welcome", askNameForm) & SetHtml("signout", Text("")))
     }
     
-    private def handleSignin = {
-      partialUpdate(SetHtml("welcome", welcomeText) & SetHtml("signout", signoutLink))
+    private def handleSignin(name: String) = {
+      partialUpdate(SetHtml("welcome", welcomeText) & 
+                    SetHtml("signout", signoutLink) &
+                    JsFunc("addNameCookie", name).cmd)
     }
     
     private def viewMsg(msg: Text) = partialUpdate(SetHtml("ilmomsg", msg)) 

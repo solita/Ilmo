@@ -24,29 +24,14 @@ class SignIn {
             DataCenter setCurrentUserName(name.is)
         }
 
-// todo: ei toimi ihan näin        
-//        if ( !hasNameCookie && DataCenter.hasCurrentUserName ) {
-//          S.addCookie(createNameCookie(DataCenter getCurrentUserName()))
-//        }
-        
+        if ( hasNameCookie && !DataCenter.hasCurrentUserName ) {
+          DataCenter setCurrentUserName( getNameCookie )
+        }
+
         Text("")
     }
     
     private def hasNameCookie = S.findCookie("ilmo.name").isDefined
+    private def getNameCookie = S.findCookie("ilmo.name").get.value.get
     
-    private def createNameCookie(name: String): HTTPCookie = {
-      val maxAge = Full(2629743)
-      val version = Full(1)
-      val secure = Empty
-      val httpOnly = Full(true)
-      
-      HTTPCookie("ilmo.name", 
-                 Full(name), 
-                 Full(S.hostName), 
-                 Full(S.contextPath),
-                 maxAge,
-                 version,
-                 //secure,
-                 httpOnly)
-    }
 }
