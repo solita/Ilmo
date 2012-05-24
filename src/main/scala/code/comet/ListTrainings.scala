@@ -32,6 +32,7 @@ class ListTrainings extends CometActor with CometListener {
   private var showTrainingsSinceMonths = 3;
   private val pagesize = 6
   private val pager = new TablePaginator
+  private val cityFilters = new CityFilters
   
   def registerWith = DataCenter
 
@@ -45,16 +46,18 @@ class ListTrainings extends CometActor with CometListener {
   }
 
   override def render = {
-    var trainings = getTrainingList
+    var trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
     val futureTrainingCount = trainings.filter(_.date().after(TimeHelpers.now)).length
     
-    pager.setCount(trainings.length)
-    // upcoming training must be visible.. always..  
-    pager.setPageSize(scala.math.max(futureTrainingCount, pagesize)) 
+    // future trainings must be visible.. always..  
+    val newPagesize = scala.math.max(futureTrainingCount, pagesize) 
+    val totalCount = trainings.length
+    pager.changeCounts(totalCount, newPagesize)
     
     trainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
     
     "#paginator *" #> pager.buildPaginatorButtons &
+    "#cityfilters *" #> cityFilters.getFilterLinks &
     ".training *" #> trainings.map(training => 
       ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) & 
       ".place *" #> training.place &
@@ -66,10 +69,12 @@ class ListTrainings extends CometActor with CometListener {
     )
   }
   
+  private def buildCityFilterLinks = {
+      
+  }
+  
   private def addToCalendarLink(trainingId: Long) =
-    <a title={S ?? "add.to.calendar"} href={"api/cal/"+trainingId}>
-        <img src="/images/Calendar-Add-16.png" /> {S ?? "add.to.calendar"}
-    </a>
+    SHtml.ajaxButton(S ?? "add.to.calendar", () => RedirectTo("api/cal/"+trainingId))
     
   private def getTrainingList = {
     if ( DataCenter hasCurrentUserName ) 
@@ -115,33 +120,58 @@ class ListTrainings extends CometActor with CometListener {
       DataCenter.setSelectedTrainingSession(trainingSessionId)
   }
   
+  class CityFilters {
+    abstract class CityFilter(localizedName: String, predicate: String=>Boolean) {
+      def matches(city: String): Boolean = predicate(city)
+      def me: CityFilter = this
+      def nameText: NodeSeq = <span>{localizedName}</span>
+      def buildLink() = 
+        if (selectedFilter == me) nameText else SHtml.a(() => {selectedFilter = me; reRender}, nameText)
+    }
+    case object All extends CityFilter(S ?? "cityfilter.all", _ => true)
+    case object Tre extends CityFilter(S ?? "cityfilter.tre", _.contains(S ?? "cityfilter.tampere"))
+    case object Hki extends CityFilter(S ?? "cityfilter.hki", _.contains(S ?? "cityfilter.helsinki"))
+    
+    private var selectedFilter: CityFilter = All;
+    private var filters = List(All, Tre, Hki)
+    
+    def getFilterLinks: NodeSeq = filters.flatMap(_.buildLink)
+    def matches(city: String): Boolean = selectedFilter.matches(city)
+  }
+  
   class TablePaginator {
 
-    private var pagesize = 3; 
-    private var firstrow = 1;
-    private var count = 0;
+    private var pagesize = 3 
+    private var count = 0
+    private var visiblePage = 0
     
-    def setCount(c: Int) = count = c 
-    def setPageSize(p: Int) = pagesize = p
+    def changeCounts(newCount: Int, newPagesize: Int) = {
+      pagesize = newPagesize
+      count = newCount
+      // jos koulutuksia filteröidään, poistetaan tai lisätään niin mitä tehdään sivutukselle?
+      if (visiblePage >= pageCount) visiblePage = 0
+    } 
     def getPageSize = pagesize
-    def getIndexOfFirstVisibleRow = firstrow
+    def getIndexOfFirstVisibleRow = visiblePage * pagesize + 1
+    def getIndexOfLastVisibleRow = scala.math.min(getIndexOfFirstVisibleRow + pagesize - 1, count)
     
     def buildPaginatorButtons: NodeSeq = 
       if (count < pagesize) Text("") else prevLink ++ statusSpan ++ nextLink
     
     private def prevImg = <img class="prev" src="/images/prev.png" />
     private def nextImg = <img class="next" src="/images/next.png" />
-    private def showingFirstPage = firstrow == 1
-    private def showingLastPage = firstrow + pagesize > count
+    private def showingFirstPage = visiblePage == 0
+    private def pageCount = scala.math.ceil(count.toDouble/pagesize).toInt
+    private def showingLastPage = (1+visiblePage) == pageCount
     
     private def prevLink =
-      if ( showingFirstPage ) prevImg else SHtml.a(() => {firstrow -= pagesize; reRender}, prevImg)
+      if ( showingFirstPage ) prevImg else SHtml.a(() => {visiblePage -= 1; reRender}, prevImg)
 
     private def nextLink =
-      if ( showingLastPage ) nextImg else SHtml.a(() => {firstrow += pagesize; reRender}, nextImg)
+      if ( showingLastPage ) nextImg else SHtml.a(() => {visiblePage += 1; reRender}, nextImg)
 
-    private def statusSpan = <span>{"%s - %s / %s".format(
-          firstrow, scala.math.min(firstrow + pagesize - 1, count), count)}</span>
+    private def statusSpan = Text("%s - %s / %s".format(
+          getIndexOfFirstVisibleRow, getIndexOfLastVisibleRow, count))
 
   }
 
