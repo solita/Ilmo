@@ -54,7 +54,7 @@
 
 <script type="text/javascript">
   
-  function foo(detailsJson) {
+  function showTrainingDetails(detailsJson) {
     try {
       viewTrainingDetails(detailsJson)
     }
@@ -65,7 +65,6 @@
   
   function viewError(err, msg) {
     $('#trainingwrapper').append('<div id="canvasDrawingErr">'+msg+err+'</div>');
-    alert(err.stack);
     
     jQuery.each(jQuery.browser, function(i, val) {
       $("<div>" + i + " : <span>" + val + "</span>")
@@ -76,7 +75,7 @@
   function viewTrainingDetails(detailsJson) {
     var details = jQuery.parseJSON(detailsJson);
     
-    if (supportedBrowser()) {
+    if (supportedBrowser() && details.participants.length < 30) {
       try { 
         buildDetailsDivWithCanvas(details);
       }

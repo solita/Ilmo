@@ -64,7 +64,7 @@ class ListParticipants extends CometActor with CometListener {
     yield 
       partialUpdate(
           // todo builder-pattern ja enkoodaus utf8?
-          Call("foo", write(TrainingDetails(training.name.is, trainingSession.place.is,
+          Call("showTrainingDetails", write(TrainingDetails(training.name.is, trainingSession.place.is,
               interval(trainingSession), training.description.is, training.organizer.is,
               training.linkToMaterial.is, trainingSession.maxParticipants, participants,
               getMailtoHref(participants, training.name.is, trainingSession))))
