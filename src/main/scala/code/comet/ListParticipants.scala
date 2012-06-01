@@ -24,6 +24,7 @@ import scala.collection.mutable.Buffer
 import net.liftweb.http.js.JE.Call
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json.Serialization.write
+import code.util.UrlFormatter
 
 case class TrainingDetails(name: String, place: String, date: String, desc: String, organizer: String,
                            materialLink: String, maxparticipants: Int, participants: List[String],
@@ -66,7 +67,7 @@ class ListParticipants extends CometActor with CometListener {
           // todo builder-pattern ja enkoodaus utf8?
           Call("showTrainingDetails", write(TrainingDetails(training.name.is, trainingSession.place.is,
               interval(trainingSession), training.description.is, training.organizer.is,
-              training.linkToMaterial.is, trainingSession.maxParticipants, participants,
+              UrlFormatter.addUrlProtocolIfNecessary(training.linkToMaterial.is), trainingSession.maxParticipants, participants,
               getMailtoHref(participants, training.name.is, trainingSession))))
       )
     )

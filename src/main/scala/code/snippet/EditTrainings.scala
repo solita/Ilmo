@@ -21,6 +21,7 @@ import code.comet.DataCenter
 import scala.xml.Group
 import net.liftweb.mapper.OrderBy
 import net.liftweb.mapper.Descending
+import code.util.UrlFormatter
 
 
 class EditTrainings {
@@ -42,7 +43,7 @@ class EditTrainings {
     if (link == null) {
       Text("")
     } else {
-      <a href={link}>{link}</a>
+      <a href={UrlFormatter.addUrlProtocolIfNecessary(link)}>{link}</a>
     }
   }
 
