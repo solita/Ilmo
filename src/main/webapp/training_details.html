@@ -144,15 +144,23 @@
         '<span id="trainingplace">'+details.place+'</span>' +
         '<span id="trainingdate">'+details.date+'</span>' +
         '<span id="trainingorganizer">'+details.organizer+'</span>' +
-        '<a href='+details.materialLink+'>Lataa Materiaali</a>' +
-        '<a href='+details.mailtoParticipantsHref+'>Maili osallistujille</a>' +
+        '<a href='+details.materialLink+'>Lataa&nbsp;Materiaali</a>' +
+        '<a href='+details.mailtoParticipantsHref+'>Maili&nbsp;osallistujille</a>' +
         '</p>';
         
     divi.append(header);
     
     addDesc(divi, details.desc);
     
-    divi.append('<div id="participantList"></div>')    
+    divi.append('<div id="participantList"></div>')
+    
+    if ( details.participants.length > details.maxparticipants ) {
+        divi.append('<div class="clearFloats"></div>')
+        divi.append('<div id="extraParticipantList"></div>')
+        var extraParticipants = details.participants.slice(details.maxparticipants)
+        $('#extraParticipantList').html('Varasijalla: ' + extraParticipants.join(", "))
+    }
+        
     return divi;
   }
   
