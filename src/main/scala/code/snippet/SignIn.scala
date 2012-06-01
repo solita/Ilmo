@@ -4,6 +4,7 @@ import net.liftweb.http.{S, RequestVar, SHtml}
 import net.liftweb.http.js.JsCmds
 import scala.xml.Text
 import net.liftweb.http.provider.HTTPCookie
+import net.liftweb.util.Helpers
 import net.liftweb.common.{Full, Empty}
 
 // snipetti, joka ottaa kiinni pyynnön parametreja ja välittää ne eteenpäin
@@ -32,6 +33,6 @@ class SignIn {
     }
     
     private def hasNameCookie = S.findCookie("ilmo.name").isDefined
-    private def getNameCookie = S.findCookie("ilmo.name").get.value.get
+    private def getNameCookie = Helpers.urlDecode(S.findCookie("ilmo.name").get.value.get)
     
 }
