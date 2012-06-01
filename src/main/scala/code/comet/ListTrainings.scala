@@ -96,8 +96,8 @@ class ListTrainings extends CometActor with CometListener {
       SHtml.ajaxButton(S ?? "training.unregister", () => unregister(training.id))
     }
     else {
-      if ( training.participantCount >= training.maxParticipants ) { 
-        Text(S ?? "training.full")
+      if ( training.participantCount >= training.maxParticipants && DataCenter.hasCurrentUserName() ) { 
+        SHtml.ajaxButton(S ?? "training.full", () => register(training.id))
       }
       else if ( !DataCenter.hasCurrentUserName() ) {
         <button type="button" disabled="disabled">{S ?? "training.register"}</button>  
