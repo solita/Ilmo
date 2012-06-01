@@ -89,11 +89,17 @@ object DataCenter extends LiftActor with ListenerManager {
     private def delParticipant(name: String, trainingSessionId: Long) = {
       for {
         trainingSession <- TrainingSession.findByKey(trainingSessionId)
-        participant <- Participant.findAll(
-            By(Participant.trainingSession, trainingSession), 
-            By(Participant.name, name)).headOption
+        training <- Training.findByKey(trainingSession.training)
+        participants <- Full(trainingSession.participants)
+        participant <- participants.filter(p => p.name.equals(name)).headOption
       } 
-      yield participant.delete_! 
+      yield {
+        participant.delete_!
+        if (trainingSession.maxParticipants < participants.length) {
+          val newParticipant = participants.drop(trainingSession.maxParticipants).head
+          IlmoMailSender.notifyVarasijaltaOsallistujaksi(participant.name, newParticipant.name, training.name, trainingSession.date)
+        }
+      }
       notifyListenersWith(DelParticipant(name, trainingSessionId))
     }
 
