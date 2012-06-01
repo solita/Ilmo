@@ -26,6 +26,7 @@ import net.liftweb.http.js.JE.Num
 import net.liftweb.http.js.JE.JsRaw
 import scala.xml.Elem
 import scala.xml.Node
+import net.liftweb.http.js.JE.Str
 
 class ListTrainings extends CometActor with CometListener {
   
@@ -59,9 +60,9 @@ class ListTrainings extends CometActor with CometListener {
     "#paginator *" #> pager.buildPaginatorButtons &
     "#cityfilters *" #> cityFilters.getFilterLinks &
     ".training *" #> trainings.map(training => 
-      ".name *" #> SHtml.a(() => viewDetails(training.id), Text(training.name)) & 
+      ".name *" #> SHtml.a(() => viewDetails(training), Text(training.name)) & 
       ".place *" #> training.place &
-      ".date *" #> DateUtil.formatInterval(training.date, training.endDate) &
+      ".date *" #> formatTrainingInterval(training) &
       ".participantCount" #> training.participantCount &
       ".maxParticipants" #> training.maxParticipants &
       ".register *" #> ( getRegisterButton(training) ) &
@@ -69,8 +70,8 @@ class ListTrainings extends CometActor with CometListener {
     )
   }
   
-  private def buildCityFilterLinks = {
-      
+  private def formatTrainingInterval(trainingSession: TrainingSessionParticipantCountDto) = {
+    DateUtil.formatInterval(trainingSession.date, trainingSession.endDate)    
   }
   
   private def addToCalendarLink(trainingId: Long) =
@@ -116,8 +117,10 @@ class ListTrainings extends CometActor with CometListener {
       DataCenter ! DelParticipant(DataCenter getCurrentUserName, trainingId)
   }
   
-  def viewDetails(trainingSessionId: Long) : JsCmd = {
-      DataCenter.setSelectedTrainingSession(trainingSessionId)
+  def viewDetails(trainingSession: TrainingSessionParticipantCountDto) : JsCmd = {
+      DataCenter.setSelectedTrainingSession(trainingSession.id())
+      Call("highlightTraining", Str(trainingSession.name()), Str(trainingSession.place()), 
+          Str(formatTrainingInterval(trainingSession)))
   }
   
   class CityFilters {

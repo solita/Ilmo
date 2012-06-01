@@ -12,11 +12,15 @@
   margin-bottom: 0;
 }
 
+#traininglist tr.selected td {
+background-color: #DDDDDD;
+}
+
 #traininglist th {
   font-size: 11px;
 }
 
-traininglist tbody td {
+#traininglist tbody td {
   font-size: 11px;
 }
 
@@ -84,6 +88,23 @@ div.clearFloats {
 <script type="text/javascript">  
   function addNameCookie(name) {
     $.cookie('ilmo.name', name, { expires: 180, path: '/' });
+  }
+  
+  function highlightTraining(trainingName, trainingPlace, trainingDate) {
+      $(".training").removeClass("selected");
+      
+      var search = [trainingName, trainingPlace, trainingDate];
+      
+      var tr = $(".training").filter(function() {
+      var found = 0;
+      $(this).children().each(function() {
+          var text = $(this).text();
+          for (var i = 0; i < search.length; i++) {
+              if (text == search[i]) found++;
+          }
+        });
+        return found == search.length;
+      }).addClass("selected");
   }
 </script>
 

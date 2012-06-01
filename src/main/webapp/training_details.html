@@ -34,8 +34,13 @@
 }
 
 #trainingDetails #participantListText {
-  margin-top: 10px;  
+  padding-top: 10px;  
   clear: left;
+  font-size: 11px;
+}
+
+#trainingDetails #extraParticipantList {
+  font-size: 11px;
 }
 
 #maxparticipants {
@@ -56,7 +61,8 @@
   
   function showTrainingDetails(detailsJson) {
     try {
-      viewTrainingDetails(detailsJson)
+      var details = jQuery.parseJSON(detailsJson);
+      viewTrainingDetails(details)
     }
     catch(err) {
       viewError(err, 'Ei voitu avata koulutusta: ');
@@ -72,9 +78,7 @@
     });
   }
   
-  function viewTrainingDetails(detailsJson) {
-    var details = jQuery.parseJSON(detailsJson);
-    
+  function viewTrainingDetails(details) {
     if (supportedBrowser() && details.participants.length < 50) {
       try { 
         buildDetailsDivWithCanvas(details);
@@ -96,7 +100,7 @@
   
   function buildDetailsDivWithCommaSeparatedList(details) {
     buildDetailsDiv(details);
-    $('#participantList').html('<p id="participantListText">'+details.participants.join(", ")+'</p>')
+    $('#participantList').html('<p id="participantListText">Osallistujat: '+details.participants.join(", ")+'</p>')
   }
   
   function buildDetailsDivWithCanvas(details) {
@@ -115,7 +119,7 @@
   }
   
   function useCreoleWikiMarkup() {
-    return true;
+    return ( !$.browser.msie );
   }
   
   function addDesc(parentDiv, trainingDesc) {
