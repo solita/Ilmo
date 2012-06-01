@@ -109,3 +109,8 @@ td.form-right {
 label {
 	font-weight: normal;
 }
+
+#menucalendar .ui-datepicker {
+	width: 16.5em;
+	margin-top: 1.5em;
+}

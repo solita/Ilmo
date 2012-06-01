@@ -17,6 +17,7 @@
     <script type="text/javascript" src="/scripts/jquery.metadata.js"></script>
     <script type="text/javascript" src="/scripts/jquery.sparkline.min.js"></script>
     <script type="text/javascript" src="/scripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/scripts/date.format.js"></script>
     <link rel="stylesheet" href="/style/jquery-ui-1.8.16.custom.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/style/tablesorter_style.css" type="text/css" media="all" />
     <style type="text/css">
@@ -120,8 +121,54 @@
 
   /* ]]> */
   </style>
+  
   </head>
   <body>
+  	<span class="lift:SessionCalendar"></span>
+  
+  	<script type="text/javascript">
+  
+  	var monthlySessions = {}
+  	
+  	function drawGraph(data, options) {
+      $('#monthlygraph').sparkline(data, options);
+    }
+  	
+  	function getSessionsCallBack(m) {
+  		monthlySessions = {};
+  		for (var i = 0; i < m.length; i++) {
+  			if(m[i]['date'] in monthlySessions) {
+  				monthlySessions[m[i]['date']] += ', ' + m[i]['name'];
+  			} else {
+  				monthlySessions[m[i]['date']] = m[i]['name'];
+  			}
+  		}
+  		$('#menucalendar').datepicker("refresh");
+  	}
+  	
+  	function fetchMonthlySessions(year, month) {  		
+  		getSessions("getSessionsCallBack");
+  	}
+  	
+  	$(function() {
+  		fetchMonthlySessions(new Date().getYear(), new Date().getMonth() + 1); 
+		$('#menucalendar').datepicker($.datepicker.regional['fi']);
+		$('#menucalendar').datepicker("option", "beforeShowDay", 
+	 		function(date) {
+				var fdate = date.format("yyyy-mm-dd");
+				var found = fdate in monthlySessions
+	 			return [found, found ? 'ui-state-highligh' : '', found ? monthlySessions[fdate] : ''];	
+	 		}
+	 	);
+		$('#menucalendar').datepicker("option", "onChangeMonthYear", 
+		 	function(year, month, inst) {
+				fetchMonthlySessions(year, month);	
+		 	}
+		);	
+	});
+  
+  	</script>
+  
     <div class="container">
       <div class="topBanner">
         <img alt="Solita Oy" src="/images/solita_logo.jpg" class="solitaLogo">
@@ -138,16 +185,12 @@
         <hr class="space" />
 		<span class="lift:Menu.builder"></span>
         <hr class="space" />
-        <script type="text/javascript">
-          function drawGraph(data, options) {
-            $('#monthlygraph').sparkline(data, options);
-          }
-        </script>
         <div><span>koulutustrendi:</span> 
              <span id="monthlygraph" title="osallistujia per kuukausi"></span>
          </div>
         <div class="lift:comet?type=TrainingTrendSparkline">
         </div>
+        <div id="menucalendar"></div>
       </div>
 
       <div class="column span-19 last">
