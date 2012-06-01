@@ -66,13 +66,21 @@ class ListParticipants extends CometActor with CometListener {
           // todo builder-pattern ja enkoodaus utf8?
           Call("showTrainingDetails", write(TrainingDetails(training.name.is, trainingSession.place.is,
               interval(trainingSession), training.description.is, training.organizer.is,
-              training.linkToMaterial.is, trainingSession.maxParticipants, participants,
+              addUrlProtocolIfNecessary(training.linkToMaterial.is), trainingSession.maxParticipants, participants,
               getMailtoHref(participants, training.name.is, trainingSession))))
       )
     )
     match {
       case Full(partialupdate) => partialupdate
       case _ => Noop
+    }
+  }
+  
+  def addUrlProtocolIfNecessary(url: String) = {
+    if(!url.contains("://")) {
+      "http://" + url
+    } else {
+      url
     }
   }
   
