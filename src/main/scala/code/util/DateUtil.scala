@@ -37,7 +37,6 @@ object DateUtil {
 	}
 	
 	def formatInterval(startdate: Date, endDate: Date) = {
-	  println("formatting: " + startdate);
 	  formatDateTime(startdate) + " - " + 
      (if ( isSameDay(startdate, endDate) ) 
        formatTime(endDate) 
