@@ -75,7 +75,7 @@
   function viewTrainingDetails(detailsJson) {
     var details = jQuery.parseJSON(detailsJson);
     
-    if (supportedBrowser() && details.participants.length < 30) {
+    if (supportedBrowser() && details.participants.length < 50) {
       try { 
         buildDetailsDivWithCanvas(details);
       }
