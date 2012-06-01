@@ -1,6 +1,8 @@
 #to run on oracle
-db.driver=oracle.jdbc.driver.OracleDriver
-db.url=jdbc:oracle:thin:@<dbserverurl>:1521:<sid>
+#db.driver=oracle.jdbc.driver.OracleDriver
+#db.url=jdbc:oracle:thin:@<dbserverurl>:1521:<sid>
 #db.schema=
 #db.user=
 #db.password=
+
+mail.smtp.host=solita-service-1.solita.fi
