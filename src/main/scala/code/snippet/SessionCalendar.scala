@@ -17,13 +17,14 @@ object SessionCalendar extends DispatchSnippet {
 
   def buildFuncs(in: NodeSeq): NodeSeq =
   	Script(SessionCalendarHandler.is.jsCmd &
-         Function("getSessions", List("callback"), SessionCalendarHandler.is.call("getSessions", JsVar("callback"), JsObj()))
+         Function("getSessions", List("callback", "year", "month"), 
+             SessionCalendarHandler.is.call("getSessions", JsVar("callback"), JsObj(("year", JsVar("year")), ("month", JsVar("month")))))
   )
 }
 
 object SessionFinder {
  
-  def getSessionJsArray(): JsArray = {
+  def getSessionJsArray(year: Int,  month: Int): JsArray = {
     val trainings = TrainingSession.findAll()
     JsArray(trainings.map(t => {
       var training = Training.findByKey(t.training.is).get
@@ -37,7 +38,8 @@ object SessionCalendarHandler extends SessionVar[JsonHandler] (
     
   new JsonHandler {
     def apply(in: Any): JsCmd = in match {
-      case JsonCmd("getSessions", resp, _, _) => Call(resp, SessionFinder.getSessionJsArray())
+      case JsonCmd("getSessions", resp, params: Map[String, String], _) => Call(resp, 
+          SessionFinder.getSessionJsArray(params.get("year").get.toInt, params.get("month").get.toInt))
       case _ => Noop
     }
   }

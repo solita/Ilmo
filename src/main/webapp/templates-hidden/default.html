@@ -146,12 +146,12 @@
   		$('#menucalendar').datepicker("refresh");
   	}
   	
-  	function fetchMonthlySessions(year, month) {  		
-  		getSessions("getSessionsCallBack");
+  	function fetchMonthlySessions(year, month) {
+  		getSessions("getSessionsCallBack", "" + year, "" + month);
   	}
   	
   	$(function() {
-  		fetchMonthlySessions(new Date().getYear(), new Date().getMonth() + 1); 
+  		fetchMonthlySessions(new Date().getYear() + 1900, new Date().getMonth() + 1); 
 		$('#menucalendar').datepicker($.datepicker.regional['fi']);
 		$('#menucalendar').datepicker("option", "beforeShowDay", 
 	 		function(date) {
