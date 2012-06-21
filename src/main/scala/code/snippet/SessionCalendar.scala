@@ -25,10 +25,9 @@ object SessionCalendar extends DispatchSnippet {
 object SessionFinder {
  
   def getSessionJsArray(year: Int,  month: Int): JsArray = {
-    val trainings = TrainingSession.findAll()
+    val trainings = TrainingSession.getSummariesForMonth(year, month);
     JsArray(trainings.map(t => {
-      var training = Training.findByKey(t.training.is).get
-      JsObj(("name", training.name.get), ("date",  new SimpleDateFormat("yyyy-MM-dd").format(t.date.get)))
+      JsObj(("name", t.name), ("date",  new SimpleDateFormat("yyyy-MM-dd").format(t.date)))
     }))
   }
   

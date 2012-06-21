@@ -56,7 +56,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             false,
                                             list(5).toLong,
                                             list(6).toLong));
-
+  
   def getWithParticipantCountForParticipantId(participantName: String, afterDate: Date) =     
     DB.runQuery(
         """select sessionid, sessionname, sessiondate, sessionEndDate, place, has_participated, participantCount, maxparts from ( 
@@ -78,6 +78,19 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                 (if (list(5) == "Y") true else false),
                 list(6).toLong,
                 list(7).toLong));
+  
+  	def getSummariesForMonth(year: Int, month: Int) = DB.runQuery(
+        """select sessionname, sessiondate from ( 
+               select t.name sessionname, s.date_c sessiondate
+               from TrainingSession s join Training t on s.Training = t.id
+               where extract(year from s.date_c) = ? and extract(month from s.date_c) = ?
+           )
+           order by sessiondate desc""",
+        List(year, month))._2 
+           .map(list => new TrainingSessionSummaryDto(
+               list(0),
+               DateUtil.parseSqlDate(list(1)))
+           );
 
   
     def getMonthlyParticipantCount(afterDate: Date) = {
