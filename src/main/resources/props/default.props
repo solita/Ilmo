@@ -10,5 +10,6 @@ db.password=
 #db.schema=ilmo
 #db.user=
 #db.password=
+#db.createschema=
 
 #mail.smtp.host=solita-service-1.solita.fi
