@@ -3,12 +3,8 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.Req
 import net.liftweb.http.GetRequest
 import net.liftweb.http.InMemoryResponse
-import java.text.SimpleDateFormat
-import org.joda.time.DateTime
 import code.model.TrainingSession
-import code.model.Training
 import net.liftweb.common.Box
-import net.liftweb.common.Full
 import net.liftweb.http.BadResponse
 import net.liftweb.util.Helpers._
 import net.liftweb.http.LiftResponse

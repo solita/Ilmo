@@ -2,10 +2,8 @@ package code
 
 import net.liftweb.mapper._  
 import net.liftweb.common._  
-import net.liftweb.util._
 import code.model._
-import java.sql._  
-  
+
 object InMemoryDB {  
   
   val vendor = new StandardDBVendor("org.h2.Driver",

@@ -1,7 +1,6 @@
 package code
 
 import org.specs.SpecificationWithJUnit
-import org.joda.time.DateTime
 import code.model.calendar.CalendarEvent
 import code.model.calendar.Calendar
 import java.util.Date

@@ -1,10 +1,7 @@
 package code
 import org.specs.SpecificationWithJUnit
 import code.model.Training
-import net.liftweb.common.Empty
 import model.Participant
-import net.liftweb.mapper.By
-import code.model.TrainingSessionParticipantCountDto
 import code.model.TrainingSession
 import java.util.Date
 import org.joda.time.DateTime

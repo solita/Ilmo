@@ -1,7 +1,6 @@
 package code.comet
 
 import net.liftweb.util.Mailer
-import scala.xml.NodeSeq
 import net.liftweb.util.Mailer.From
 import net.liftweb.util.Mailer.Subject
 import net.liftweb.util.Mailer.To

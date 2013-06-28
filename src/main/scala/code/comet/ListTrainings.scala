@@ -1,31 +1,20 @@
 package code.comet 
 
-import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
-import net.liftweb.common._
 import java.util.Date
-import Helpers._
-import util._
-import Helpers._
 import net.liftweb.http.js.JsCmds._
 import _root_.scala.xml.Text
 import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
-import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.{Training, TrainingSession}
+import net.liftweb.http.{S, SHtml}
+import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 import code.util.DateUtil
 import code.model.TrainingSessionParticipantCountDto
-import java.util.Calendar
 import DataCenter._
 import org.joda.time.DateTime
 import net.liftweb.http.js.JE.Call
-import net.liftweb.http.js.JsExp
-import net.liftweb.http.js.JE.Num
-import net.liftweb.http.js.JE.JsRaw
-import scala.xml.Elem
-import scala.xml.Node
 import net.liftweb.http.js.JE.Str
 
 class ListTrainings extends CometActor with CometListener {

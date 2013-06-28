@@ -1,11 +1,8 @@
 package code.snippet
 import code.comet.DataCenter
-import net.liftweb.http.{S, RequestVar, SHtml}
-import net.liftweb.http.js.JsCmds
+import net.liftweb.http.{S, RequestVar}
 import scala.xml.Text
-import net.liftweb.http.provider.HTTPCookie
 import net.liftweb.util.Helpers
-import net.liftweb.common.{Full, Empty}
 
 // snipetti, joka ottaa kiinni pyynnön parametreja ja välittää ne eteenpäin
 class SignIn {

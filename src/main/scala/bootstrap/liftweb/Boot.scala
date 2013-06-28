@@ -2,20 +2,15 @@ package bootstrap.liftweb
 
 import net.liftweb._
 import util._
-import Helpers._
 import common._
 import http._
 import sitemap._
-import sitemap.Loc.Link
 import Loc._
 import mapper._
 import code.model._
-import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
-import java.util.ResourceBundle
 import code.model.calendar.CalendarICSFileHelper
 import code.util.IlmoDateFormatter
-import net.liftweb.widgets.sparklines.Sparklines
 
 
 /**

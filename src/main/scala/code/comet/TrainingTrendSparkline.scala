@@ -1,15 +1,10 @@
 package code.comet
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
-import scala.xml.NodeSeq
 import net.liftweb.http.js.JE.JsArray
 import net.liftweb.http.js.JE.JsObj
 import net.liftweb.http.js.JsCmds.Noop
-import net.liftweb.widgets.sparklines.Sparklines
-import net.liftweb.widgets.sparklines.SparklineStyle
-import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JE.Num
-import net.liftweb.http.js.JE.JsRaw
 import net.liftweb.http.js.JE.Call
 import code.model.TrainingSession
 import org.joda.time.DateTime

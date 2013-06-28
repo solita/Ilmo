@@ -5,7 +5,6 @@ import net.liftweb.http._
 import java.text.ParseException
 import java.util.Date
 import java.util.Calendar
-import org.joda.time.DateTime
 
 object DateUtil {
   

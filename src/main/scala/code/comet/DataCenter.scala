@@ -1,12 +1,8 @@
 package code.comet
 
-import net.liftweb.util._
 import net.liftweb._
 import http._
 import actor._
-import scala.actors._
-import scala.actors.Actor._
-import scala.util.Random
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full

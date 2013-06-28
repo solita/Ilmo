@@ -2,18 +2,11 @@ package code.snippet
 
 import net.liftweb._
 import http._
-import code.model.{Training, TrainingSession}
+import code.model.TrainingSession
 import code.util._
-import net.liftweb.common._
 import net.liftweb.util.FieldError
 import scala.xml.Text
 import java.util.Date
-import net.liftweb.util.FieldIdentifier
-import java.text.SimpleDateFormat
-import java.text.ParseException
-import scala.xml.NodeSeq
-import org.w3c.dom.Attr
-import scala.xml.Attribute
 import code.comet.DataCenter
 
 

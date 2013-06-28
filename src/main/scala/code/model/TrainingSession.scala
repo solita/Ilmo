@@ -3,7 +3,6 @@ package code.model
 import _root_.net.liftweb.mapper._
 import net.liftweb.util._
 import net.liftweb.http._
-import java.util.Locale
 import java.util.Date
 import code.util.DateUtil
 import net.liftweb.common.Full
