@@ -3,7 +3,6 @@ package code.model
 import _root_.net.liftweb.mapper._
 import net.liftweb.util._
 import net.liftweb.http._
-import java.util.Locale
 import java.util.Date
 import code.util.DateUtil
 import net.liftweb.common.Full
@@ -23,13 +22,13 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
     
     override def validations =  validateGiven _ :: Nil
     
-	def validateGiven(mp : Int) = {
-	  if (mp <= 0) {
-	    List(FieldError(this, S ?? "trainingsession.error.max-participants-too-small"))
-	  } else {
-	    List[FieldError]()
-	  }
-	}
+  def validateGiven(mp : Int) = {
+    if (mp <= 0) {
+      List(FieldError(this, S ?? "trainingsession.error.max-participants-too-small"))
+    } else {
+      List[FieldError]()
+    }
+  }
   }
   object date extends MappedDateTime(this)
   object endDate extends MappedDateTime(this)
@@ -43,7 +42,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
   def getWithParticipantCount(afterDate: Date) = 
     DB.runQuery("""select ts.id, t.name, ts.date_c, ts.endDate, ts.place, count(p.TrainingSession), ts.maxParticipants 
                    from TrainingSession ts left outer join Participant p on ts.id = p.TrainingSession join Training t on ts.Training = t.id
-    			   where ts.date_c >= ?
+             where ts.date_c >= ?
                    group by ts.id, t.name, ts.date_c, ts.endDate, ts.place, ts.maxParticipants
                    order by ts.date_c desc, ts.id""", List(afterDate))
                         ._2 // first contains column names
@@ -55,7 +54,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                                             list(4),
                                             false,
                                             list(5).toLong,
-                                            list(6).toLong));
+                                            list(6).toLong))
   
   def getWithParticipantCountForParticipantId(participantName: String, afterDate: Date) =     
     DB.runQuery(
@@ -77,9 +76,9 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
                 list(4),
                 (if (list(5) == "Y") true else false),
                 list(6).toLong,
-                list(7).toLong));
+                list(7).toLong))
   
-  	def getSummariesForMonth(year: Int, month: Int) = DB.runQuery(
+    def getSummariesForMonth(year: Int, month: Int) = DB.runQuery(
         """select sessionname, sessiondate from ( 
                select t.name sessionname, s.date_c sessiondate
                from TrainingSession s join Training t on s.Training = t.id
@@ -90,7 +89,7 @@ object TrainingSession extends TrainingSession with LongKeyedMetaMapper[Training
            .map(list => new TrainingSessionSummaryDto(
                list(0),
                DateUtil.parseSqlDate(list(1)))
-           );
+           )
 
   
     def getMonthlyParticipantCount(afterDate: Date) = {

@@ -1,11 +1,10 @@
 package code.comet
 
-import net.liftweb.http.{S, RequestVar, SHtml}
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
 import net.liftweb.http.js.JsCmds.SetHtml
 import net.liftweb.http.js.JsCmds.Noop
-import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JE.JsFunc
 import scala.xml.Text
 import DataCenter._

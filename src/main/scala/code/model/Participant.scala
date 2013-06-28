@@ -1,7 +1,6 @@
 package code.model
 
 import _root_.net.liftweb.mapper._
-import net.liftweb.common.{Box, Full}
 
 class Participant extends LongKeyedMapper[Participant] with IdPK {
   def getSingleton = Participant

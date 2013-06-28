@@ -2,20 +2,15 @@ package bootstrap.liftweb
 
 import net.liftweb._
 import util._
-import Helpers._
 import common._
 import http._
 import sitemap._
-import sitemap.Loc.Link
 import Loc._
 import mapper._
 import code.model._
-import net.liftweb.http.provider.HTTPRequest
 import java.util.Locale
-import java.util.ResourceBundle
 import code.model.calendar.CalendarICSFileHelper
 import code.util.IlmoDateFormatter
-import net.liftweb.widgets.sparklines.Sparklines
 
 
 /**
@@ -29,9 +24,9 @@ class Boot {
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = new IlmoDBVendor(
           getProp("db.driver") openOr "org.h2.Driver", 
-	      getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-		  getProp("db.user"), 
-		  getProp("db.password"))
+        getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
+      getProp("db.user"),
+      getProp("db.password"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
@@ -46,12 +41,12 @@ class Boot {
     }
         
     def createDb: Boolean = {
-      getProp("db.createschema").isDefined || getProp("db.driver") === "org.h2.Driver";
+      getProp("db.createschema").isDefined || getProp("db.driver") === "org.h2.Driver"
     }
 
     if (createDb) {
-    	// Use Lift's Mapper ORM to populate the database
-    	Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
+      // Use Lift's Mapper ORM to populate the database
+      Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
     }
 
     MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})

@@ -1,7 +1,6 @@
 package code.comet
 
 import net.liftweb.util.Mailer
-import scala.xml.NodeSeq
 import net.liftweb.util.Mailer.From
 import net.liftweb.util.Mailer.Subject
 import net.liftweb.util.Mailer.To
@@ -22,7 +21,7 @@ object IlmoMailSender {
            VARASIJALTA_OSALLISTUJAKSI_MSG.format(removedParticipantName, trainingName, DateUtil.formatDateTime(trainingStartTime)))
     }
     
-    def enabled = sys.props.get("mail.smtp.host").isDefined;
+    def enabled = sys.props.get("mail.smtp.host").isDefined
     
     def send(subjectStr: String, recipientAddress: String, plainContent : String) {
       try {
@@ -33,7 +32,7 @@ object IlmoMailSender {
           println("Sending email with subject " + subjectStr + ", to " + recipientAddress + " with content " + plainContent)
         }
       } catch {
-        case e: Exception => println("sending email failed " + e);
+        case e: Exception => println("sending email failed " + e)
       }
     }
 
@@ -46,6 +45,6 @@ object IlmoMailSender {
     } 
     
     def getMailAddressList(participantNames: Seq[String]): String = {
-        participantNames.map(name => getEmailAddress(name)).mkString(";");
+        participantNames.map(name => getEmailAddress(name)).mkString(";")
     } 
 }

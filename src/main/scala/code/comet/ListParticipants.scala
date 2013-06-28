@@ -1,26 +1,14 @@
 package code.comet 
 
-import scala.xml.{NodeSeq, Text}
-import net.liftweb.util._
 import net.liftweb.common._
-import java.util.Date
-import Helpers._
-import util._
-import Helpers._
 import net.liftweb.http.js.JsCmds._
-import _root_.scala.xml.Text
-import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
-import net.liftweb.http.{S, SessionVar, SHtml}
 import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 import code.model.Training
-import scala.xml.Attribute
-import scala.xml.Null
 import code.util.DateUtil
 import DataCenter._
-import scala.collection.mutable.Buffer
 import net.liftweb.http.js.JE.Call
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json.Serialization.write

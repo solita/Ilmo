@@ -1,36 +1,25 @@
 package code.comet 
 
-import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
-import net.liftweb.common._
 import java.util.Date
-import Helpers._
-import util._
-import Helpers._
 import net.liftweb.http.js.JsCmds._
 import _root_.scala.xml.Text
 import scala.xml.NodeSeq
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
-import net.liftweb.http.{S, SessionVar, SHtml}
-import code.model.{Training, TrainingSession}
+import net.liftweb.http.{S, SHtml}
+import code.model.TrainingSession
 import net.liftweb.http.js.JsCmd
 import code.util.DateUtil
 import code.model.TrainingSessionParticipantCountDto
-import java.util.Calendar
 import DataCenter._
 import org.joda.time.DateTime
 import net.liftweb.http.js.JE.Call
-import net.liftweb.http.js.JsExp
-import net.liftweb.http.js.JE.Num
-import net.liftweb.http.js.JE.JsRaw
-import scala.xml.Elem
-import scala.xml.Node
 import net.liftweb.http.js.JE.Str
 
 class ListTrainings extends CometActor with CometListener {
   
-  private var showTrainingsSinceMonths = 3;
+  private val showTrainingsSinceMonths = 3
   private val pagesize = 6
   private val pager = new TablePaginator
   private val cityFilters = new CityFilters
@@ -47,19 +36,19 @@ class ListTrainings extends CometActor with CometListener {
   }
 
   override def render = {
-    var trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
-    val futureTrainingCount = trainings.filter(_.date().after(TimeHelpers.now)).length
+    val trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
+    val futureTrainingCount = trainings.filter(_.date.after(TimeHelpers.now)).length
     
     // future trainings must be visible.. always..  
     val newPagesize = scala.math.max(futureTrainingCount, pagesize) 
     val totalCount = trainings.length
     pager.changeCounts(totalCount, newPagesize)
     
-    trainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
+    val visibleTrainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
     
     "#paginator *" #> pager.buildPaginatorButtons &
     "#cityfilters *" #> cityFilters.getFilterLinks &
-    ".training *" #> trainings.map(training => 
+    ".training *" #> visibleTrainings.map(training =>
       ".name *" #> SHtml.a(() => viewDetails(training), Text(training.name)) & 
       ".place *" #> training.place &
       ".date *" #> formatTrainingInterval(training) &
@@ -118,8 +107,8 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   def viewDetails(trainingSession: TrainingSessionParticipantCountDto) : JsCmd = {
-      DataCenter.setSelectedTrainingSession(trainingSession.id())
-      Call("highlightTraining", Str(trainingSession.name()), Str(trainingSession.place()), 
+      DataCenter.setSelectedTrainingSession(trainingSession.id)
+      Call("highlightTraining", Str(trainingSession.name), Str(trainingSession.place),
           Str(formatTrainingInterval(trainingSession)))
   }
   
@@ -135,7 +124,7 @@ class ListTrainings extends CometActor with CometListener {
     case object Tre extends CityFilter(S ?? "cityfilter.tre", _.contains(S ?? "cityfilter.tampere"))
     case object Hki extends CityFilter(S ?? "cityfilter.hki", _.contains(S ?? "cityfilter.helsinki"))
     
-    private var selectedFilter: CityFilter = All;
+    private var selectedFilter: CityFilter = All
     private var filters = List(All, Tre, Hki)
     
     def getFilterLinks: NodeSeq = filters.flatMap(_.buildLink)
