@@ -60,7 +60,7 @@ object DataCenter extends LiftActor with ListenerManager {
       val existingParticipant = Participant.findAll(
           By(Participant.trainingSession, trainingSessionId), Like(Participant.name, name))
 
-      if ( existingParticipant.isEmpty ) addParticipant(name, trainingSessionId);
+      if ( existingParticipant.isEmpty ) addParticipant(name, trainingSessionId)
     }
     
     private def addParticipant(name: String, trainingSessionId: Long) = {

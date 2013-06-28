@@ -23,7 +23,7 @@ object SessionCalendar extends DispatchSnippet {
 object SessionFinder {
  
   def getSessionJsArray(year: Int,  month: Int): JsArray = {
-    val trainings = TrainingSession.getSummariesForMonth(year, month);
+    val trainings = TrainingSession.getSummariesForMonth(year, month)
     JsArray(trainings.map(t => {
       JsObj(("name", t.name), ("date",  new SimpleDateFormat("yyyy-MM-dd").format(t.date)))
     }))
@@ -40,4 +40,4 @@ object SessionCalendarHandler extends SessionVar[JsonHandler] (
       case _ => Noop
     }
   }
-);
+)

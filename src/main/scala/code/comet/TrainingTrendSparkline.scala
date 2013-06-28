@@ -42,7 +42,7 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       val opts = JsObj(("zeroAxis" -> false),
                        ("type" -> "bar"),
                        ("barcolor" -> "#9999FF"),
-                       ("zeroColor" -> "#EBEBFF"));
+                       ("zeroColor" -> "#EBEBFF"))
       
       Call("drawGraph", data, opts).cmd
     }

@@ -9,11 +9,11 @@ class CalendarTest extends SpecificationWithJUnit {
 
   "Calendars" should {  
     "start and end with vcalendar tags" in {
-      val startTime = new Date();
-      val endTime = new Date();
+      val startTime = new Date
+      val endTime = new Date
     
-      val event = new CalendarEvent("uid", startTime, endTime, "testi", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com");
-      val calendar = new Calendar( event :: Nil );
+      val event = new CalendarEvent("uid", startTime, endTime, "testi", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com")
+      val calendar = new Calendar( event :: Nil )
       
       println(calendar.toString())
       
@@ -23,10 +23,10 @@ class CalendarTest extends SpecificationWithJUnit {
   
   "Calendar events" should {  
     "start and end with vevent tags" in {
-      val startTime = new Date();
-      val endTime = new Date();
+      val startTime = new Date
+      val endTime = new Date
     
-      val event = new CalendarEvent("uid", startTime, endTime, "event summary", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com");
+      val event = new CalendarEvent("uid", startTime, endTime, "event summary", "paikka", "kuvaus", "jarjestaja", "jarjestaja@example.com")
       
       event.toString() must startWith ("BEGIN:VEVENT") and endWith("END:VEVENT")
     }

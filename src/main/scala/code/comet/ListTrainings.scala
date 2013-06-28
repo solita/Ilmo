@@ -19,7 +19,7 @@ import net.liftweb.http.js.JE.Str
 
 class ListTrainings extends CometActor with CometListener {
   
-  private val showTrainingsSinceMonths = 3;
+  private val showTrainingsSinceMonths = 3
   private val pagesize = 6
   private val pager = new TablePaginator
   private val cityFilters = new CityFilters
@@ -124,7 +124,7 @@ class ListTrainings extends CometActor with CometListener {
     case object Tre extends CityFilter(S ?? "cityfilter.tre", _.contains(S ?? "cityfilter.tampere"))
     case object Hki extends CityFilter(S ?? "cityfilter.hki", _.contains(S ?? "cityfilter.helsinki"))
     
-    private var selectedFilter: CityFilter = All;
+    private var selectedFilter: CityFilter = All
     private var filters = List(All, Tre, Hki)
     
     def getFilterLinks: NodeSeq = filters.flatMap(_.buildLink)

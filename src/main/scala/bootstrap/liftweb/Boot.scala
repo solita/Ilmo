@@ -41,7 +41,7 @@ class Boot {
     }
         
     def createDb: Boolean = {
-      getProp("db.createschema").isDefined || getProp("db.driver") === "org.h2.Driver";
+      getProp("db.createschema").isDefined || getProp("db.driver") === "org.h2.Driver"
     }
 
     if (createDb) {
