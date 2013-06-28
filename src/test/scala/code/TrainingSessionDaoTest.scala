@@ -82,7 +82,7 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       var trainingList = TrainingSession.getWithParticipantCount(cutofTime)
       trainingList must have size(2)
       trainingList foreach(t => {
-        t.date().before(cutofTime) must beFalse
+        t.date.before(cutofTime) must beFalse
       }
       )
     }

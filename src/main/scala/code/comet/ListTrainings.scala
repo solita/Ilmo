@@ -48,7 +48,7 @@ class ListTrainings extends CometActor with CometListener {
 
   override def render = {
     var trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
-    val futureTrainingCount = trainings.filter(_.date().after(TimeHelpers.now)).length
+    val futureTrainingCount = trainings.filter(_.date.after(TimeHelpers.now)).length
     
     // future trainings must be visible.. always..  
     val newPagesize = scala.math.max(futureTrainingCount, pagesize) 
@@ -118,8 +118,8 @@ class ListTrainings extends CometActor with CometListener {
   }
   
   def viewDetails(trainingSession: TrainingSessionParticipantCountDto) : JsCmd = {
-      DataCenter.setSelectedTrainingSession(trainingSession.id())
-      Call("highlightTraining", Str(trainingSession.name()), Str(trainingSession.place()), 
+      DataCenter.setSelectedTrainingSession(trainingSession.id)
+      Call("highlightTraining", Str(trainingSession.name), Str(trainingSession.place),
           Str(formatTrainingInterval(trainingSession)))
   }
   
