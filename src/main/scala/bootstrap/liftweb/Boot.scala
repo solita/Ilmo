@@ -29,9 +29,9 @@ class Boot {
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = new IlmoDBVendor(
           getProp("db.driver") openOr "org.h2.Driver", 
-	      getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-		  getProp("db.user"), 
-		  getProp("db.password"))
+        getProp("db.url") openOr "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
+      getProp("db.user"),
+      getProp("db.password"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
@@ -50,8 +50,8 @@ class Boot {
     }
 
     if (createDb) {
-    	// Use Lift's Mapper ORM to populate the database
-    	Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
+      // Use Lift's Mapper ORM to populate the database
+      Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
     }
 
     MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})

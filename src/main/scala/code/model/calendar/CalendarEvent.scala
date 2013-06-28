@@ -8,7 +8,7 @@ import java.util.Date
  * Summary corresponds to subject in Outlook. 
  */
 class CalendarEvent(uid: String, 
-					startTime: Date, endTime: Date, 
+                    startTime: Date, endTime: Date,
                     summary: String, location: String, description: String,
                     organizer: String, organizerEmail: String) {
   
@@ -31,8 +31,8 @@ class CalendarEvent(uid: String,
   def empty(str: String) = (str == null || str.equals(""))
     
   def textFormat(text: String) = {
-	  text.replaceAll("\r", "")
-      	  .replaceAll("\n", "\\\\n")
+    text.replaceAll("\r", "")
+          .replaceAll("\n", "\\\\n")
   }
   
   def propsStr = properties.map { option => option._1 + ":" + option._2 }

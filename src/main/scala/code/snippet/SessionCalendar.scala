@@ -16,7 +16,7 @@ object SessionCalendar extends DispatchSnippet {
   val dispatch = Map("render" -> buildFuncs _)
 
   def buildFuncs(in: NodeSeq): NodeSeq =
-  	Script(SessionCalendarHandler.is.jsCmd &
+    Script(SessionCalendarHandler.is.jsCmd &
          Function("getSessions", List("callback", "year", "month"), 
              SessionCalendarHandler.is.call("getSessions", JsVar("callback"), JsObj(("year", JsVar("year")), ("month", JsVar("month")))))
   )

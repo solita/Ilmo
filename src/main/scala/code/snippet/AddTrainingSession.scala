@@ -29,15 +29,15 @@ object AddTrainingSession extends LiftScreen {
   addFields(() => trainingSession.is.place)
   
   def date(title: String) = text(S ?? title, "", FormParam("class", "datepicker"),
-	{ s: String => DateUtil.parseDateTime(s) match {
-	  case null => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-format")) :: Nil
-	  case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-too-early")) :: Nil
-	  case _ => Nil
-	}}) 
+  { s: String => DateUtil.parseDateTime(s) match {
+    case null => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-format")) :: Nil
+    case d if(d.before(new Date)) => FieldError(currentField.box.get, Text(S ?? "trainingsession.error.training-date-too-early")) :: Nil
+    case _ => Nil
+  }})
   
   val dateField = date("trainingsession.date")
   val endDateField = date("trainingsession.endDate")
-	
+
   addFields(() => trainingSession.is.maxParticipants)
   
   override def validations = validateTrainingSession _ :: super.validations
