@@ -43,11 +43,13 @@ object AddTrainingSession extends LiftScreen {
   override def validations = validateTrainingSession _ :: super.validations
   
   def validateTrainingSession: Errors = {
-    var errors: List[FieldError] = Nil
     val start = DateUtil.parseDateTime(dateField.is)
-    val end = DateUtil.parseDateTime(endDateField.is)
-    if(end.before(start)) errors = FieldError(endDateField, Text(S ?? "trainingsession.error.end-before-start")) :: errors
-    errors
+    val end   = DateUtil.parseDateTime(endDateField.is)
+
+    if (end.before(start)) {
+      FieldError(endDateField, Text(S ?? "trainingsession.error.end-before-start")) :: Nil
+    }
+    else Nil
   }
   
   def finish() {

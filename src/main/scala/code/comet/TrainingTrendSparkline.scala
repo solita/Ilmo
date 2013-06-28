@@ -29,7 +29,7 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       val afterDate = new DateTime().minusMonths(monthsback).withDayOfMonth(1)
       val months = (0 to monthsback).map(afterDate.plusMonths)
       
-      var participantCounts = TrainingSession.getMonthlyParticipantCount(afterDate.toDate)
+      val participantCounts = TrainingSession.getMonthlyParticipantCount(afterDate.toDate)
       
       def getCountFor(y: Int, m: Int) = 
         participantCounts.filter(pc => pc.year == y && pc.month == m) match {

@@ -30,7 +30,7 @@ import net.liftweb.http.js.JE.Str
 
 class ListTrainings extends CometActor with CometListener {
   
-  private var showTrainingsSinceMonths = 3;
+  private val showTrainingsSinceMonths = 3;
   private val pagesize = 6
   private val pager = new TablePaginator
   private val cityFilters = new CityFilters
@@ -47,7 +47,7 @@ class ListTrainings extends CometActor with CometListener {
   }
 
   override def render = {
-    var trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
+    val trainings = getTrainingList.filter(t => cityFilters.matches(t.place))
     val futureTrainingCount = trainings.filter(_.date.after(TimeHelpers.now)).length
     
     // future trainings must be visible.. always..  
@@ -55,11 +55,11 @@ class ListTrainings extends CometActor with CometListener {
     val totalCount = trainings.length
     pager.changeCounts(totalCount, newPagesize)
     
-    trainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
+    val visibleTrainings = trainings.drop(pager.getIndexOfFirstVisibleRow-1).take(pager.getPageSize)
     
     "#paginator *" #> pager.buildPaginatorButtons &
     "#cityfilters *" #> cityFilters.getFilterLinks &
-    ".training *" #> trainings.map(training => 
+    ".training *" #> visibleTrainings.map(training =>
       ".name *" #> SHtml.a(() => viewDetails(training), Text(training.name)) & 
       ".place *" #> training.place &
       ".date *" #> formatTrainingInterval(training) &
