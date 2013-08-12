@@ -15,7 +15,8 @@ class TrainingSession extends LongKeyedMapper[TrainingSession] with IdPK with On
   object training extends MappedLongForeignKey(this, Training) {
     override def validSelectValues: Box[List[(Long, String)]] =
         // todo loputtomiin kasvava lista on huono idea     
-        Full(Training.findAll.map(d => (d.id.is, d.name.is)))
+        Full(Training.findAll.map(d => (d.id.is, d.name.is))
+                             .sortBy(_._2))
   }
   
   object place extends MappedString(this,100)
