@@ -1,3 +1,0 @@
-scala-lift app for creating events and adding participants to events 
-
-You need to add lib/ojdbc.jar if running on top of oracle. This is excluded from vcs.

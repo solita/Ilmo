@@ -44,11 +44,15 @@ class Boot {
         case None => Props.get(key)
       }
     }
+        
+    def createDb: Boolean = {
+      getProp("db.createschema").isDefined || getProp("db.driver") === "org.h2.Driver";
+    }
 
-    // Use Lift's Mapper ORM to populate the database
-    // you don't need to use Mapper to use Lift... use
-    // any ORM you want
-    //Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
+    if (createDb) {
+    	// Use Lift's Mapper ORM to populate the database
+    	Schemifier.schemify(true, Schemifier.infoF _, Training, Participant, TrainingSession)
+    }
 
     MapperRules.displayNameCalculator.default.set({(m : BaseMapper, l : Locale, s : String) => S ?? (m.getClass().getSimpleName().toLowerCase() + "." + s)})
     

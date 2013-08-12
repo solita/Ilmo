@@ -4,5 +4,6 @@
 #db.schema=
 #db.user=
 #db.password=
+#db.createschema=true
 
 mail.smtp.host=solita-service-1.solita.fi
