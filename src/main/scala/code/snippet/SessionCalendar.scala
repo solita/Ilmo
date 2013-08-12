@@ -2,21 +2,19 @@ package code.snippet
 
 import net.liftweb._
 import http._
-import common._
 import util._
 import js._
 import JsCmds._
 import JE._
 import scala.xml.NodeSeq
 import code.model.TrainingSession
-import code.model.Training
 import java.text.SimpleDateFormat
 
 object SessionCalendar extends DispatchSnippet {
   val dispatch = Map("render" -> buildFuncs _)
 
   def buildFuncs(in: NodeSeq): NodeSeq =
-  	Script(SessionCalendarHandler.is.jsCmd &
+    Script(SessionCalendarHandler.is.jsCmd &
          Function("getSessions", List("callback", "year", "month"), 
              SessionCalendarHandler.is.call("getSessions", JsVar("callback"), JsObj(("year", JsVar("year")), ("month", JsVar("month")))))
   )
@@ -25,7 +23,7 @@ object SessionCalendar extends DispatchSnippet {
 object SessionFinder {
  
   def getSessionJsArray(year: Int,  month: Int): JsArray = {
-    val trainings = TrainingSession.getSummariesForMonth(year, month);
+    val trainings = TrainingSession.getSummariesForMonth(year, month)
     JsArray(trainings.map(t => {
       JsObj(("name", t.name), ("date",  new SimpleDateFormat("yyyy-MM-dd").format(t.date)))
     }))
@@ -42,4 +40,4 @@ object SessionCalendarHandler extends SessionVar[JsonHandler] (
       case _ => Noop
     }
   }
-);
+)

@@ -1,9 +1,7 @@
 package code.util
 import net.liftweb.util.DateTimeConverter
 import java.util.Date
-import net.liftweb.util.DefaultDateTimeConverter
 import net.liftweb.util.Helpers
-import net.liftweb.http.S
 
 class IlmoDateFormatter extends DateTimeConverter {
   def formatDateTime(d: Date) = DateUtil.formatDateTime(d)

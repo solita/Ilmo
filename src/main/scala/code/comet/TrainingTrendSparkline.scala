@@ -1,15 +1,10 @@
 package code.comet
 import net.liftweb.http.CometActor
 import net.liftweb.http.CometListener
-import scala.xml.NodeSeq
 import net.liftweb.http.js.JE.JsArray
 import net.liftweb.http.js.JE.JsObj
 import net.liftweb.http.js.JsCmds.Noop
-import net.liftweb.widgets.sparklines.Sparklines
-import net.liftweb.widgets.sparklines.SparklineStyle
-import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JE.Num
-import net.liftweb.http.js.JE.JsRaw
 import net.liftweb.http.js.JE.Call
 import code.model.TrainingSession
 import org.joda.time.DateTime
@@ -29,7 +24,7 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       val afterDate = new DateTime().minusMonths(monthsback).withDayOfMonth(1)
       val months = (0 to monthsback).map(afterDate.plusMonths)
       
-      var participantCounts = TrainingSession.getMonthlyParticipantCount(afterDate.toDate)
+      val participantCounts = TrainingSession.getMonthlyParticipantCount(afterDate.toDate)
       
       def getCountFor(y: Int, m: Int) = 
         participantCounts.filter(pc => pc.year == y && pc.month == m) match {
@@ -47,7 +42,7 @@ class TrainingTrendSparkline extends CometActor with CometListener {
       val opts = JsObj(("zeroAxis" -> false),
                        ("type" -> "bar"),
                        ("barcolor" -> "#9999FF"),
-                       ("zeroColor" -> "#EBEBFF"));
+                       ("zeroColor" -> "#EBEBFF"))
       
       Call("drawGraph", data, opts).cmd
     }

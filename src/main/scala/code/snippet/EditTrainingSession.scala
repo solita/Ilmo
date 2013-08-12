@@ -1,24 +1,15 @@
 package code.snippet
 
-import scala.xml.{NodeSeq, Text}
 import net.liftweb.util._
 import net.liftweb.common._
 import java.util.Date
 import Helpers._
-import util._
-import Helpers._
-import net.liftweb.http.js.JsCmds._
 import _root_.scala.xml.Text
 import scala.xml.NodeSeq
-import net.liftweb.http.CometActor
-import net.liftweb.http.CometListener
-import net.liftweb.http.{S, SessionVar, SHtml}
+import net.liftweb.http.{S, SHtml}
 import code.model.TrainingSession
-import net.liftweb.http.js.JsCmd
-import code.model.Training
 import net.liftweb.http.RequestVar
 import code.comet.DataCenter
-import scala.xml.Group
 import java.text.SimpleDateFormat
 import code.util.DateUtil
 
@@ -30,7 +21,7 @@ class EditTrainingSession {
   val timeformat = new SimpleDateFormat(S ?? "time.format")
   
   def listTrainings = {
-    val afterDate = new Date(0); // since beginning of time
+    val afterDate = new Date(0) // since beginning of time
     ".trainingsession *" #>  TrainingSession.getWithParticipantCount(afterDate).map(t => 
       ".time" #> DateUtil.formatInterval(t.date, t.endDate) &
       ".name" #> t.name &

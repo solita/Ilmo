@@ -1,12 +1,8 @@
 package code.comet
 
-import net.liftweb.util._
 import net.liftweb._
 import http._
 import actor._
-import scala.actors._
-import scala.actors.Actor._
-import scala.util.Random
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -16,15 +12,6 @@ import code.model.Participant
 import net.liftweb.mapper.By
 import net.liftweb.mapper.Mapper
 import net.liftweb.mapper.Like
-
-abstract class StateChanged
-case object TrainingsChanged extends StateChanged
-case class TrainingSelected(trainingSessionId: Long) extends StateChanged
-case class NewParticipant(name: String, trainingId: Long) extends StateChanged
-case class DelParticipant(name: String, trainingId: Long) extends StateChanged
-case class UserSignedIn(name: String) extends StateChanged
-case class UserSignedOut(name: String) extends StateChanged
-case object Init extends StateChanged
 
 
 // FIXME: muuta nimi esim. IlmoListenerManager
@@ -73,7 +60,7 @@ object DataCenter extends LiftActor with ListenerManager {
       val existingParticipant = Participant.findAll(
           By(Participant.trainingSession, trainingSessionId), Like(Participant.name, name))
 
-      if ( existingParticipant.isEmpty ) addParticipant(name, trainingSessionId);
+      if ( existingParticipant.isEmpty ) addParticipant(name, trainingSessionId)
     }
     
     private def addParticipant(name: String, trainingSessionId: Long) = {

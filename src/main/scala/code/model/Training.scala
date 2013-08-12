@@ -1,9 +1,7 @@
 package code.model
 
 import _root_.net.liftweb.mapper._
-import net.liftweb.util._
 import net.liftweb.http._
-import java.util.Locale
 
 class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, Training] {
   def getSingleton = Training

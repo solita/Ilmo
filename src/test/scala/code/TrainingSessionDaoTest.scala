@@ -1,10 +1,7 @@
 package code
 import org.specs.SpecificationWithJUnit
 import code.model.Training
-import net.liftweb.common.Empty
 import model.Participant
-import net.liftweb.mapper.By
-import code.model.TrainingSessionParticipantCountDto
 import code.model.TrainingSession
 import java.util.Date
 import org.joda.time.DateTime
@@ -15,15 +12,15 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
     "contain a participant if participant has participated" in {  
       InMemoryDB.init
       
-      var trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
+      val trainingNoParticipants = Training.create.name("training_without_participant").description("desc").saveMe
       TrainingSession.create.date(new Date).endDate(new Date).training(trainingNoParticipants).place("Place").saveMe
       
-      var training = Training.create.name("training_with_participant").description("desc").saveMe
-      var trainingSession = TrainingSession.create.date(new Date).endDate(new Date).training(training).place("Place").saveMe
+      val training = Training.create.name("training_with_participant").description("desc").saveMe
+      val trainingSession = TrainingSession.create.date(new Date).endDate(new Date).training(training).place("Place").saveMe
       
       val participantName = "name"
       Participant.create.name(participantName).trainingSession(trainingSession).save     
-      var trainingList = TrainingSession.getWithParticipantCountForParticipantId(participantName, new Date(0))
+      val trainingList = TrainingSession.getWithParticipantCountForParticipantId(participantName, new Date(0))
       
       trainingList must have size(2)
       
@@ -82,7 +79,7 @@ class TrainingSessionDaoTest extends SpecificationWithJUnit {
       var trainingList = TrainingSession.getWithParticipantCount(cutofTime)
       trainingList must have size(2)
       trainingList foreach(t => {
-        t.date().before(cutofTime) must beFalse
+        t.date.before(cutofTime) must beFalse
       }
       )
     }
