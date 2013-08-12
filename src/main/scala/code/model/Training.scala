@@ -27,6 +27,8 @@ class Training extends LongKeyedMapper[Training] with IdPK with OneToMany[Long, 
 
   // FIXME: tyypin pitäsi olla mappednullablestring ja paluuarvona box[String]
   object linkToMaterial extends MappedString(this, 100)
+  
+  object ended extends MappedBoolean(this)
 }
 
 object Training extends Training with LongKeyedMetaMapper[Training] {
